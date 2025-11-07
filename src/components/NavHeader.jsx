@@ -10,9 +10,9 @@ function NavHeader() {
   const location = useLocation();
 
   return(
-    <Navbar className="navbar-custom mx-3">
-      <Container>
-        <Navbar.Brand><strong>{navbarText}</strong></Navbar.Brand>
+    <Navbar className="navbar-custom">
+      <Container className='mx-3'>
+        <Navbar.Brand>{navbarText}</Navbar.Brand>
         { location.pathname !== "/" &&
           <Link className='btn home-button' to="/"><i className='bi bi-house'> </i></Link>
         }

@@ -18,7 +18,8 @@ function App() {
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<Login />} />
-          <Route path="/registration" element={<Registration />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </NavbarTextContext.Provider>

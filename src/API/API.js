@@ -25,6 +25,27 @@ const registerCitizen = async (credentials) => {
     }
 }
 
-const API = { registerCitizen };
+const loginCitizen = async (credentials) => {
+    try {
+        const response = await fetch(`${SERVER_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: {
+                email: credentials.email,
+                password: credentials.password
+            }
+        });
+        if (response.ok) {
+        }
+        else {
+        }
+    } catch (error) {
+    }
+}
+
+const API = { registerCitizen, loginCitizen };
 
 export default API;

@@ -14,11 +14,13 @@
 }
 
 .home-button {
-  color: white;
+  color: white !important;
   font-size: 1.3rem;
   border: none;
   background: transparent;
   padding: 0;
+  font-size: 1.5rem !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 .home-button:hover {

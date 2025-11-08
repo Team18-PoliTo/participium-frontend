@@ -25,7 +25,8 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
       centered
       backdrop="static"
       keyboard={false}
-      contentClassName="modal-content-custom"
+      dialogClassName="setup-modal-dialog-custom"
+      contentClassName="setup-modal-content-custom"
     >
       <Modal.Header closeButton>
         <Modal.Title>Add a new municipality user</Modal.Title>

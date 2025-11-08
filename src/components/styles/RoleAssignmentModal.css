@@ -22,6 +22,8 @@
   position: relative;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   border: 3px solid #3D5A80;
+  overflow-y: auto;
+  box-sizing: border-box; 
 }
 
 .modal-close {
@@ -70,6 +72,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-width: 100%;
 }
 
 .role-option {

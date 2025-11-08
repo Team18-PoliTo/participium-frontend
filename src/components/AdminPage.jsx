@@ -52,15 +52,24 @@ const dummyUsers = [
 
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(null);
+  const [users, setUsers] = useState(dummyUsers);
 
   // Filtra gli utenti in base al filtro selezionato
   const filteredUsers = selectedFilter
-    ? dummyUsers.filter((user) => user.role === selectedFilter)
-    : dummyUsers;
+    ? users.filter((user) => user.role === selectedFilter)
+    : users;
 
   const handleFilterClick = (role) => {
     // Se clicco sullo stesso filtro, lo deseleziono
     setSelectedFilter(selectedFilter === role ? null : role);
+  };
+
+  const handleAssignRole = (userId, newRole) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === userId ? { ...user, role: newRole } : user
+      )
+    );
   };
 
   return (
@@ -140,7 +149,7 @@ function AdminPage() {
         <div className="admin-users-row">
           <div className="user-list">
             {filteredUsers.map((user) => (
-              <UserCard key={user.id} user={user} />
+              <UserCard key={user.id} user={user} onAssignRole={handleAssignRole} />
             ))}
           </div>
         </div>

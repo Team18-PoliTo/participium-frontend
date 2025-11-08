@@ -1,44 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-/* Per coerenza con l'HTML fornito, usiamo 'Times New Roman' dove specificato,
-   ma 'Inter' per i filtri come da snippet. */
 
 .admin-board {
   width: 100%;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
+  background-color: #E1EDF4;
 }
 
-/* 2. Contenuto Principale */
 .admin-content-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 20px 0 20px; /* Rimuove il padding top e bottom */
+  padding: 0 20px 0 20px;
   overflow: hidden;
 }
 
-/* Prima riga: Filtri e Legenda affiancati */
 .admin-top-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
-  padding-top: 20px; /* Margine superiore spostato qui */
+  padding-top: 20px; 
 }
 
 .admin-sidebar {
-  flex-basis: 45%; /* Spazio per i filtri */
+  flex-basis: 45%; 
   margin-right: 6rem;
 }
 
 .admin-main {
-  flex-basis: 55%; /* Spazio per legenda e utenti */
+  flex-basis: 55%; 
 }
 
-/* Colonna Sinistra: Filtri */
 .add-user-btn {
   width: 12rem;
   height: 3rem;
@@ -64,8 +58,8 @@
 
 .filter-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Due colonne uguali */
-  gap: 15px; /* Spazio uniforme tra i bottoni */
+  grid-template-columns: 1fr 1fr; 
+  gap: 15px; 
 }
 
 .filter-btn {
@@ -77,15 +71,15 @@
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   text-align: center;
-  padding: 0.6rem 1.2rem; /* Padding più compatto */
+  padding: 0.6rem 1.2rem; 
   cursor: pointer;
   line-height: 1.2;
-  width: 100%; /* Occupano tutta la larghezza della colonna */
-  height: 3rem; /* Altezza fissa uniforme */
+  width: 100%; 
+  height: 3rem; 
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease; /* Transizione smooth per hover */
+  transition: all 0.2s ease; 
 }
 
 .filter-btn:hover {
@@ -130,7 +124,7 @@
 .legend-item img {
   width: 60px;
   height: 58px;
-  border-radius: 20px; /* Come da snippet */
+  border-radius: 20px; 
   margin-right: 15px;
 }
 
@@ -153,7 +147,6 @@
   margin-right: auto;
 }
 
-/* Seconda riga: Lista utenti con scroll */
 .admin-users-row {
   flex: 1;
   overflow: hidden;
@@ -162,19 +155,18 @@
 
 .user-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Due colonne uguali */
-  gap: 20px; /* Spazio tra le card */
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 20px; 
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 10px;
   padding-bottom: 10px;
   margin-bottom: 10px;
-  align-content: start; /* Le card si allineano dall'alto senza buchi */
+  align-content: start; 
 }
 
 
-/* Stile personalizzato per la scrollbar */
 .user-list::-webkit-scrollbar {
   width: 12px;
 }
@@ -194,7 +186,6 @@
   background: #293241;
 }
 
-/* Scrollbar */
 .scrollbar-track {
   width: 13px;
   height: 450px;

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap');
 
 .navbar-custom {
   background-color: #EE6C4D !important;
@@ -11,7 +10,7 @@
   font-family: 'Julius Sans One', sans-serif;
   font-size: 2rem; 
   color: #ffffff !important; 
-  -webkit-text-stroke: 2px #ffffff; /* bold effect */   
+  -webkit-text-stroke: 2px #ffffff;  
 }
 
 .home-button {

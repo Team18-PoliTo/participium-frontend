@@ -67,6 +67,31 @@ const getAllInternalUsers = async () => {
     }
 }
 
-const API = { registerCitizen, loginCitizen, getAllInternalUsers };
+const registerInternalUser = async (credentials) => {
+    try {
+        const response = await fetch(`${SERVER_URL}/api/registerInternalUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: {
+                firstName: credentials.name,
+                lastName: credentials.surname,
+                username: credentials.username,
+                email: credentials.email,
+                password: credentials.password
+            }
+        });
+        if (response.ok) {
+        }
+        else {
+
+        }
+    } catch (error) {
+    }
+}
+
+const API = { registerCitizen, loginCitizen, getAllInternalUsers, registerInternalUser };
 
 export default API;

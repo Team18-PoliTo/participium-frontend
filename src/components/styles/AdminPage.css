@@ -93,6 +93,13 @@
   transform: translateY(-2px);
 }
 
+.filter-btn.active {
+  background: #3D5A80;
+  color: white;
+  font-weight: 600;
+  border: 2px solid #293241;
+}
+
 .legend-box {
   background: #98C1D9;
   border-radius: 20px;
@@ -154,12 +161,16 @@
 }
 
 .user-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Due colonne uguali */
+  gap: 20px; /* Spazio tra le card */
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 10px;
   padding-bottom: 10px;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
+  align-content: start; /* Le card si allineano dall'alto senza buchi */
 }
 
 

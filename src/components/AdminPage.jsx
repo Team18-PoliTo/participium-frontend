@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./styles/AdminPage.css";
 import { NavbarTextContext } from "../App";
 import UserCard from "./UserCard";
@@ -51,6 +51,18 @@ const dummyUsers = [
 ];
 
 function AdminPage() {
+  const [selectedFilter, setSelectedFilter] = useState(null);
+
+  // Filtra gli utenti in base al filtro selezionato
+  const filteredUsers = selectedFilter
+    ? dummyUsers.filter((user) => user.role === selectedFilter)
+    : dummyUsers;
+
+  const handleFilterClick = (role) => {
+    // Se clicco sullo stesso filtro, lo deseleziono
+    setSelectedFilter(selectedFilter === role ? null : role);
+  };
+
   return (
     <div className="admin-board">
       <div className="admin-content-wrapper">
@@ -61,12 +73,36 @@ function AdminPage() {
             <button className="add-user-btn">Add a new user</button>
             <h3 className="filter-title">Filter by:</h3>
             <div className="filter-grid">
-              <button className="filter-btn">unassigned users</button>
-              <button className="filter-btn">
+              <button
+                className={`filter-btn ${
+                  selectedFilter === "unassigned" ? "active" : ""
+                }`}
+                onClick={() => handleFilterClick("unassigned")}
+              >
+                unassigned users
+              </button>
+              <button
+                className={`filter-btn ${
+                  selectedFilter === "pro" ? "active" : ""
+                }`}
+                onClick={() => handleFilterClick("pro")}
+              >
                 municipal public relations officer
               </button>
-              <button className="filter-btn">municipal administrator</button>
-              <button className="filter-btn">
+              <button
+                className={`filter-btn ${
+                  selectedFilter === "admin" ? "active" : ""
+                }`}
+                onClick={() => handleFilterClick("admin")}
+              >
+                municipal administrator
+              </button>
+              <button
+                className={`filter-btn ${
+                  selectedFilter === "tech" ? "active" : ""
+                }`}
+                onClick={() => handleFilterClick("tech")}
+              >
                 technical office staff member
               </button>
             </div>
@@ -103,7 +139,7 @@ function AdminPage() {
         {/* Seconda Riga: Lista Utenti con Scroll */}
         <div className="admin-users-row">
           <div className="user-list">
-            {dummyUsers.map((user) => (
+            {filteredUsers.map((user) => (
               <UserCard key={user.id} user={user} />
             ))}
           </div>

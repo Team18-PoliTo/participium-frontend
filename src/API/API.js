@@ -46,6 +46,27 @@ const loginCitizen = async (credentials) => {
     }
 }
 
-const API = { registerCitizen, loginCitizen };
+const getAllInternalUsers = async () => {
+    try {
+        const response = await fetch(`${SERVER_URL}/api/internalUsers`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
+        else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to fetch internal users'); 
+        }
+    } catch (error) {
+    }
+}
+
+const API = { registerCitizen, loginCitizen, getAllInternalUsers };
 
 export default API;

@@ -1,0 +1,128 @@
+/* Importa il font 'Inter' se non è già globale */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+.admin-page-container {
+  padding-top: 2rem;
+  background-color: #E1EDF4; /* Sfondo grigio chiaro come nell'immagine */
+  min-height: calc(100vh - 70px); /* Altezza meno la navbar */
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-container{
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #293241; /* Testo scuro */
+  margin-bottom: 1rem;
+}
+
+.add-user-btn {
+  background-color: #EE6C4D !important; /* Arancione dalla navbar */
+  border: none !important;
+  font-weight: 700 !important;
+  border-radius: 16px !important;
+  padding: 0.5rem 1.5rem !important;
+  font-size: 1rem !important;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-btn {
+  background-color: #B6CDE3 !important; /* Azzurro chiaro per i filtri */
+  color: #293241 !important; /* Testo scuro */
+  border: none !important;
+  border-radius: 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.legend-box {
+  background-color: #D3E0EA; /* Sfondo azzurro chiaro per la legenda */
+  padding: 1.5rem;
+  border-radius: 8px;
+  height: 100%;
+  width: 38.125rem;
+  height: 17.5rem;
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-item span {
+  font-size: 0.95rem;
+  color: #293241;
+  font-weight: 500;
+}
+
+.legend-item .icona-legend {
+  width: 5.67988rem;
+  height: 5.4675rem;
+  margin-right: 12px;
+}
+
+.user-card {
+  background-color: #3D5A80; /* Blu scuro dal login */
+  color: #ffffff;
+  padding: 1.25rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.user-icon {
+  width: 60px;
+  height: 60px;
+  margin-right: 1.25rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex-grow: 1;
+}
+
+.user-info p {
+  margin: 0.25rem 0;
+  font-size: 1rem;
+}
+
+.user-info strong {
+  font-weight: 700;
+  color: #ffffff;
+  margin-right: 0.25rem;
+}
+
+.add-btn {
+  background-color: #EE6C4D !important; /* Arancione */
+  border: none !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  border-radius: 50% !important;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  line-height: 1; /* Allinea meglio il '+' */
+}

@@ -5,6 +5,7 @@ import "./App.css";
 import DefaultLayout from "./components/DefaultLayout";
 import Login from "./components/Login";
 import Registration from "./components/Registration";
+import AdminPage from "./components/AdminPage";
 
 
 export const NavbarTextContext = createContext();
@@ -19,7 +20,9 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Registration />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} /> 
+          <Route path="/login_internal_user" element={<Login />} /> 
+          <Route path="/admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </NavbarTextContext.Provider>

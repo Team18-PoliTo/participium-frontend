@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, GeoJSON } from 'react-leaflet'; // <-- Importa GeoJSON
-import { Offcanvas } from 'react-bootstrap';
+import { Offcanvas, Modal, Button } from 'react-bootstrap';
 import ReportForm from './ReportForm'; 
 import './styles/MapPage.css'; 
+import InvalidLocationModal from './InvalidLocationModal';
 
 // --- IMPORT PER CONTROLLO GEOJSON ---
 import pointInPolygon from 'point-in-polygon';
@@ -59,6 +60,7 @@ function MapClickHandler({ onMapClick }) {
 function MapPage() {
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null); 
+  const [showInvalidModal, setShowInvalidModal] = useState(false);
   
   const initialPosition = [45.0703, 7.6869];
 
@@ -82,7 +84,8 @@ function MapPage() {
       setClickedPosition(latlng);
       setShowForm(true);
     } else {
-      alert("Per favore, seleziona una posizione all'interno di Torino.");
+      //alert("Per favore, seleziona una posizione all'interno di Torino.");
+      setShowInvalidModal(true);
     }
   };
 
@@ -94,7 +97,7 @@ function MapPage() {
   // Stile per il poligono
   const turinStyle = {
     color: "#EE6C4D", // Colore del bordo (preso dalla tua navbar)
-    weight: 2,         // Spessore del bordo
+    weight: 5,         // Spessore del bordo
     opacity: 0.8,      // Opacità del bordo
     fillOpacity: 0.1   // Opacità del riempimento (molto leggero)
   };
@@ -139,6 +142,10 @@ function MapPage() {
           />
         </Offcanvas.Body>
       </Offcanvas>
+      <InvalidLocationModal 
+        showInvalidModal={showInvalidModal} 
+        setShowInvalidModal={setShowInvalidModal} 
+      />
     </>
   );
 }

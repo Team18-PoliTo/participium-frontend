@@ -32,14 +32,14 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ backgroundColor: "#E1EDF4", opacity: 1 }}
+    <div className="role-modal-overlay" onClick={onClose}>
+      <div className="role-modal-content" onClick={(e) => e.stopPropagation()} style={{ backgroundColor: "#E1EDF4", opacity: 1 }}
       >
-        <button className="modal-close" onClick={onClose}>
+        <button className="role-modal-close" onClick={onClose}>
           ×
         </button>
-        <h2 className="modal-title">Assign Role</h2>
-        <p className="modal-subtitle">
+        <h2 className="role-modal-title">Assign Role</h2>
+        <p className="role-modal-subtitle">
           Select a role for {user.name} {user.surname}
         </p>
         <div className="role-options">

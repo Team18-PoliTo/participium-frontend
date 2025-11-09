@@ -1,8 +1,9 @@
-import { useActionState } from 'react';
-import './styles/Registration.css';
+import { useState, useActionState} from 'react'; 
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import API from '../API/API';
+import ErrorModal from './ErrorModal'; 
+import './styles/Registration.css';
 
 function Registration() {
     const [state, formAction, isPending] = useActionState(registrationFunction, {
@@ -13,6 +14,11 @@ function Registration() {
         password: ''
     });
 
+    const [errorModalShow, setErrorModalShow] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
+
     async function registrationFunction(prevState, formData) {
         const credentials = {
             name: formData.get('name'),
@@ -22,9 +28,12 @@ function Registration() {
             password: formData.get('password')
         }
         try {
-            //const response = await API.registerCitizen(credentials);
+            const citizen = await API.registerCitizen(credentials);
+            navigate('/login');
+            return { ...prevState, citizen };
         } catch (error) {
-            // gestione errori
+            setErrorMessage(error.message);
+            setErrorModalShow(true);
         }
     }
 
@@ -57,7 +66,7 @@ function Registration() {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Enter your password" required />
+                        <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={6} />
                     </Form.Group>
 
                     <div className="login-link-text">
@@ -74,6 +83,14 @@ function Registration() {
                     </Button>
                 </Form>
             </Container>
+
+            {/* Modale errore */}
+            <ErrorModal
+                isOpen={errorModalShow}
+                onClose={() => setErrorModalShow(false)}
+                title="Registration error"
+                message={errorMessage}
+            />
         </div>
     );
 }

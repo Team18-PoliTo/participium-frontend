@@ -1,7 +1,10 @@
+import { useState } from 'react';  // importa useState
 import './styles/Login.css';
 import { useActionState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link, useNavigate} from 'react-router';
+import API from '../API/API';
+import ErrorModal from './ErrorModal'; 
 
 function Login() {
     const [state, formAction, isPending] = useActionState(loginFunction, {
@@ -9,16 +12,23 @@ function Login() {
         password: ''
     });
 
+    const [errorModalShow, setErrorModalShow] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
+
     async function loginFunction(prevState, formData) {
         const credentials = {
             email: formData.get('email'),
             password: formData.get('password')
         }
         try {
-            // logica per login, ad esempio:
-            // const response = await API.loginCitizen(credentials);
+            const { citizen, token } = await API.loginCitizen(credentials);
+            navigate('/map');
+            return { ...prevState, citizen, token };
         } catch (error) {
-            // gestione errori
+            setErrorMessage(error.message);
+            setErrorModalShow(true);
         }
     }
 
@@ -33,7 +43,7 @@ function Login() {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Enter your password" required />
+                        <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={6} />
                     </Form.Group>
 
                     <div className="register-link-text">
@@ -50,6 +60,14 @@ function Login() {
                     </Button>
                 </Form>
             </Container>
+
+            {/* Modale errore */}
+            <ErrorModal
+                isOpen={errorModalShow}
+                onClose={() => setErrorModalShow(false)}
+                title="Login error"
+                message={errorMessage}
+            />
         </div>
     );
 }

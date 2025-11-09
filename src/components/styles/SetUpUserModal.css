@@ -1,5 +1,5 @@
 /* Personalizza il contenuto interno del modal */
-.setup-modal-content-custom {
+.setup-user-modal .modal-content {
   max-width: 800px !important;
   width: 100% !important;
   max-height: 100vh !important;
@@ -10,10 +10,11 @@
   box-sizing: border-box;
   margin: 0 auto !important;
   font-family: 'Inter', sans-serif;
+  border: #3D5A80 3px solid !important;
 }
 
 /* Personalizza il wrapper del dialog modal */
-.setup-modal-dialog-custom {
+.setup-user-modal .model-dialog {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;

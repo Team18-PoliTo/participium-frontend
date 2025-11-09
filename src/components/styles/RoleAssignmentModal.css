@@ -1,4 +1,4 @@
-.modal-overlay {
+.role-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   background-color: rgba(41, 50, 65, 0.8);
 }
 
-.modal-content {
+.role-modal-content {
   background-color: #E1EDF4;
   opacity: 1;
   border-radius: 40px;
@@ -26,7 +26,7 @@
   box-sizing: border-box; 
 }
 
-.modal-close {
+.role-modal-close {
   position: absolute;
   top: 15px;
   right: 20px;
@@ -45,11 +45,11 @@
   transition: color 0.2s ease;
 }
 
-.modal-close:hover {
+.role-modal-close:hover {
   color: #EE6C4D;
 }
 
-.modal-title {
+.role-modal-title {
   color: #293241;
   font-size: 28px;
   font-family: 'Inter', sans-serif;
@@ -58,7 +58,7 @@
   text-align: center;
 }
 
-.modal-subtitle {
+.role-modal-subtitle {
   color: #3D5A80;
   font-size: 18px;
   font-family: 'Inter', sans-serif;

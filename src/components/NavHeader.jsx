@@ -14,7 +14,7 @@ function NavHeader() {
       <Container className='mx-3'>
         <Navbar.Brand>{navbarText}</Navbar.Brand>
         { (location.pathname == "/" || location.pathname == "/login" || location.pathname == "/register") &&
-          <Link className='btn home-button' to="/login_internal_user">Internal Login</Link>
+          <Link className='btn home-button' to="/admin">Admin board</Link>
         }
       </Container>
     </Navbar>

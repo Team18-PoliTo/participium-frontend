@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./styles/AdminPage.css";
 import { NavbarTextContext } from "../App";
+import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
 
 import unassignedIcon from "../resources/Immagine1.png";
@@ -53,6 +54,20 @@ const dummyUsers = [
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [users, setUsers] = useState(dummyUsers);
+  const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
+
+  const handleOpenSetUpModal = () => {
+    setIsSetUpModalOpen(true);
+  };
+
+  const handleCloseSetUpModal = () => {
+    setIsSetUpModalOpen(false);
+  }
+
+  const handleCreateUser = (newUser) => {
+    newUser.role = "unassigned";
+    setUsers((prevUsers) => [...prevUsers, newUser]);
+  }
 
   // Filtra gli utenti in base al filtro selezionato
   const filteredUsers = selectedFilter
@@ -79,7 +94,7 @@ function AdminPage() {
         <div className="admin-top-row">
           {/* Colonna Sinistra: Filtri */}
           <div className="admin-sidebar">
-            <button className="add-user-btn">Add a new user</button>
+            <button className="add-user-btn" onClick={() => handleOpenSetUpModal()}>Add a new user</button>
             <h3 className="filter-title">Filter by:</h3>
             <div className="filter-grid">
               <button
@@ -154,7 +169,13 @@ function AdminPage() {
           </div>
         </div>
       </div>
+       <SetUpUserModal
+        isOpen={isSetUpModalOpen}
+        onClose={handleCloseSetUpModal}
+        onCreateUser={handleCreateUser}
+      />
     </div>
+
   );
 }
 

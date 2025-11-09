@@ -66,6 +66,8 @@ function AdminPage() {
 
   const handleCreateUser = (newUser) => {
     newUser.role = "unassigned";
+    // Aggiungiamo un ID fittizio per il test, per evitare errori di "key"
+    newUser.id = users.length + 1; 
     setUsers((prevUsers) => [...prevUsers, newUser]);
   }
 

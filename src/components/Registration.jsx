@@ -21,10 +21,10 @@ function Registration() {
 
     async function registrationFunction(prevState, formData) {
         const credentials = {
-            name: formData.get('name'),
-            surname: formData.get('surname'),
-            username: formData.get('username'),
-            email: formData.get('email'),
+            name: formData.get('name').trim(),
+            surname: formData.get('surname').trim(),
+            username: formData.get('username').trim(),
+            email: formData.get('email').trim(),
             password: formData.get('password')
         }
         try {

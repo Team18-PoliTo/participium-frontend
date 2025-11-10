@@ -317,7 +317,7 @@ describe('Registration component', () => {
     // Test: Verify login link is present with correct text and href
     it('shows login link with correct text', () => {
         renderRegistration();
-        expect(screen.getByText(/If you don't have an account/i)).toBeInTheDocument();
+        expect(screen.getByText(/If you already have an account/i)).toBeInTheDocument();
         const loginLink = screen.getByRole('link', { name: /login/i });
         expect(loginLink).toHaveAttribute('href', '/login');
     });

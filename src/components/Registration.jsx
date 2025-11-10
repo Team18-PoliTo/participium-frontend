@@ -70,7 +70,7 @@ function Registration() {
                     </Form.Group>
 
                     <div className="login-link-text">
-                        If you don't have an account, <Link to="/login">login</Link>
+                        If you already have an account, <Link to="/login">login</Link>
                     </div>
 
                     <Button

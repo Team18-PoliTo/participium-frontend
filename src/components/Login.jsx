@@ -19,8 +19,8 @@ function Login() {
 
     async function loginFunction(prevState, formData) {
         const credentials = {
-            email: formData.get('email'),
-            password: formData.get('password')
+            email: formData.get('email').trim(),
+            password: formData.get('password').trim()
         }
         try {
             const { citizen, token } = await API.loginCitizen(credentials);

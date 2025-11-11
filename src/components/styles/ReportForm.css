@@ -1,0 +1,165 @@
+.report-form {
+    font-family: 'Inter', sans-serif;
+    background-color: #3D5A80;
+    padding: 1.5rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.report-form__error {
+    font-family: 'Inter', sans-serif;
+    border-radius: 8px;
+}
+
+.report-form__group {
+    margin-bottom: 1rem;
+}
+
+.report-form__label {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-form__input,
+.report-form__textarea,
+.report-form__select,
+.report-form__file-input {
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-form__input--readonly {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.report-form__input--error {
+    border-color: #dc3545;
+}
+
+.report-form__textarea {
+    resize: vertical;
+}
+
+.report-form__submit-btn {
+    width: 100%;
+    background-color: #EE6C4D !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border: none !important;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 1.15rem;
+    margin-top: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-form__submit-btn:hover {
+    background-color: #d55a36 !important;
+    color: white;
+}
+
+.report-form__submit-btn:active {
+    background-color: #d55a36 !important;
+    color: white;
+}
+
+.report-form__submit-btn:disabled {
+    background-color: #d55a36 !important;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.report-form__photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.report-form__file-input-hidden {
+    display: none;
+}
+
+.report-form__upload-btn {
+    background-color: #EE6C4D;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s;
+    display: inline-block;
+}
+
+.report-form__upload-btn:hover {
+    background-color: #d55a36;
+}
+
+.report-form__upload-btn--disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.report-form__photo-count {
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-form__photo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.report-form__photo-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.report-form__photo-preview {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.report-form__photo-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-form__photo-name {
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.report-form__remove-photo-btn {
+    background-color: #dc3545 !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+}
+
+.report-form__remove-photo-btn:hover {
+    background-color: #c82333 !important;
+}

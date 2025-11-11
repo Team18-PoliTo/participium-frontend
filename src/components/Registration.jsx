@@ -1,6 +1,7 @@
 import { useState, useActionState} from 'react'; 
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router';
+import { RegistrationSuccessfulModal } from './AuthModals';
 import API from '../API/API';
 import ErrorModal from './ErrorModal'; 
 import './styles/Registration.css';
@@ -16,6 +17,7 @@ function Registration() {
 
     const [errorModalShow, setErrorModalShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [successModalShow, setSuccessModalShow] = useState(false);
 
     const navigate = useNavigate();
 
@@ -29,7 +31,8 @@ function Registration() {
         }
         try {
             const citizen = await API.registerCitizen(credentials);
-            navigate('/login');
+            setSuccessModalShow(true);
+            //navigate('/login');
             return { ...prevState, citizen };
         } catch (error) {
             setErrorMessage(error.message);
@@ -90,6 +93,12 @@ function Registration() {
                 onClose={() => setErrorModalShow(false)}
                 title="Registration error"
                 message={errorMessage}
+            />
+
+            {/* Modale successo */}
+            <RegistrationSuccessfulModal
+                isOpen={successModalShow}
+                onClose={() => setSuccessModalShow(false)}
             />
         </div>
     );

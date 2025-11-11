@@ -1,8 +1,9 @@
 import { useState } from 'react';  // importa useState
 import './styles/Login.css';
-import { useActionState } from 'react';
+import { useActionState, useContext } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate} from 'react-router';
+import { Link, useNavigate, useLocation} from 'react-router';
+import { UserContext } from '../App';
 import API from '../API/API';
 import ErrorModal from './ErrorModal'; 
 
@@ -11,6 +12,11 @@ function Login() {
         email: '',
         password: ''
     });
+
+    const location = useLocation();
+    const isInternalLogin = location.pathname === '/login_internal_user';
+
+    const {loggedIn, setLoggedIn, setUser, setUserRole} = useContext(UserContext);
 
     const [errorModalShow, setErrorModalShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -23,9 +29,23 @@ function Login() {
             password: formData.get('password').trim()
         }
         try {
-            const { citizen, token } = await API.loginCitizen(credentials);
-            navigate('/map');
-            return { ...prevState, citizen, token };
+            if (isInternalLogin) {
+                const { internalUser, token } =  await API.loginInternalUser(credentials);
+                const user = await API.getUserInfo();
+                setUser(user);
+                setLoggedIn(true);
+                setUserRole(user.profile.role);
+                navigate('/admin');
+                return { ...prevState, internalUser, token };
+
+            } else {
+                const { citizen, token } = await API.loginCitizen(credentials);
+                const user = await API.getUserInfo();
+                setUser(user);
+                setLoggedIn(true);
+                navigate('/map');
+                return { ...prevState, citizen, token };
+            }
         } catch (error) {
             setErrorMessage(error.message);
             setErrorModalShow(true);
@@ -45,11 +65,16 @@ function Login() {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={6} />
                     </Form.Group>
-
-                    <div className="register-link-text">
-                        If you don't have an account, <Link to="/register">register</Link>
-                    </div>
-
+                    {
+                        isInternalLogin ? (
+                            <div className="register-link-text">
+                                If you are a citizen, please <Link to="/login">login here</Link>
+                            </div>
+                        ) :                     
+                            <div className="register-link-text">
+                                If you don't have an account, <Link to="/register">register</Link>
+                            </div>
+                    }
                     <Button
                         className="login-btn"
                         variant="primary"

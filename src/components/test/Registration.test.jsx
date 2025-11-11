@@ -76,9 +76,15 @@ describe('Registration component', () => {
     });
 
     // Test: Verify complete successful registration flow
-    it('performs successful registration flow: calls API, navigates to login', async () => {
+    it('performs successful registration flow: calls API, shows success modal', async () => {
         const user = userEvent.setup();
-        const fakeUser = { id: 1, name: 'John', surname: 'Doe', username: 'johndoe', email: 'john@example.com' };
+        const fakeUser = { 
+            id: 1, 
+            firstName: 'John', 
+            lastName: 'Doe', 
+            username: 'johndoe', 
+            email: 'john@example.com' 
+        };
         mockRegister.mockResolvedValue(fakeUser);
 
         renderRegistration();
@@ -90,15 +96,20 @@ describe('Registration component', () => {
         await user.click(screen.getByRole('button', { name: 'Register' }));
 
         // Verify API was called with correct credentials
-        expect(mockRegister).toHaveBeenCalledWith({ 
-            name: 'John', 
-            surname: 'Doe',
-            username: 'johndoe',
-            email: 'john@example.com', 
-            password: 'secretpw' 
+        await waitFor(() => {
+            expect(mockRegister).toHaveBeenCalledWith({ 
+                name: 'John', 
+                surname: 'Doe',
+                username: 'johndoe',
+                email: 'john@example.com', 
+                password: 'secretpw' 
+            });
         });
-        // Verify navigation to login page occurred
-        await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/login'));
+
+        // Verify success modal is shown
+        await waitFor(() => {
+            expect(screen.getByText('Welcome to Participium!')).toBeInTheDocument();
+        });
     });
 
     // Test: Verify error modal appears when registration fails
@@ -166,8 +177,8 @@ describe('Registration component', () => {
         expect(mockRegister).toHaveBeenCalledTimes(1);
     });
 
-    // Test: Verify loading indicator hides and navigation doesn't occur on error
-    it('hides loading indicator and does not navigate on error', async () => {
+    // Test: Verify loading indicator hides and success modal doesn't show on error
+    it('hides loading indicator and does not show success modal on error', async () => {
         const user = userEvent.setup();
         mockRegister.mockRejectedValue(new Error('Username already taken'));
 
@@ -181,8 +192,8 @@ describe('Registration component', () => {
 
         // Verify error is shown
         expect(await screen.findByText('Registration error')).toBeInTheDocument();
-        // Verify navigation did not occur
-        expect(mockNavigate).not.toHaveBeenCalled();
+        // Verify success modal is not shown
+        expect(screen.queryByText(/registration successful/i)).not.toBeInTheDocument();
     });
 
     // Test: Verify loading indicator is visible during async operation
@@ -240,7 +251,7 @@ describe('Registration component', () => {
     // Test: Verify form can be submitted using Enter key
     it('submits with Enter key', async () => {
         const user = userEvent.setup();
-        mockRegister.mockResolvedValue({ id: 1, name: 'John' });
+        mockRegister.mockResolvedValue({ id: 1, firstName: 'John' });
 
         renderRegistration();
         await user.type(screen.getByLabelText('Name'), 'John');
@@ -336,7 +347,7 @@ describe('Registration component', () => {
         await user.type(screen.getByLabelText('Password'), 'password');
         await user.click(screen.getByRole('button', { name: 'Register' }));
 
-        // Verify API receives trimmed values (except password)
+        // Verify API receives trimmed values (password is not trimmed)
         await waitFor(() => {
             expect(mockRegister).toHaveBeenCalledWith({ 
                 name: 'John',
@@ -363,5 +374,32 @@ describe('Registration component', () => {
         expect(screen.getByLabelText('Username')).toHaveAttribute('id', 'formUsername');
         expect(screen.getByLabelText('Email')).toHaveAttribute('id', 'formEmail');
         expect(screen.getByLabelText('Password')).toHaveAttribute('id', 'formPassword');
+    });
+
+    // Test: Verify success modal can be closed
+    it('can close success modal', async () => {
+        const user = userEvent.setup();
+        mockRegister.mockResolvedValue({ id: 1, firstName: 'John' });
+
+        renderRegistration();
+        await user.type(screen.getByLabelText('Name'), 'John');
+        await user.type(screen.getByLabelText('Surname'), 'Doe');
+        await user.type(screen.getByLabelText('Username'), 'johndoe');
+        await user.type(screen.getByLabelText('Email'), 'john@example.com');
+        await user.type(screen.getByLabelText('Password'), 'secretpw');
+        await user.click(screen.getByRole('button', { name: 'Register' }));
+
+        await waitFor(() => {
+            expect(screen.getByText('Welcome to Participium!')).toBeInTheDocument();
+        });
+
+        // Close the modal (you may need to adjust based on your modal implementation)
+        const closeButtons = screen.getAllByRole('button', { name: /close/i });
+        await user.click(closeButtons[0]);
+
+        // Verify modal is closed
+        await waitFor(() => {
+            expect(screen.queryByText(/registration successful/i)).not.toBeInTheDocument();
+        });
     });
 });

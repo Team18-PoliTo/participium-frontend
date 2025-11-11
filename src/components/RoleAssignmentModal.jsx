@@ -1,29 +1,20 @@
 import React from "react";
 import "./styles/RoleAssignmentModal.css";
+import API from "../API/API";
 
+import unassignedIcon from "../resources/Immagine1.png";
 import proIcon from "../resources/Immagine2.png";
 import adminIcon from "../resources/Immagine3.png";
 import techIcon from "../resources/Immagine4.png";
 
-const roles = [
-  {
-    id: "pro",
-    name: "Municipal Public Relations Officer",
-    icon: proIcon,
-  },
-  {
-    id: "admin",
-    name: "Municipal Administrator",
-    icon: adminIcon,
-  },
-  {
-    id: "tech",
-    name: "Technical Office Staff Member",
-    icon: techIcon,
-  },
-];
+const iconMap = {
+  0: unassignedIcon,
+  2: proIcon,
+  3: techIcon,
+  4: adminIcon,
+};
 
-function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole }) {
+function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRoles }) {
   if (!isOpen) return null;
 
   const handleRoleSelect = (roleId) => {
@@ -40,14 +31,14 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole }) {
         </button>
         <h2 className="role-modal-title">Assign Role</h2>
         <p className="role-modal-subtitle">
-          Select a role for {user.name} {user.surname}
+          Select a role for {user.firstName} {user.lastName}
         </p>
         <div className="role-options">
-          {roles.map((role) => (
+          {availableRoles && availableRoles.filter((role) => role.id > 1).map((role) => (
             <div key={role.id} className="role-option" onClick={() => handleRoleSelect(role.id)} style={{ backgroundColor: "#98C1D9", opacity: 1 }}
             >
-              <img src={role.icon} alt={role.name} className="role-icon" />
-              <span className="role-name">{role.name}</span>
+              <img src={iconMap[role.id] || unassignedIcon} alt={role.role} className="role-icon" />
+              <span className="role-name">{role.role}</span>
             </div>
           ))}
         </div>

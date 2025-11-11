@@ -1,60 +1,70 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/AdminPage.css";
-import { NavbarTextContext } from "../App";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
-
+import API from "../API/API";
 import unassignedIcon from "../resources/Immagine1.png";
 import proIcon from "../resources/Immagine2.png";
 import adminIcon from "../resources/Immagine3.png";
 import techIcon from "../resources/Immagine4.png";
 
 const iconMap = {
-  unassigned: unassignedIcon,
-  pro: proIcon,
-  admin: adminIcon,
-  tech: techIcon,
+  0: unassignedIcon,
+  2: proIcon,
+  3: techIcon,
+  4: adminIcon,
 };
-
-const dummyUsers = [
-  {
-    id: 1,
-    name: "Jacopo",
-    surname: "Esposito",
-    username: "Jaja",
-    role: "unassigned",
-  },
-  {
-    id: 2,
-    name: "Matteo",
-    surname: "Rosato",
-    username: "Matte",
-    role: "unassigned",
-  },
-  {
-    id: 3,
-    name: "Jacopo",
-    surname: "Esposito",
-    username: "Jaja",
-    role: "admin",
-  },
-  { id: 4, name: "Matteo", surname: "Rosato", username: "Jaja", role: "tech" },
-  {
-    id: 5,
-    name: "Jacopo",
-    surname: "Esposito",
-    username: "Jaja",
-    role: "unassigned",
-  },
-  { id: 6, name: "Jacopo", surname: "Esposito", username: "Jaja", role: "pro" },
-  { id: 7, name: "Jacopo", surname: "Esposito", username: "Jaja", role: "pro" },
-  { id: 8, name: "Jacopo", surname: "Esposito", username: "Jaja", role: "pro" },
-];
 
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [users, setUsers] = useState(dummyUsers);
+  const [users, setUsers] = useState([]);
   const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [visibleRoles, setVisibleRoles] = useState([]);
+  const [roleMapping, setRoleMapping] = useState({});
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const fetchedRoles = await API.getAllRoles();
+        setRoles(fetchedRoles);
+
+        const mapping = {};
+        fetchedRoles.forEach((role) => {
+          mapping[role.id] = role.role;
+        });
+        setRoleMapping(mapping);
+
+        const filtered = fetchedRoles.filter((role) => role.id !== 1);
+        setVisibleRoles(filtered);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await API.getAllInternalUsers();
+
+        const roleNameToExclude = roleMapping[1];
+        const filteredUsers = roleNameToExclude
+          ? fetchedUsers.filter((user) => user.role !== roleNameToExclude)
+          : fetchedUsers;
+
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    if (Object.keys(roleMapping).length > 0) {
+      fetchUsers();
+    }
+  }, [roleMapping]);
 
   const handleOpenSetUpModal = () => {
     setIsSetUpModalOpen(true);
@@ -62,31 +72,54 @@ function AdminPage() {
 
   const handleCloseSetUpModal = () => {
     setIsSetUpModalOpen(false);
-  }
-
-  const handleCreateUser = (newUser) => {
-    newUser.role = "unassigned";
-    // Aggiungiamo un ID fittizio per il test, per evitare errori di "key"
-    newUser.id = users.length + 1; 
-    setUsers((prevUsers) => [...prevUsers, newUser]);
-  }
-
-  // Filtra gli utenti in base al filtro selezionato
-  const filteredUsers = selectedFilter
-    ? users.filter((user) => user.role === selectedFilter)
-    : users;
-
-  const handleFilterClick = (role) => {
-    // Se clicco sullo stesso filtro, lo deseleziono
-    setSelectedFilter(selectedFilter === role ? null : role);
   };
 
-  const handleAssignRole = (userId, newRole) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user
-      )
-    );
+  const handleCreateUser = async (newUser) => {
+    const createdUser = await API.registerInternalUser(newUser);
+    setUsers((prevUsers) => [...prevUsers, createdUser]);
+  };
+
+  const filteredUsers =
+    selectedFilter !== null
+      ? users.filter((user) => {
+          const selectedRoleName = roleMapping[selectedFilter];
+          return user.role === selectedRoleName;
+        })
+      : users;
+
+  const handleFilterClick = (roleId) => {
+    setSelectedFilter(selectedFilter === roleId ? null : roleId);
+  };
+
+  const handleAssignRole = async (userId, newRoleId) => {
+    try {
+      // Trova l'utente corrente
+      const currentUser = users.find((user) => user.id === userId);
+      if (!currentUser) {
+        console.error("User not found");
+        return;
+      }
+
+      // Chiama l'API con i vecchi valori tranne il ruolo
+      await API.updateInternalUserRole(
+        userId,
+        currentUser.firstName,
+        currentUser.lastName,
+        currentUser.email,
+        newRoleId
+      );
+
+      // Aggiorna lo state locale con il nuovo ruolo (come nome)
+      const newRoleName = roleMapping[newRoleId];
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, role: newRoleName } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error assigning role:", error);
+      // Potresti mostrare un messaggio di errore all'utente qui
+    }
   };
 
   return (
@@ -96,41 +129,25 @@ function AdminPage() {
         <div className="admin-top-row">
           {/* Colonna Sinistra: Filtri */}
           <div className="admin-sidebar">
-            <button className="add-user-btn" onClick={() => handleOpenSetUpModal()}>Add a new user</button>
+            <button
+              className="add-user-btn"
+              onClick={() => handleOpenSetUpModal()}
+            >
+              Add a new user
+            </button>
             <h3 className="filter-title">Filter by:</h3>
             <div className="filter-grid">
-              <button
-                className={`filter-btn ${
-                  selectedFilter === "unassigned" ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick("unassigned")}
-              >
-                unassigned users
-              </button>
-              <button
-                className={`filter-btn ${
-                  selectedFilter === "pro" ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick("pro")}
-              >
-                municipal public relations officer
-              </button>
-              <button
-                className={`filter-btn ${
-                  selectedFilter === "admin" ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick("admin")}
-              >
-                municipal administrator
-              </button>
-              <button
-                className={`filter-btn ${
-                  selectedFilter === "tech" ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick("tech")}
-              >
-                technical office staff member
-              </button>
+              {visibleRoles.map((role) => (
+                <button
+                  key={role.id}
+                  className={`filter-btn ${
+                    selectedFilter === role.id ? "active" : ""
+                  }`}
+                  onClick={() => handleFilterClick(role.id)}
+                >
+                  {role.role}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -139,22 +156,15 @@ function AdminPage() {
             <div className="legend-box">
               <h3 className="legend-title">Legend for users</h3>
               <div className="legend-grid">
-                <div className="legend-item">
-                  <img src={unassignedIcon} alt="unassigned" />
-                  <span>unassigned users</span>
-                </div>
-                <div className="legend-item">
-                  <img src={proIcon} alt="pro" />
-                  <span>municipal public relations officer</span>
-                </div>
-                <div className="legend-item">
-                  <img src={adminIcon} alt="admin" />
-                  <span>municipal administrator</span>
-                </div>
-                <div className="legend-item">
-                  <img src={techIcon} alt="tech" />
-                  <span>technical office staff member</span>
-                </div>
+                {visibleRoles.map((role) => (
+                  <div key={role.id} className="legend-item">
+                    <img
+                      src={iconMap[role.id] || unassignedIcon}
+                      alt={role.role}
+                    />
+                    <span>{role.role}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -166,18 +176,22 @@ function AdminPage() {
         <div className="admin-users-row">
           <div className="user-list">
             {filteredUsers.map((user) => (
-              <UserCard key={user.id} user={user} onAssignRole={handleAssignRole} />
+              <UserCard
+                key={user.id}
+                user={user}
+                onAssignRole={handleAssignRole}
+                availableRoles={visibleRoles}
+              />
             ))}
           </div>
         </div>
       </div>
-       <SetUpUserModal
+      <SetUpUserModal
         isOpen={isSetUpModalOpen}
         onClose={handleCloseSetUpModal}
         onCreateUser={handleCreateUser}
       />
     </div>
-
   );
 }
 

@@ -8,13 +8,13 @@ import adminIcon from "../resources/Immagine3.png";
 import techIcon from "../resources/Immagine4.png";
 
 const iconMap = {
-  unassigned: unassignedIcon,
-  pro: proIcon,
-  admin: adminIcon,
-  tech: techIcon,
+  0: unassignedIcon,
+  2: proIcon,
+  3: techIcon,
+  4: adminIcon,
 };
 
-function UserCard({ user, onAssignRole }) {
+function UserCard({ user, onAssignRole, availableRoles }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -25,22 +25,27 @@ function UserCard({ user, onAssignRole }) {
     setIsModalOpen(false);
   };
 
+  // Trova il roleId dall'array dei ruoli disponibili confrontando con il nome del ruolo
+  const currentRoleObj = availableRoles?.find(r => r.role === user.role);
+  const currentRoleId = currentRoleObj?.id;
+  const isUnassigned = currentRoleId === 0;
+
   return (
     <>
       <div className="user-card">
-        <img src={iconMap[user.role]} alt={user.role} className="user-icon" />
+        <img src={iconMap[currentRoleId] || unassignedIcon} alt={user.role} className="user-icon" />
         <div className="user-info">
           <p>
-            <span className="info-label">name:</span> {user.name}
+            <span className="info-label">name:</span> {user.firstName}
           </p>
           <p>
-            <span className="info-label">surname:</span> {user.surname}
+            <span className="info-label">surname:</span> {user.lastName}
           </p>
           <p>
-            <span className="info-label">username:</span> {user.username}
+            <span className="info-label">email:</span> {user.email}
           </p>
         </div>
-        {user.role === "unassigned" && (
+        {isUnassigned && (
           <button className="user-add-btn" onClick={handleOpenModal}>
             <div className="plus-icon"></div>
           </button>
@@ -52,6 +57,7 @@ function UserCard({ user, onAssignRole }) {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAssignRole={onAssignRole}
+        availableRoles={availableRoles}
       />
     </>
   );

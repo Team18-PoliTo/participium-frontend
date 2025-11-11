@@ -1,26 +1,53 @@
-import React from "react";
-import { Modal, Container, Form, Button, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import {
+  Modal,
+  Container,
+  Form,
+  Button,
+  Row,
+  Col,
+  Alert,
+} from "react-bootstrap";
 import "./styles/SetUpUserModal.css";
 
 function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
-  const handleSubmit = (event) => {
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClose = () => {
+    setError(null);
+    setIsLoading(false);
+    onClose();
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
     const formData = new FormData(event.target);
     const newUser = {
       name: formData.get("name"),
       surname: formData.get("surname"),
-      username: formData.get("username"),
       email: formData.get("email"),
       password: formData.get("password"),
     };
-    onCreateUser(newUser);
-    onClose();
+
+    try {
+      await onCreateUser(newUser);
+      handleClose();
+      event.target.reset();
+    } catch (err) {
+      setError(err.message || "Failed to create user");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Modal
       show={isOpen}
-      onHide={onClose}
+      onHide={handleClose}
       size="lg"
       centered
       backdrop="static"
@@ -32,7 +59,13 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
       </Modal.Header>
       <Modal.Body>
         <Container className="setup-user-container">
+          {error && (
+            <Alert variant="danger" onClose={() => setError(null)} dismissible>
+              {error}
+            </Alert>
+          )}
           <Form onSubmit={handleSubmit} className="setup-user-form">
+            {isLoading && <div className="loading-indicator">Creating...</div>}
             <Row className="mb-3">
               <Col>
                 <Form.Group controlId="formName">
@@ -59,16 +92,7 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
                 </Form.Group>
               </Col>
             </Row>
-            <Form.Group className="mb-3" controlId="formUsername">
-              <Form.Label className="form-label">Username</Form.Label>
-              <Form.Control
-                type="text"
-                name="username"
-                placeholder="Choose a username"
-                required
-                className="form-control"
-              />
-            </Form.Group>
+
             <Form.Group className="mb-3" controlId="formEmail">
               <Form.Label className="form-label">Email</Form.Label>
               <Form.Control
@@ -89,7 +113,12 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
                 className="form-control"
               />
             </Form.Group>
-            <Button className="setup-user-btn" variant="primary" type="submit">
+            <Button
+              className="setup-user-btn"
+              variant="primary"
+              type="submit"
+              disabled={isLoading}
+            >
               Create User
             </Button>
           </Form>

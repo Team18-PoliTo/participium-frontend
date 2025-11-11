@@ -63,7 +63,7 @@ function Login() {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={4} />
+                        <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={6} />
                     </Form.Group>
                     {
                         isInternalLogin ? (

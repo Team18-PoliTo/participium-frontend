@@ -8,3 +8,28 @@
   height: 100%;
   width: 100%;
 }
+
+.report-offcanvas {
+    width: 580px !important;
+    max-width: 90vw !important;
+}
+
+.report-offcanvas__header {
+    background-color: #3D5A80;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-offcanvas__title {
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-offcanvas__body {
+    background-color: #f8f9fa;
+    padding: 0;
+}
+
+.report-offcanvas .btn-close {
+    filter: brightness(0) invert(1);
+}

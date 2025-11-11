@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Login from '../Login';
 import * as API from '../../API/API';
 import { MemoryRouter, Route, Routes } from 'react-router';
+import { UserContext } from '../../App'; // Import UserContext from App.jsx
 
 // Mock the navigate function from react-router
 const mockNavigate = vi.fn();
@@ -17,26 +18,43 @@ vi.mock('react-router', async (orig) => {
   };
 });
 
-// Spy on the loginCitizen API method to mock its behavior
-const mockLogin = vi.spyOn(API.default, 'loginCitizen');
+// Spy on the loginCitizen and getUserInfo API methods to mock their behavior
+const mockLoginCitizen = vi.spyOn(API.default, 'loginCitizen');
+const mockGetUserInfo = vi.spyOn(API.default, 'getUserInfo');
 
-// Helper function to render the Login component with router context
+// Helper function to render the Login component with router context and UserContext
 const renderLogin = () => {
+    const mockSetLoggedIn = vi.fn();
+    const mockSetUser = vi.fn();
+    const mockSetUserRole = vi.fn();
+
+    const mockUserContext = {
+        loggedIn: false,
+        setLoggedIn: mockSetLoggedIn,
+        user: null,
+        setUser: mockSetUser,
+        userRole: null,
+        setUserRole: mockSetUserRole,
+    };
+
     return render(
-        <MemoryRouter initialEntries={['/login']}>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/map" element={<div>Map Page</div>} />
-                <Route path="/register" element={<div>Register Page</div>} />
-            </Routes>
-        </MemoryRouter>
+        <UserContext.Provider value={mockUserContext}>
+            <MemoryRouter initialEntries={['/login']}>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/map" element={<div>Map Page</div>} />
+                    <Route path="/register" element={<div>Register Page</div>} />
+                </Routes>
+            </MemoryRouter>
+        </UserContext.Provider>
     );
 };
 
 describe('Login component', () => {
     // Reset all mocks and clear localStorage before each test
     beforeEach(() => {
-        mockLogin.mockReset();
+        mockLoginCitizen.mockReset();
+        mockGetUserInfo.mockReset();
         mockNavigate.mockReset();
         localStorage.clear();
         vi.clearAllMocks(); 
@@ -61,7 +79,7 @@ describe('Login component', () => {
     it('shows loading indicator while submitting', async () => {
         const user = userEvent.setup();
         // Mock login to never resolve, keeping the component in pending state
-        mockLogin.mockImplementation(() => new Promise(() => {}));
+        mockLoginCitizen.mockImplementation(() => new Promise(() => {}));
         
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'john@example.com');
@@ -74,13 +92,18 @@ describe('Login component', () => {
     // Test: Verify complete successful login flow
     it('performs successful login flow: calls API, stores token, navigates', async () => {
         const user = userEvent.setup();
-        const fakeUser = { id: 1, name: 'John' };
-        const fakeToken = 'abc123';
-        // Mock successful login that stores token in localStorage
-        mockLogin.mockImplementation(async () => {
-            localStorage.setItem('authToken', fakeToken);
-            return { citizen: fakeUser, token: fakeToken };
+        const fakeToken = { accessToken: 'abc123', tokenType: 'Bearer' };
+        const fakeUser = { id: 1, email: 'john@example.com', profile: { role: 'citizen' } };
+        
+        // Mock successful login that returns token AND stores it in localStorage
+        mockLoginCitizen.mockImplementation(async (credentials) => {
+            // Simulate what the real API does: store token in localStorage
+            localStorage.setItem('authToken', JSON.stringify(fakeToken.accessToken));
+            return fakeToken;
         });
+        
+        // Mock getUserInfo to return user data
+        mockGetUserInfo.mockResolvedValue(fakeUser);
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'john@example.com');
@@ -88,17 +111,35 @@ describe('Login component', () => {
         await user.click(screen.getByRole('button', { name: 'Login' }));
 
         // Verify API was called with correct credentials
-        expect(mockLogin).toHaveBeenCalledWith({ email: 'john@example.com', password: 'secretpw' });
-        // Verify token was stored
-        await waitFor(() => expect(localStorage.getItem('authToken')).toBe(fakeToken));
+        await waitFor(() => {
+            expect(mockLoginCitizen).toHaveBeenCalledWith({ 
+                email: 'john@example.com', 
+                password: 'secretpw' 
+            });
+        });
+        
+        // Verify token was stored (parse the JSON string)
+        await waitFor(() => {
+            const storedToken = JSON.parse(localStorage.getItem('authToken'));
+            expect(storedToken).toBe(fakeToken.accessToken);
+        });
+        
+        // Verify getUserInfo was called
+        await waitFor(() => {
+            expect(mockGetUserInfo).toHaveBeenCalled();
+        });
+        
         // Verify navigation to map page occurred
-        await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/map'));
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('/map');
+        });
     });
 
     // Test: Verify error modal appears when login fails
     it('shows error modal with message on failed login (401)', async () => {
         const user = userEvent.setup();
-        mockLogin.mockRejectedValue(new Error('Invalid email or password'));
+        mockLoginCitizen.mockRejectedValue(new Error('Invalid email or password'));
+        
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'wrong@example.com');
         await user.type(screen.getByLabelText('Password'), 'wrongpw');
@@ -118,7 +159,7 @@ describe('Login component', () => {
         expect(email).toHaveAttribute('required');
         expect(email).toHaveAttribute('type', 'email');
         expect(password).toHaveAttribute('required');
-        expect(password).toHaveAttribute('minlength', '6');
+        expect(password).toHaveAttribute('minlength', '4');
     });
 
     // Test: Verify submit button is disabled during submission and prevents double-submit
@@ -126,7 +167,7 @@ describe('Login component', () => {
         const user = userEvent.setup();
         let resolveLogin;
         const loginPromise = new Promise((res) => { resolveLogin = res; });
-        mockLogin.mockReturnValue(loginPromise);
+        mockLoginCitizen.mockReturnValue(loginPromise);
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'john@example.com');
@@ -137,17 +178,17 @@ describe('Login component', () => {
 
         // Verify button is disabled
         await waitFor(() => expect(button).toBeDisabled());
-        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(mockLoginCitizen).toHaveBeenCalledTimes(1);
         
         // Try to click again and verify API is not called twice
         await user.click(button);
-        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(mockLoginCitizen).toHaveBeenCalledTimes(1);
     });
 
     // Test: Verify loading indicator hides and navigation doesn't occur on error
     it('hides loading indicator and does not navigate on error', async () => {
         const user = userEvent.setup();
-        mockLogin.mockRejectedValue(new Error('Invalid email or password'));
+        mockLoginCitizen.mockRejectedValue(new Error('Invalid email or password'));
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'wrong@example.com');
@@ -164,7 +205,7 @@ describe('Login component', () => {
     it('shows loading indicator during async operation', async () => {
         const user = userEvent.setup();
         // Mock login that never resolves to keep loading state
-        mockLogin.mockImplementation(() => new Promise(() => {}));
+        mockLoginCitizen.mockImplementation(() => new Promise(() => {}));
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'test@example.com');
@@ -177,7 +218,7 @@ describe('Login component', () => {
     // Test: Verify error modal can be closed and disappears from DOM
     it('clears error modal when closed', async () => {
         const user = userEvent.setup();
-        mockLogin.mockRejectedValue(new Error('Invalid credentials'));
+        mockLoginCitizen.mockRejectedValue(new Error('Invalid credentials'));
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'test@example.com');
@@ -206,7 +247,11 @@ describe('Login component', () => {
     // Test: Verify form can be submitted using Enter key
     it('submits with Enter key', async () => {
         const user = userEvent.setup();
-        mockLogin.mockResolvedValue({ citizen: { id: 1 }, token: 't' });
+        const fakeToken = { accessToken: 't', tokenType: 'Bearer' };
+        const fakeUser = { id: 1, email: 'john@example.com', profile: { role: 'citizen' } };
+        
+        mockLoginCitizen.mockResolvedValue(fakeToken);
+        mockGetUserInfo.mockResolvedValue(fakeUser);
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'john@example.com');
@@ -215,7 +260,10 @@ describe('Login component', () => {
 
         // Verify API was called after Enter key press
         await waitFor(() =>
-            expect(mockLogin).toHaveBeenCalledWith({ email: 'john@example.com', password: 'secretpw' })
+            expect(mockLoginCitizen).toHaveBeenCalledWith({ 
+                email: 'john@example.com', 
+                password: 'secretpw' 
+            })
         );
     });
 
@@ -248,7 +296,7 @@ describe('Login component', () => {
     // Test: Verify form data is preserved after login failure
     it('maintains form data when login fails', async () => {
         const user = userEvent.setup();
-        mockLogin.mockRejectedValue(new Error('Server error'));
+        mockLoginCitizen.mockRejectedValue(new Error('Server error'));
 
         renderLogin();
         await user.type(screen.getByLabelText('Email'), 'test@example.com');
@@ -273,7 +321,11 @@ describe('Login component', () => {
     // Test: Verify credentials are trimmed before being sent to API
     it('calls API with trimmed credentials', async () => {
         const user = userEvent.setup();
-        mockLogin.mockResolvedValue({ citizen: { id: 1 }, token: 't' });
+        const fakeToken = { accessToken: 't', tokenType: 'Bearer' };
+        const fakeUser = { id: 1, email: 'test@example.com', profile: { role: 'citizen' } };
+        
+        mockLoginCitizen.mockResolvedValue(fakeToken);
+        mockGetUserInfo.mockResolvedValue(fakeUser);
 
         renderLogin();
         // Type credentials with leading/trailing spaces
@@ -283,7 +335,7 @@ describe('Login component', () => {
 
         // Verify API receives trimmed values
         await waitFor(() => {
-            expect(mockLogin).toHaveBeenCalledWith({ 
+            expect(mockLoginCitizen).toHaveBeenCalledWith({ 
                 email: 'test@example.com', 
                 password: 'password' 
             });

@@ -8,12 +8,13 @@ import API from '../API/API';
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
-  const { loggedIn, setUser, setLoggedIn, setUserRole } = useContext(UserContext);
+  const { citizenLoggedIn, setCitizenLoggedIn, setUser, userLoggedIn, setUserLoggedIn, setUserRole } = useContext(UserContext);
 
   const handleLogout = async () => {
     await API.logoutUser();
     setUser(null);
-    setLoggedIn(false);
+    setCitizenLoggedIn(false);
+    setUserLoggedIn(false);
     setUserRole(null);
   };
 
@@ -24,7 +25,7 @@ function NavHeader() {
       <Container>
         <Navbar.Brand>{navbarText}</Navbar.Brand>
         {
-          (location.pathname == "/map" || location.pathname == "/admin") && loggedIn &&
+          (location.pathname == "/map" || location.pathname == "/admin") && (citizenLoggedIn || userLoggedIn) &&
           <Link className='btn home-button' to="/login" onClick={handleLogout}>Logout</Link>
         }
       </Container>

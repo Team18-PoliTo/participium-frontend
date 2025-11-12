@@ -17,7 +17,7 @@ function Login() {
     // State per il toggle tra Citizen e Employee
     const [isEmployee, setIsEmployee] = useState(false);
 
-    const {loggedIn, setLoggedIn, setUser, setUserRole} = useContext(UserContext);
+    const {citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, setUser, setUserRole} = useContext(UserContext);
 
     const [errorModalShow, setErrorModalShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -35,14 +35,14 @@ function Login() {
                 const user = await API.getUserInfo();
                 setUser(user);
                 setUserRole(user.profile.role);
-                setLoggedIn(true);
+                setUserLoggedIn(true);
                 navigate('/admin');
                 return { ...prevState, internalUser, token };
             } else {
                 const { citizen, token } = await API.loginCitizen(credentials);
                 const user = await API.getUserInfo();
                 setUser(user);
-                setLoggedIn(true);
+                setCitizenLoggedIn(true);
                 navigate('/map');
                 return { ...prevState, citizen, token };
             }

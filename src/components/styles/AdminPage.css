@@ -67,14 +67,14 @@
   border-radius: 20px;
   border: none;
   color: black;
-  font-size: 16px;
+  font-size: 18px;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   text-align: center;
   padding: 0.6rem 1.2rem; 
   cursor: pointer;
   line-height: 1.2;
-  width: 100%; 
+  width: 101%; 
   height: 3rem; 
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@
 .legend-title {
   color: black;
   font-size: 30px;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   text-align: left;
   margin-bottom: 1rem;
@@ -131,7 +131,7 @@
 .legend-item span {
   color: black;
   font-size: 18px;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   line-height: 1.2;
 }

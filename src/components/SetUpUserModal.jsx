@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Alert,
-} from "react-bootstrap";
+import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 import "./styles/SetUpUserModal.css";
 
 function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  if (!isOpen) return null;
 
   const handleClose = () => {
     setError(null);
@@ -45,20 +39,21 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
   };
 
   return (
-    <Modal
-      show={isOpen}
-      onHide={handleClose}
-      size="lg"
-      centered
-      backdrop="static"
-      keyboard={false}
-      className="setup-user-modal"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Add a new municipality user</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Container className="setup-user-container">
+    <div className="setup-user-modal-overlay" onClick={handleClose}>
+      <div
+        className="setup-user-modal-content"
+        onClick={(e) => e.stopPropagation()}
+        style={{ backgroundColor: "#E1EDF4", opacity: 1 }}
+      >
+        <button
+          className="setup-user-modal-close"
+          onClick={handleClose}
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className="set-up-user-title">Add a new municipality user</h2>
+        <div className="setup-user-container">
           {error && (
             <Alert variant="danger" onClose={() => setError(null)} dismissible>
               {error}
@@ -122,9 +117,9 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
               Create User
             </Button>
           </Form>
-        </Container>
-      </Modal.Body>
-    </Modal>
+        </div>
+      </div>
+    </div>
   );
 }
 

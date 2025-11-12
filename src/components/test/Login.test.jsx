@@ -24,13 +24,16 @@ const mockGetUserInfo = vi.spyOn(API.default, 'getUserInfo');
 
 // Helper function to render the Login component with router context and UserContext
 const renderLogin = () => {
-    const mockSetLoggedIn = vi.fn();
+    const mockSetCitizenLoggedIn = vi.fn();
+    const mockSetUserLoggedIn = vi.fn();
     const mockSetUser = vi.fn();
     const mockSetUserRole = vi.fn();
 
     const mockUserContext = {
-        loggedIn: false,
-        setLoggedIn: mockSetLoggedIn,
+        citizenLoggedIn: false,
+        setCitizenLoggedIn: mockSetCitizenLoggedIn,
+        userLoggedIn: false,
+        setUserLoggedIn: mockSetUserLoggedIn,
         user: null,
         setUser: mockSetUser,
         userRole: null,

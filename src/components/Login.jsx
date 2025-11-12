@@ -1,8 +1,8 @@
-import { useState } from 'react';  // importa useState
+import { useState } from 'react';
 import './styles/Login.css';
 import { useActionState, useContext } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate, useLocation} from 'react-router';
+import { Link, useNavigate} from 'react-router';
 import { UserContext } from '../App';
 import API from '../API/API';
 import ErrorModal from './ErrorModal'; 
@@ -13,8 +13,9 @@ function Login() {
         password: ''
     });
 
-    const location = useLocation();
-    const isInternalLogin = location.pathname === '/login_internal_user';
+    
+    // State per il toggle tra Citizen e Employee
+    const [isEmployee, setIsEmployee] = useState(false);
 
     const {loggedIn, setLoggedIn, setUser, setUserRole} = useContext(UserContext);
 
@@ -29,15 +30,14 @@ function Login() {
             password: formData.get('password').trim()
         }
         try {
-            if (isInternalLogin) {
+            if (isEmployee) {
                 const { internalUser, token } =  await API.loginInternalUser(credentials);
                 const user = await API.getUserInfo();
                 setUser(user);
-                setLoggedIn(true);
                 setUserRole(user.profile.role);
+                setLoggedIn(true);
                 navigate('/admin');
                 return { ...prevState, internalUser, token };
-
             } else {
                 const { citizen, token } = await API.loginCitizen(credentials);
                 const user = await API.getUserInfo();
@@ -55,6 +55,26 @@ function Login() {
     return (
         <div className="login-wrapper">
             <Container className="login-container">
+                {/* Toggle per switchare tra Citizen e Employee */}
+                <div className={`user-type-toggle ${isEmployee ? 'employee-active' : ''}`}>
+                    <Button
+                        className={`toggle-btn ${!isEmployee ? 'active' : ''}`}
+                        variant="link"
+                        onClick={() => setIsEmployee(false)}
+                        disabled={isPending}
+                    >
+                        Citizen
+                    </Button>
+                    <Button
+                        className={`toggle-btn ${isEmployee ? 'active' : ''}`}
+                        variant="link"
+                        onClick={() => setIsEmployee(true)}
+                        disabled={isPending}
+                    >
+                        Employee
+                    </Button>
+                </div>
+
                 <Form action={formAction} className="login-form">
                     {isPending && <div className="loading-indicator">Logging in...</div>}
                     <Form.Group className="mb-3" controlId="formEmail">
@@ -66,14 +86,11 @@ function Login() {
                         <Form.Control type="password" name="password" placeholder="Enter your password" required minLength={6} />
                     </Form.Group>
                     {
-                        isInternalLogin ? (
-                            <div className="register-link-text">
-                                If you are a citizen, please <Link to="/login">login here</Link>
-                            </div>
-                        ) :                     
+                        !isEmployee && (
                             <div className="register-link-text">
                                 If you don't have an account, <Link to="/register">register</Link>
                             </div>
+                        )
                     }
                     <Button
                         className="login-btn"

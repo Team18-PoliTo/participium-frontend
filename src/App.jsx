@@ -45,8 +45,7 @@ function App() {
           <Route element={<DefaultLayout />}>
             <Route path="/" element={(loggedIn ? <Navigate replace to='/map'/> : <Navigate replace to='/login' />)} />
             <Route path="/register" element={<Registration />} />
-            <Route path="/login" element={(loggedIn ? <Navigate replace to='/map'/> : <Login />)} /> 
-            <Route path="/login_internal_user" element={<Login />} /> 
+            <Route path="/login" element={<Login/>} /> 
             <Route path="/admin" element={((loggedIn && (userRole === 'ADMIN') ) ? <AdminPage /> : <NotAuthorized/>)} />
             <Route path="/map" element={(loggedIn ? <MapPage /> : <Navigate replace to='/'/>)} />
             <Route path="*" element={<Navigate replace to='/'/>} />

@@ -23,19 +23,9 @@ function NavHeader() {
     <Navbar className="navbar-custom">
       <Container>
         <Navbar.Brand>{navbarText}</Navbar.Brand>
-        { (location.pathname == "/" || location.pathname == "/login" || location.pathname == "/register") &&
-          <Link className='btn home-button' to="/login_internal_user">Municipality User Login</Link>
-        }
         {
           (location.pathname == "/map" || location.pathname == "/admin") && loggedIn &&
-          <Link className='btn home-button' to="/" onClick={handleLogout}>Logout</Link>
-        }
-        {
-          (location.pathname == "/login_internal_user") &&
-          <>
-            <span className='navbar-center-text'>Municipality User Portal</span>
-            <Link className='btn home-button' to="/login">Citizen Login</Link>
-          </>
+          <Link className='btn home-button' to="/login" onClick={handleLogout}>Logout</Link>
         }
       </Container>
     </Navbar>

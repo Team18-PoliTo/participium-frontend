@@ -159,7 +159,7 @@ describe('Login component', () => {
         expect(email).toHaveAttribute('required');
         expect(email).toHaveAttribute('type', 'email');
         expect(password).toHaveAttribute('required');
-        expect(password).toHaveAttribute('minlength', '4');
+        expect(password).toHaveAttribute('minlength', '6');
     });
 
     // Test: Verify submit button is disabled during submission and prevents double-submit

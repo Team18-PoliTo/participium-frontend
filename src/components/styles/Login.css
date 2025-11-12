@@ -1,4 +1,3 @@
-
 .login-wrapper {
     min-height: 100vh;
     display: flex;
@@ -91,4 +90,70 @@
 
 .register-link-text a:hover {
     text-decoration: underline;
+}
+
+.user-type-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 4px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.user-type-toggle::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background-color: #EE6C4D;
+    border-radius: 20px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 0;
+}
+
+.user-type-toggle.employee-active::before {
+    transform: translateX(100%);
+}
+
+.toggle-btn {
+    flex: 1;
+    border-radius: 20px !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500 !important;
+    position: relative;
+    z-index: 1;
+    background-color: transparent !important;
+    text-decoration: none !important;
+}
+
+.toggle-btn:not(.active) {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.toggle-btn.active {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.toggle-btn:hover:not(.active) {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.toggle-btn:hover {
+    text-decoration: none !important;
+}
+
+.toggle-btn:active {
+    transform: scale(0.93);
 }

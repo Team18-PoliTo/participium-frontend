@@ -43,10 +43,22 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
    */
   const handlePhotoUpload = (event) => {
     const files = Array.from(event.target.files);
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
     // Check if adding new files would exceed the 3 photo limit
     if (photos.length + files.length > 3) {
       setError("You can upload a maximum of 3 photos.");
+      return;
+    }
+
+    // Check if any file exceeds the size limit
+    const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+    if (oversizedFiles.length > 0) {
+      setError(
+        `Some files exceed the 5 MB limit: ${oversizedFiles
+          .map((f) => f.name)
+          .join(", ")}`
+      );
       return;
     }
 

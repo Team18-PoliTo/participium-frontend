@@ -337,6 +337,8 @@ const addNewReport = async (reportData) => {
     } else if (response.status === 403) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Forbidden");
+    } else if (response.status === 413) {
+      throw new Error("Files are too large. Please upload smaller files.");
     } else {
       // Try to parse JSON, but handle cases where server returns HTML
       try {

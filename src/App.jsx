@@ -17,17 +17,21 @@ export const UserContext = createContext();
 function App() {
   const [navbarText, setNavbarText] = useState("PARTICIPIUM");
   const [loggedIn, setLoggedIn] = useState(false);
+  const [citizenLoggedIn, setCitizenLoggedIn] = useState(false);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
 
  const checkAuth = async () => {
     try {
       const user = await API.getUserInfo(); 
-      setLoggedIn(true);
       setUser(user);
       if (user.kind !== 'citizen') {
         setUserRole(user.profile.role);
-      } 
+        setUserLoggedIn(true);
+      } else {
+        setCitizenLoggedIn(true);
+      }
     } catch (err) {
       setLoggedIn(false);
       setUser(null);
@@ -39,15 +43,15 @@ function App() {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loggedIn, setLoggedIn, userRole, setUserRole }}>
+    <UserContext.Provider value={{ user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole }}>
       <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
         <Routes>
           <Route element={<DefaultLayout />}>
-            <Route path="/" element={(loggedIn ? <Navigate replace to='/map'/> : <Navigate replace to='/login' />)} />
+            <Route path="/" element={(citizenLoggedIn ? <Navigate replace to='/map'/> : <Navigate replace to='/login' />)} />
             <Route path="/register" element={<Registration />} />
             <Route path="/login" element={<Login/>} /> 
-            <Route path="/admin" element={((loggedIn && (userRole === 'ADMIN') ) ? <AdminPage /> : <NotAuthorized/>)} />
-            <Route path="/map" element={(loggedIn ? <MapPage /> : <Navigate replace to='/'/>)} />
+            <Route path="/admin" element={((userLoggedIn && (userRole === 'ADMIN') ) ? <AdminPage /> : <NotAuthorized/>)} />
+            <Route path="/map" element={(citizenLoggedIn ? <MapPage /> : <Navigate replace to='/'/>)} />
             <Route path="*" element={<Navigate replace to='/'/>} />
           </Route>
         </Routes>

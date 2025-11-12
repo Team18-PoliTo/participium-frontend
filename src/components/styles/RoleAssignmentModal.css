@@ -22,8 +22,10 @@
   position: relative;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   border: 3px solid #3D5A80;
-  overflow-y: auto;
-  box-sizing: border-box; 
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .role-modal-close {
@@ -73,6 +75,28 @@
   flex-direction: column;
   gap: 15px;
   max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+}
+
+.role-options::-webkit-scrollbar {
+  width: 12px;
+}
+
+.role-options::-webkit-scrollbar-track {
+  background: #98C1D9;
+  border-radius: 20px;
+  margin: 5px 0;
+}
+
+.role-options::-webkit-scrollbar-thumb {
+  background: #3D5A80;
+  border-radius: 20px;
+}
+
+.role-options::-webkit-scrollbar-thumb:hover {
+  background: #293241;
 }
 
 .role-option {
@@ -84,6 +108,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   opacity: 1;
+  flex-shrink: 0;
 }
 
 .role-option:hover {

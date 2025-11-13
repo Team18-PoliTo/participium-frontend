@@ -1,0 +1,94 @@
+
+.registration-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 3rem;
+    justify-content: center;
+    background-image: url('../../resources/background_map.jpg');
+    background-size: cover;         
+    background-position: center;    
+    background-repeat: no-repeat;   
+    font-family: 'Inter', sans-serif;
+}
+
+.registration-container {
+    background-color: #3D5A80;
+    padding: 2rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(50, 50, 80, 0.16);
+    min-width: 300px !important;       
+    max-width: 460px !important;      
+}
+
+.registration-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1.1rem;
+}
+
+.registration-form .form-label {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.1rem; 
+}
+
+.registration-form .form-control {
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.registration-form .form-group {
+    margin-bottom: 1rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.register-btn {
+    width: 100%;
+    background-color: #EE6C4D !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border: none !important;
+    padding: 12px 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 8px;
+    font-size: 1.15rem;
+    margin-top: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.register-btn:hover {
+  background-color: #d55a36 !important;
+  color: white;
+}
+
+.register-btn:active{
+  background-color: #d55a36 !important;
+  color: white;
+}
+
+.loading-indicator {
+    color: #fff;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.login-link-text {
+    color: #eee;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.login-link-text a {
+    color: #eee;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-link-text a:hover {
+    text-decoration: underline;
+}

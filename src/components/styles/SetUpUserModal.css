@@ -1,0 +1,115 @@
+/* Overlay per il modal */
+.setup-user-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: rgba(41, 50, 65, 0.8);
+}
+
+/* Contenuto del modal */
+.setup-user-modal-content {
+  background-color: #E1EDF4;
+  opacity: 1;
+  border-radius: 40px;
+  padding: 2rem;
+  max-width: 550px;
+  width: 90%;
+  max-height: 90vh;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 3px solid #3D5A80;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Pulsante chiusura */
+.setup-user-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 35px;
+  color: #3D5A80;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.setup-user-modal-close:hover {
+  color: #EE6C4D;
+}
+
+/* Titolo del modal */
+.set-up-user-title {
+  color: #293241;
+  font-size: 28px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Container del form dentro il modal */
+.setup-user-container {
+    background-color:  #98c1d9;
+    padding: 2rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(50, 50, 80, 0.16);
+    width: 100% !important;         
+    max-width: 700px !important;     
+    box-sizing: border-box;
+}
+
+/* Form per creazione utente */
+.setup-user-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Label dentro il form */
+.setup-user-form .form-label {
+    color: #293241;
+    font-weight: 500;
+    margin-bottom: 0.1rem; 
+}
+
+/* Campi di input */
+.setup-user-form .form-control {
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Spaziatura gruppi form */
+.setup-user-form .form-group {
+    margin-bottom: 1rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+/* Pulsante crea utente */
+.setup-user-btn {
+    width: 100%;
+    background-color: #EE6C4D !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border: none !important;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    margin-top: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}

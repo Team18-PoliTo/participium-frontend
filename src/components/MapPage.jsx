@@ -52,6 +52,37 @@ try {
   turinPolygons = null;
 }
 
+// Create an inverse mask: world polygon with Turin cut out
+let inverseMask = null;
+if (turinFeature && turinFeature.geometry) {
+  const worldBounds = [
+    [90, -180],
+    [90, 180],
+    [-90, 180],
+    [-90, -180],
+    [90, -180],
+  ];
+
+  let holes = [];
+  if (turinFeature.geometry.type === "Polygon") {
+    holes = turinFeature.geometry.coordinates;
+  } else if (turinFeature.geometry.type === "MultiPolygon") {
+    // For MultiPolygon, flatten all polygon rings
+    turinFeature.geometry.coordinates.forEach((polygon) => {
+      holes.push(...polygon);
+    });
+  }
+
+  inverseMask = {
+    type: "Feature",
+    properties: {},
+    geometry: {
+      type: "Polygon",
+      coordinates: [worldBounds, ...holes],
+    },
+  };
+}
+
 // Component to handle map click events
 function MapClickHandler({ onMapClick }) {
   const map = useMapEvents({
@@ -80,14 +111,14 @@ const SearchBar = ({ onLocationSelected }) => {
     map.addControl(searchControl);
 
     // Listen for the search result selection event
-    map.on('geosearch/showlocation', (result) => {
+    map.on("geosearch/showlocation", (result) => {
       const { x: lng, y: lat } = result.location;
       onLocationSelected({ lat, lng }, map);
     });
 
     return () => {
       map.removeControl(searchControl);
-      map.off('geosearch/showlocation');
+      map.off("geosearch/showlocation");
     };
   }, [map, onLocationSelected]);
 
@@ -132,14 +163,14 @@ function MapPage() {
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
         );
         const data = await response.json();
-        
+
         // Extract only street, house number, and postcode
         const addressParts = [];
         if (data.address) {
           const road = data.address.road || data.address.street;
           const houseNumber = data.address.house_number;
           const postcode = data.address.postcode;
-          
+
           if (road) {
             addressParts.push(road);
           }
@@ -150,10 +181,11 @@ function MapPage() {
             addressParts.push(postcode);
           }
         }
-        
-        const address = addressParts.length > 0 
-          ? addressParts.join(', ') 
-          : "Address not found";
+
+        const address =
+          addressParts.length > 0
+            ? addressParts.join(", ")
+            : "Address not found";
 
         // Add address to the position object
         setClickedPosition({ ...latlng, address });
@@ -218,7 +250,15 @@ function MapPage() {
     color: "#EE6C4D",
     weight: 5,
     opacity: 0.8,
-    fillOpacity: 0.1,
+    fillOpacity: 0,
+  };
+
+  // Style for the inverse mask (area outside Turin)
+  const inverseMaskStyle = {
+    color: "transparent",
+    weight: 0,
+    fillColor: "#EE6C4D",
+    fillOpacity: 0.25,
   };
 
   return (
@@ -243,6 +283,11 @@ function MapPage() {
 
           {/* Show marker at clicked position when form is open */}
           {clickedPosition && showForm && <Marker position={clickedPosition} />}
+
+          {/* Render inverse mask (area outside Turin with orange overlay) */}
+          {inverseMask && (
+            <GeoJSON data={inverseMask} style={inverseMaskStyle} />
+          )}
 
           {/* Render Turin boundary polygon if feature data is available */}
           {turinFeature && <GeoJSON data={turinFeature} style={turinStyle} />}

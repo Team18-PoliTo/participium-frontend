@@ -1,14 +1,21 @@
-import './styles/NavHeader.css';
-import { Container, Navbar } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router';
+import "./styles/NavHeader.css";
+import { Container, Navbar } from "react-bootstrap";
+import { Link, useLocation } from "react-router";
 import { useContext } from "react";
 import { NavbarTextContext } from "../App";
 import { UserContext } from "../App";
-import API from '../API/API';
+import API from "../API/API";
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
-  const { citizenLoggedIn, setCitizenLoggedIn, setUser, userLoggedIn, setUserLoggedIn, setUserRole } = useContext(UserContext);
+  const {
+    citizenLoggedIn,
+    setCitizenLoggedIn,
+    setUser,
+    userLoggedIn,
+    setUserLoggedIn,
+    setUserRole,
+  } = useContext(UserContext);
 
   const handleLogout = async () => {
     await API.logoutUser();
@@ -20,14 +27,30 @@ function NavHeader() {
 
   const location = useLocation();
 
-  return(
+  return (
     <Navbar className="navbar-custom">
       <Container>
-        <Navbar.Brand>{navbarText}</Navbar.Brand>
-        {
-          (location.pathname == "/map" || location.pathname == "/admin") && (citizenLoggedIn || userLoggedIn) &&
-          <Link className='btn home-button' to="/login" onClick={handleLogout}>Logout</Link>
-        }
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Navbar.Brand>{navbarText}</Navbar.Brand>
+        </Link>
+        {(citizenLoggedIn || userLoggedIn) && (
+          <Link className="btn home-button" to="/" onClick={handleLogout}>
+            Logout
+          </Link>
+        )}
+        {!citizenLoggedIn &&
+          !userLoggedIn &&
+          location.pathname !== "/login" &&
+          location.pathname !== "/register" && (
+            <div className="nav-auth-buttons">
+              <Link className="btn nav-login-button" to="/login">
+                Login
+              </Link>
+              <Link className="btn nav-register-button" to="/register">
+                Sign Up
+              </Link>
+            </div>
+          )}
       </Container>
     </Navbar>
   );

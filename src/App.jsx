@@ -21,8 +21,9 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true); 
 
- const checkAuth = async () => {
+  const checkAuth = async () => {
     try {
       const user = await API.getUserInfo(); 
       setUser(user);
@@ -35,12 +36,29 @@ function App() {
     } catch (err) {
       setLoggedIn(false);
       setUser(null);
+    } finally {
+      setIsCheckingAuth(false); // Auth check completato
     }
   };
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  // Show loading while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontFamily: 'Inter, sans-serif' 
+      }}>
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <UserContext.Provider value={{ user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole }}>

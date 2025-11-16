@@ -192,15 +192,29 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
           <strong>Selected Position</strong>
         </Form.Label>
         {position ? (
-          <Form.Control
-            type="text"
-            value={`Lat: ${position.lat.toFixed(
-              4
-            )}, Lng: ${position.lng.toFixed(4)}`}
-            readOnly
-            disabled
-            className="report-form__input report-form__input--readonly"
-          />
+          <>
+            {position.address && (
+              <Form.Control
+                type="text"
+                value={position.address}
+                readOnly
+                disabled
+                className="report-form__input report-form__input--readonly mb-2"
+              />
+            )}
+            <Form.Label className="report-form__label mt-2">
+              Coordinates
+            </Form.Label>
+            <Form.Control
+              type="text"
+              value={`Lat: ${position.lat.toFixed(
+                4
+              )}, Lng: ${position.lng.toFixed(4)}`}
+              readOnly
+              disabled
+              className="report-form__input report-form__input--readonly"
+            />
+          </>
         ) : (
           <Form.Control
             type="text"

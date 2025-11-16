@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
+  useMap,
   useMapEvents,
   GeoJSON,
 } from "react-leaflet";
 import { Offcanvas } from "react-bootstrap";
 import ReportForm from "./ReportForm";
+import "leaflet-geosearch/dist/geosearch.css";
 import "./styles/MapPage.css";
 import InvalidLocationModal from "./InvalidLocationModal";
 import ReportStatusModal from "./ReportStatusModal";
 import pointInPolygon from "point-in-polygon";
 import turinGeoJSON from "../data/turin-boundaries.json";
+import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 // Extract the Turin feature from GeoJSON data for rendering the polygon on the map
 let turinFeature = null;
@@ -59,6 +62,38 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
+// Component to add the search bar to the map
+const SearchBar = ({ onLocationSelected }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const provider = new OpenStreetMapProvider();
+
+    const searchControl = new GeoSearchControl({
+      provider,
+      style: "bar",
+      showMarker: false, // Disabilita il marker di default della ricerca
+      autoClose: true,
+      keepResult: false, // Non mantenere il risultato
+    });
+
+    map.addControl(searchControl);
+
+    // Listen for the search result selection event
+    map.on('geosearch/showlocation', (result) => {
+      const { x: lng, y: lat } = result.location;
+      onLocationSelected({ lat, lng }, map);
+    });
+
+    return () => {
+      map.removeControl(searchControl);
+      map.off('geosearch/showlocation');
+    };
+  }, [map, onLocationSelected]);
+
+  return null;
+};
+
 function MapPage() {
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null);
@@ -73,7 +108,7 @@ function MapPage() {
   const initialPosition = [45.0703, 7.6869];
 
   // Handle map clicks and validate if the clicked position is within Turin boundaries
-  const handleMapClick = (latlng, map) => {
+  const handleMapClick = async (latlng, map) => {
     // Skip validation if Turin boundaries are not loaded
     if (!turinPolygons) {
       console.warn("Turin boundaries not loaded, validation skipped.");
@@ -91,7 +126,45 @@ function MapPage() {
     );
 
     if (isInside) {
-      setClickedPosition(latlng);
+      // Fetch address using reverse geocoding
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
+        );
+        const data = await response.json();
+        
+        // Extract only street, house number, and postcode
+        const addressParts = [];
+        if (data.address) {
+          const road = data.address.road || data.address.street;
+          const houseNumber = data.address.house_number;
+          const postcode = data.address.postcode;
+          
+          if (road) {
+            addressParts.push(road);
+          }
+          if (houseNumber) {
+            addressParts.push(houseNumber);
+          }
+          if (postcode) {
+            addressParts.push(postcode);
+          }
+        }
+        
+        const address = addressParts.length > 0 
+          ? addressParts.join(', ') 
+          : "Address not found";
+
+        // Add address to the position object
+        setClickedPosition({ ...latlng, address });
+      } catch (error) {
+        console.error("Error fetching address:", error);
+        setClickedPosition({
+          ...latlng,
+          address: "Unable to retrieve address",
+        });
+      }
+
       setShowForm(true);
 
       // Wait for the Offcanvas to open, then center the map
@@ -161,6 +234,9 @@ function MapPage() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+
+          {/* Component to add the search bar */}
+          <SearchBar onLocationSelected={handleMapClick} />
 
           {/* Custom component to handle map click events */}
           <MapClickHandler onMapClick={handleMapClick} />

@@ -33,3 +33,88 @@
 .report-offcanvas .btn-close {
     filter: brightness(0) invert(1);
 }
+
+/* GeoSearch Bar Styles */
+.leaflet-control-geosearch {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.leaflet-control-geosearch form {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    display: block !important;
+    position: relative !important;
+}
+
+/* Nascondi il bottone reset */
+.leaflet-control-geosearch a.reset {
+    display: none !important;
+}
+
+/* Stile solo per l'input */
+.leaflet-control-geosearch input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    padding: 12px 16px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    width: 300px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    outline: none !important;
+    background-color: #fff !important;
+}
+
+.leaflet-control-geosearch input:hover {
+    box-shadow: 0 0 0 3px rgba(61, 90, 128, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-control-geosearch input:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(61, 90, 128, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-control-geosearch input::placeholder {
+    color: #98a2b3 !important;
+}
+
+/* Risultati di ricerca */
+.leaflet-control-geosearch .results {
+    border-radius: 12px !important;
+    border: none !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    margin-top: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    background-color: #fff !important;
+}
+
+.leaflet-control-geosearch .results > * {
+    font-family: 'Inter', sans-serif !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.leaflet-control-geosearch .results > *:last-child {
+    border-bottom: none !important;
+}
+
+.leaflet-control-geosearch .results > *:hover {
+    background-color: #f8f9fa !important;
+    color: #3D5A80 !important;
+}
+
+.leaflet-control-geosearch .results.active {
+    padding: 0 !important;
+}
+
+/* Remove any default leaflet control borders */
+.leaflet-control-geosearch.leaflet-control {
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}

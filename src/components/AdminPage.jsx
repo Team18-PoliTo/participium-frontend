@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Dropdown, Form } from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
@@ -22,6 +23,7 @@ function AdminPage() {
   const [roles, setRoles] = useState([]);
   const [visibleRoles, setVisibleRoles] = useState([]);
   const [roleMapping, setRoleMapping] = useState({});
+  const [searchEmail, setSearchEmail] = useState("");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -79,13 +81,20 @@ function AdminPage() {
     setUsers((prevUsers) => [...prevUsers, createdUser]);
   };
 
-  const filteredUsers =
-    selectedFilter !== null
-      ? users.filter((user) => {
-          const selectedRoleName = roleMapping[selectedFilter];
-          return user.role === selectedRoleName;
-        })
-      : users;
+  const filteredUsers = users.filter((user) => {
+    // Filtra per ruolo
+    const roleMatch =
+      selectedFilter !== null
+        ? user.role === roleMapping[selectedFilter]
+        : true;
+
+    // Filtra per email
+    const emailMatch = user.email
+      .toLowerCase()
+      .includes(searchEmail.toLowerCase());
+
+    return roleMatch && emailMatch;
+  });
 
   const handleFilterClick = (roleId) => {
     setSelectedFilter(selectedFilter === roleId ? null : roleId);
@@ -135,20 +144,44 @@ function AdminPage() {
             >
               Add a new user
             </button>
-            <h3 className="filter-title">Filter by:</h3>
-            <div className="filter-grid">
-              {visibleRoles.map((role) => (
-                <button
-                  key={role.id}
-                  className={`filter-btn ${
-                    selectedFilter === role.id ? "active" : ""
-                  }`}
-                  onClick={() => handleFilterClick(role.id)}
+            
+            <h3 className="filter-title">Search by email:</h3>
+            <Form.Control
+              type="text"
+              placeholder="Enter email..."
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+              className="search-email-input"
+            />
+
+            <h3 className="filter-title">Filter by role:</h3>
+            <Dropdown>
+              <Dropdown.Toggle className="custom-dropdown-toggle" id="dropdown-basic">
+                {selectedFilter !== null 
+                  ? roleMapping[selectedFilter] 
+                  : "All Users"}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="custom-dropdown-menu">
+                <Dropdown.Item 
+                  className="custom-dropdown-item"
+                  onClick={() => setSelectedFilter(null)}
+                  active={selectedFilter === null}
                 >
-                  {role.role}
-                </button>
-              ))}
-            </div>
+                  All Users
+                </Dropdown.Item>
+                {visibleRoles.map((role) => (
+                  <Dropdown.Item
+                    key={role.id}
+                    className="custom-dropdown-item"
+                    onClick={() => setSelectedFilter(role.id)}
+                    active={selectedFilter === role.id}
+                  >
+                    {role.role}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
 
           {/* Colonna Destra: Legenda */}

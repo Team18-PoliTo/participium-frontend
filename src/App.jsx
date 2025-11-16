@@ -9,10 +9,11 @@ import Registration from "./components/Registration";
 import AdminPage from "./components/AdminPage";
 import MapPage from "./components/MapPage";
 import NotAuthorized from "./components/NotAuthorized";
+import Homepage from "./components/Homepage";
+import HowItWorks from "./components/HowItWorks";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
-
 
 function App() {
   const [navbarText, setNavbarText] = useState("PARTICIPIUM");
@@ -21,13 +22,13 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true); 
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const checkAuth = async () => {
     try {
-      const user = await API.getUserInfo(); 
+      const user = await API.getUserInfo();
       setUser(user);
-      if (user.kind !== 'citizen') {
+      if (user.kind !== "citizen") {
         setUserRole(user.profile.role);
         setUserLoggedIn(true);
       } else {
@@ -48,29 +49,66 @@ function App() {
   // Show loading while checking authentication
   if (isCheckingAuth) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        fontFamily: 'Inter, sans-serif' 
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
         Loading...
       </div>
     );
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        citizenLoggedIn,
+        setCitizenLoggedIn,
+        userLoggedIn,
+        setUserLoggedIn,
+        userRole,
+        setUserRole,
+      }}
+    >
       <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
         <Routes>
           <Route element={<DefaultLayout />}>
-            <Route path="/" element={(citizenLoggedIn ? <Navigate replace to='/map'/> : <Navigate replace to='/login' />)} />
+            <Route path="/" element={<Homepage />} />
             <Route path="/register" element={<Registration />} />
-            <Route path="/login" element={<Login/>} /> 
-            <Route path="/admin" element={((userLoggedIn && (userRole === 'ADMIN') ) ? <AdminPage /> : <NotAuthorized/>)} />
-            <Route path="/map" element={(citizenLoggedIn ? <MapPage /> : <Navigate replace to='/'/>)} />
-            <Route path="*" element={<Navigate replace to='/'/>} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/how-it-works"
+              element={
+                citizenLoggedIn ? (
+                  <HowItWorks />
+                ) : (
+                  <Navigate replace to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                userLoggedIn && userRole === "ADMIN" ? (
+                  <AdminPage />
+                ) : (
+                  <NotAuthorized />
+                )
+              }
+            />
+            <Route
+              path="/map"
+              element={
+                citizenLoggedIn ? <MapPage /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
         </Routes>
       </NavbarTextContext.Provider>
@@ -78,4 +116,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

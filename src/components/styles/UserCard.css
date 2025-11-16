@@ -54,7 +54,7 @@
   border-radius: 9999px;
   border: none;
   cursor: pointer;
-  position: relative; /* Per il + */
+  position: relative;
   flex-shrink: 0;
 }
 
@@ -72,4 +72,77 @@
 
 .plus-icon::after {
   transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Media Queries per Mobile */
+@media (max-width: 768px) {
+  .user-list {
+    grid-template-columns: 1fr;
+  }
+
+  .user-card {
+    height: auto;
+    min-height: 5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .user-icon {
+    width: 50px;
+    height: 48px;
+    margin-right: 0.75rem;
+  }
+
+  .user-info {
+    font-size: 14px;
+    padding: 0 0.25rem;
+  }
+
+  .info-label {
+    min-width: 70px;
+    font-size: 14px;
+  }
+
+  .user-add-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .plus-icon::before,
+  .plus-icon::after {
+    width: 20px;
+    height: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-card {
+    padding: 0.5rem 0.75rem;
+    min-height: 4.5rem;
+  }
+
+  .user-icon {
+    width: 45px;
+    height: 43px;
+    margin-right: 0.5rem;
+  }
+
+  .user-info {
+    font-size: 12px;
+  }
+
+  .info-label {
+    min-width: 60px;
+    font-size: 12px;
+  }
+
+  .user-add-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .plus-icon::before,
+  .plus-icon::after {
+    width: 18px;
+    height: 3px;
+  }
 }

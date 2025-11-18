@@ -36,14 +36,14 @@ function Login() {
                 setUser(user);
                 setUserRole(user.profile.role);
                 setUserLoggedIn(true);
-                navigate('/admin');
+                navigate('/dashboard'); // Cambiato da '/admin' a '/dashboard'
                 return { ...prevState, internalUser, token };
             } else {
                 const { citizen, token } = await API.loginCitizen(credentials);
                 const user = await API.getUserInfo();
                 setUser(user);
                 setCitizenLoggedIn(true);
-                navigate('/map');
+                navigate('/dashboard'); // Cambiato da '/map' a '/dashboard'
                 return { ...prevState, citizen, token };
             }
         } catch (error) {

@@ -11,6 +11,10 @@ import MapPage from "./components/MapPage";
 import NotAuthorized from "./components/NotAuthorized";
 import Homepage from "./components/Homepage";
 import HowItWorks from "./components/HowItWorks";
+import PublicRelationsOfficer from "./components/PublicRelationsOfficer";
+import LoadingSpinner from "./components/LoadingSpinner";
+import ProtectedRoute from "./components/ProtectedRoute";
+import RoleBasedRedirect from "./components/RoleBasedRedirect";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -38,7 +42,7 @@ function App() {
       setLoggedIn(false);
       setUser(null);
     } finally {
-      setIsCheckingAuth(false); // Auth check completato
+      setIsCheckingAuth(false);
     }
   };
 
@@ -46,21 +50,8 @@ function App() {
     checkAuth();
   }, []);
 
-  // Show loading while checking authentication
   if (isCheckingAuth) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        Loading...
-      </div>
-    );
+    return <LoadingSpinner message="Checking authentication..." />;
   }
 
   return (
@@ -82,32 +73,59 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/login" element={<Login />} />
+            
+            {/* Redirect basato sul ruolo */}
+            <Route path="/dashboard" element={<RoleBasedRedirect />} />
+            
+            {/* Route per Citizen */}
             <Route
               path="/how-it-works"
               element={
-                citizenLoggedIn ? (
+                <ProtectedRoute requireCitizen>
                   <HowItWorks />
-                ) : (
-                  <Navigate replace to="/login" />
-                )
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                userLoggedIn && userRole === "ADMIN" ? (
-                  <AdminPage />
-                ) : (
-                  <NotAuthorized />
-                )
+                </ProtectedRoute>
               }
             />
             <Route
               path="/map"
               element={
-                citizenLoggedIn ? <MapPage /> : <Navigate replace to="/login" />
+                <ProtectedRoute requireCitizen>
+                  <MapPage />
+                </ProtectedRoute>
               }
             />
+            
+            {/* Route per Admin */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Route per Public Relations Officer */}
+            <Route
+              path="/pro"
+              element={
+                <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
+                  <PublicRelationsOfficer />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Aggiungi altre route per altri ruoli */}
+            {/* <Route
+              path="/area-manager"
+              element={
+                <ProtectedRoute allowedRoles={["AREA_MANAGER"]}>
+                  <AreaManagerPage />
+                </ProtectedRoute>
+              }
+            /> */}
+            
+            <Route path="/not-authorized" element={<NotAuthorized />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
         </Routes>

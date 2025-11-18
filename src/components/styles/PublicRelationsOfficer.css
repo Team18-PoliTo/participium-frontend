@@ -1,0 +1,270 @@
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.report-card-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-text {
+  line-height: 1.6;
+}
+
+/* Stile per i filtri - simile ad AdminPage */
+.filters-section {
+  background: #E1EDF4;
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter-label {
+  color: black;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Dropdown categoria */
+.custom-category-dropdown .dropdown-toggle {
+  background: #E1EDF4 !important;
+  border: 2px solid #3D5A80 !important;
+  border-radius: 12px !important;
+  color: black !important;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 2rem 0.5rem 0.75rem !important;
+  width: 100%;
+  height: 2.75rem;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  transition: all 0.3s ease;
+}
+
+.custom-category-dropdown .dropdown-toggle::after {
+  position: absolute !important;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0 !important;
+}
+
+.custom-category-dropdown .dropdown-toggle:hover {
+  background: #d0dfe8 !important;
+  border-color: #293241 !important;
+}
+
+.custom-category-dropdown .dropdown-toggle:focus,
+.custom-category-dropdown .dropdown-toggle:active {
+  background: #d0dfe8 !important;
+  border-color: #EE6C4D !important;
+  box-shadow: none !important;
+}
+
+.custom-category-dropdown .dropdown-menu {
+  background: #E1EDF4;
+  border: 2px solid #3D5A80;
+  border-radius: 12px;
+  padding: 0.5rem 0;
+  width: 100% !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.custom-category-dropdown .dropdown-item {
+  color: black;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.custom-category-dropdown .dropdown-item:hover {
+  background: #d0dfe8;
+  color: black;
+}
+
+.custom-category-dropdown .dropdown-item.active,
+.custom-category-dropdown .dropdown-item:active {
+  background: #3D5A80 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Icone bianche quando item è attivo */
+.custom-category-dropdown .dropdown-item.active svg,
+.custom-category-dropdown .dropdown-item:active svg {
+  color: white !important;
+  stroke: white !important;
+}
+
+/* Input date */
+.date-input {
+  background: #E1EDF4 !important;
+  border: 2px solid #3D5A80 !important;
+  border-radius: 12px !important;
+  color: black !important;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  padding: 0.5rem 0.75rem !important;
+  width: 100%;
+  height: 2.75rem;
+  transition: all 0.3s ease;
+}
+
+.date-input:hover {
+  background: #d0dfe8 !important;
+  border-color: #293241 !important;
+}
+
+.date-input:focus {
+  background: #d0dfe8 !important;
+  border-color: #EE6C4D !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* Stile per l'icona del calendario */
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(20%) sepia(30%) saturate(1500%) hue-rotate(180deg) brightness(0.8);
+  opacity: 0.8;
+  padding: 5px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background: rgba(61, 90, 128, 0.15);
+  transform: scale(1.1);
+}
+
+/* Bottone Reset */
+.reset-filters-btn {
+  background: #EE6C4D;
+  border-radius: 12px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  height: 2.75rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.reset-filters-btn:hover {
+  background: #d85a3a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.reset-filters-btn:active {
+  transform: translateY(0);
+}
+
+/* Contatore risultati */
+.results-counter {
+  color: #3D5A80;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Custom Date Picker */
+.custom-date-picker-input {
+  background: #E1EDF4 !important;
+  border: 2px solid #3D5A80 !important;
+  border-radius: 12px !important;
+  color: black !important;
+  font-size: 16px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  padding: 0.5rem 0.75rem !important;
+  width: 100% !important;
+  height: 2.75rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-date-picker-input:hover {
+  background: #d0dfe8 !important;
+  border-color: #293241 !important;
+}
+
+.custom-date-picker-input:focus {
+  background: #d0dfe8 !important;
+  border-color: #EE6C4D !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* React DatePicker Calendar */
+.react-datepicker {
+  background: #E1EDF4 !important;
+  border: 2px solid #3D5A80 !important;
+  border-radius: 15px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.react-datepicker__header {
+  background: #d0dfe8 !important;
+  border-bottom: 2px solid #3D5A80 !important;
+  border-radius: 13px 13px 0 0 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: black !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day {
+  color: black !important;
+}
+
+.react-datepicker__day:hover {
+  background: #d0dfe8 !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: #3D5A80 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__day--today {
+  border: 2px solid #EE6C4D !important;
+  border-radius: 50% !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #3D5A80 !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: #EE6C4D !important;
+}
+

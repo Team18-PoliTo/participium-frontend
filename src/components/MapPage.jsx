@@ -16,6 +16,7 @@ import ReportStatusModal from "./ReportStatusModal";
 import pointInPolygon from "point-in-polygon";
 import turinGeoJSON from "../data/turin-boundaries.json";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+import { getAddressFromCoordinates } from "../utils/geocoding";
 
 // Extract the Turin feature from GeoJSON data for rendering the polygon on the map
 let turinFeature = null;
@@ -159,38 +160,9 @@ function MapPage() {
     if (isInside) {
       // Fetch address using reverse geocoding
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`
-        );
-        const data = await response.json();
-
-        // Extract only street, house number, and postcode
-        const addressParts = [];
-        if (data.address) {
-          const road = data.address.road || data.address.street;
-          const houseNumber = data.address.house_number;
-          const postcode = data.address.postcode;
-
-          if (road) {
-            addressParts.push(road);
-          }
-          if (houseNumber) {
-            addressParts.push(houseNumber);
-          }
-          if (postcode) {
-            addressParts.push(postcode);
-          }
-        }
-
-        const address =
-          addressParts.length > 0
-            ? addressParts.join(", ")
-            : "Address not found";
-
-        // Add address to the position object
+        const address = await getAddressFromCoordinates(lat, lng);
         setClickedPosition({ ...latlng, address });
       } catch (error) {
-        console.error("Error fetching address:", error);
         setClickedPosition({
           ...latlng,
           address: "Unable to retrieve address",

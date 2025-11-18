@@ -250,16 +250,6 @@ function PublicRelationsOfficer() {
     setShowModal(true);
   };
 
-  const handleApprove = (updatedReport) => {
-    console.log("Report approved:", updatedReport);
-    // Qui implementa la logica per approvare il report
-  };
-
-  const handleReject = (updatedReport) => {
-    console.log("Report rejected:", updatedReport);
-    // Qui implementa la logica per rifiutare il report
-  };
-
   if (loading) {
     return <LoadingSpinner message="Loading reports..." />;
   }
@@ -369,8 +359,6 @@ function PublicRelationsOfficer() {
         show={showModal}
         onHide={() => setShowModal(false)}
         report={selectedReport}
-        onApprove={handleApprove}
-        onReject={handleReject}
       />
     </Container>
   );

@@ -357,6 +357,39 @@ const addNewReport = async (reportData) => {
   }
 };
 
+const judgeReport = async (reportId, status, category, explanation) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/internal/reports/${reportId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          status: status,
+          category: category,
+          explanation: explanation,
+        }),
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to judge report"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -368,6 +401,7 @@ const API = {
   updateInternalUserRole,
   getAllRoles,
   addNewReport,
+  judgeReport,
 };
 
 export default API;

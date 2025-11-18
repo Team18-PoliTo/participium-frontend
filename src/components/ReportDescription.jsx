@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col, Dropdown } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col, Dropdown, Alert } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { 
   Droplets, 
@@ -18,6 +18,7 @@ import {
 import { getAddressFromCoordinates } from "../utils/geocoding";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
+import API from "../API/API";
 
 const categories = [
   "Water Supply – Drinking Water",
@@ -31,14 +32,16 @@ const categories = [
   "Other"
 ];
 
-function ReportDescription({ show, onHide, report, onApprove, onReject }) {
+function ReportDescription({ show, onHide, report }) {
   const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
   const [explanation, setExplanation] = useState("");
   const [address, setAddress] = useState("Loading address...");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (report) {
       setSelectedCategory(report.category || "");
+      setError(null);
       
       // Fetch address
       if (report.location) {
@@ -76,20 +79,31 @@ function ReportDescription({ show, onHide, report, onApprove, onReject }) {
     }
   };
 
-  const handleApprove = () => {
-    onApprove({ ...report, category: selectedCategory, explanation });
-    handleClose();
+  const handleApprove = async () => {
+    try {
+      setError(null);
+      const updatedReport = await API.judgeReport(report.id, "Assigned", selectedCategory, explanation);
+      handleClose();
+    } catch (error) {
+      setError(error.message || "Failed to approve the report. Please try again.");
+    }
   };
 
-  const handleReject = () => {
-    onReject({ ...report, explanation });
-    handleClose();
+  const handleReject = async () => {
+    try {
+      setError(null);
+      const updatedReport = await API.judgeReport(report.id, "Rejected", selectedCategory, explanation);
+      handleClose();
+    } catch (error) {
+      setError(error.message || "Failed to reject the report. Please try again.");
+    }
   };
 
   const handleClose = () => {
     setExplanation("");
     setSelectedCategory(report?.category || "");
     setAddress("Loading address...");
+    setError(null);
     onHide();
   };
 
@@ -219,8 +233,16 @@ function ReportDescription({ show, onHide, report, onApprove, onReject }) {
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
             className="report-desc-textarea"
+            required
           />
         </div>
+
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="danger" dismissible onClose={() => setError(null)} className="mb-0">
+            {error}
+          </Alert>
+        )}
       </Modal.Body>
       <Modal.Footer className="report-desc-modal-footer d-flex justify-content-between">
         <Button variant="secondary" onClick={handleClose} className="report-desc-btn-cancel">

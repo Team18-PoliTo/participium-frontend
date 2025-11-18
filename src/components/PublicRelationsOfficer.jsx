@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Container, Stack, Alert, Row, Col, Dropdown } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,6 +18,7 @@ import ReportCard from "./ReportCard";
 import ReportDescription from "./ReportDescription";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/PublicRelationsOfficer.css";
+import { NavbarTextContext } from "../App";
 
 // Dati dummy per testing
 const dummyReports = [
@@ -157,6 +158,8 @@ function PublicRelationsOfficer() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
+  const {navbarText, setNavbarSubtitle} = useContext(NavbarTextContext);
+
   useEffect(() => {
     fetchReports();
   }, []);
@@ -263,104 +266,108 @@ function PublicRelationsOfficer() {
   }
 
   return (
-    <Container className="py-4">
-      <h1 className="mb-4">Reports Dashboard</h1>
-      
-      {/* Filtri */}
-      <div className="filters-section">
-        <Row className="g-3">
-          <Col md={4}>
-            <label className="filter-label">Category</label>
-            <Dropdown className="custom-category-dropdown">
-              <Dropdown.Toggle id="category-dropdown">
-                <div className="d-flex align-items-center gap-2">
-                  {selectedCategory && getCategoryIcon(selectedCategory, 20)}
-                  <span>{selectedCategory || "All Categories"}</span>
-                </div>
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item 
-                  onClick={() => setSelectedCategory("")}
-                  active={selectedCategory === ""}
-                >
+    <div className="public-relations-officer-page">
+      <Container className="pt-4 pb-4">
+        {/* Titolo */}
+        <h1 className="page-title mb-4">Reports Dashboard</h1>
+
+        {/* Sezione Filtri */}
+        <div className="filters-section">
+          <Row className="g-3">
+            <Col md={4}>
+              <label className="filter-label">Category</label>
+              <Dropdown className="custom-category-dropdown">
+                <Dropdown.Toggle id="category-dropdown">
                   <div className="d-flex align-items-center gap-2">
-                    <span>All Categories</span>
+                    {selectedCategory && getCategoryIcon(selectedCategory, 20)}
+                    <span>{selectedCategory || "All Categories"}</span>
                   </div>
-                </Dropdown.Item>
-                {categories.map((category) => (
-                  <Dropdown.Item
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    active={selectedCategory === category}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item 
+                    onClick={() => setSelectedCategory("")}
+                    active={selectedCategory === ""}
                   >
                     <div className="d-flex align-items-center gap-2">
-                      {getCategoryIcon(category, 18)}
-                      <span>{category}</span>
+                      <span>All Categories</span>
                     </div>
                   </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </Col>
-          <Col md={3}>
-            <label className="filter-label">Start Date</label>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Select Date"
-              className="custom-date-picker-input"
-              wrapperClassName="w-100"
-            />
-          </Col>
-          <Col md={3}>
-            <label className="filter-label">End Date</label>
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Select Date"
-              className="custom-date-picker-input"
-              wrapperClassName="w-100"
-            />
-          </Col>
-          <Col md={2} className="d-flex align-items-end">
-            <button
-              className="reset-filters-btn"
-              onClick={handleResetFilters}
-            >
-              Reset
-            </button>
-          </Col>
-        </Row>
-      </div>
+                  {categories.map((category) => (
+                    <Dropdown.Item
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      active={selectedCategory === category}
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        {getCategoryIcon(category, 18)}
+                        <span>{category}</span>
+                      </div>
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+            <Col md={3}>
+              <label className="filter-label">Start Date</label>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Select Date"
+                className="custom-date-picker-input"
+                wrapperClassName="w-100"
+              />
+            </Col>
+            <Col md={3}>
+              <label className="filter-label">End Date</label>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Select Date"
+                className="custom-date-picker-input"
+                wrapperClassName="w-100"
+              />
+            </Col>
+            <Col md={2} className="d-flex align-items-end">
+              <button
+                className="reset-filters-btn"
+                onClick={handleResetFilters}
+              >
+                Reset
+              </button>
+            </Col>
+          </Row>
+        </div>
 
-      {/* Contatore risultati */}
-      <p className="results-counter">
-        Showing {filteredReports.length} of {reports.length} reports
-      </p>
+        {/* Counter */}
+        <div className="results-counter">
+          Showing {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''}
+        </div>
 
-      {/* Lista Report */}
-      {filteredReports.length === 0 ? (
-        <Alert variant="info">No reports match the selected filters.</Alert>
-      ) : (
+        {/* Lista Reports */}
         <Stack gap={3}>
-          {filteredReports.map((report) => (
-            <ReportCard 
-              key={report.id} 
-              report={report} 
-              onClick={handleReportClick}
-            />
-          ))}
+          {filteredReports.length > 0 ? (
+            filteredReports.map((report) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                onClick={handleReportClick}
+              />
+            ))
+          ) : (
+            <Alert variant="info">No reports found matching the selected filters.</Alert>
+          )}
         </Stack>
-      )}
 
-      <ReportDescription
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        report={selectedReport}
-      />
-    </Container>
+        {/* Modal per Report Description */}
+        <ReportDescription
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          report={selectedReport}
+        />
+      </Container>
+    </div>
   );
 }
 

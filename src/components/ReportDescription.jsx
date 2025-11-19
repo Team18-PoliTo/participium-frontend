@@ -35,20 +35,12 @@ const categories = [
 function ReportDescription({ show, onHide, report }) {
   const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
   const [explanation, setExplanation] = useState("");
-  const [address, setAddress] = useState("Loading address...");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (report) {
       setSelectedCategory(report.category || "");
       setError(null);
-      
-      // Fetch address
-      if (report.location) {
-        getAddressFromCoordinates(report.location.latitude, report.location.longitude)
-          .then(addr => setAddress(addr))
-          .catch(() => setAddress("Address not available"));
-      }
     }
   }, [report]);
 
@@ -102,7 +94,6 @@ function ReportDescription({ show, onHide, report }) {
   const handleClose = () => {
     setExplanation("");
     setSelectedCategory(report?.category || "");
-    setAddress("Loading address...");
     setError(null);
     onHide();
   };
@@ -132,7 +123,7 @@ function ReportDescription({ show, onHide, report }) {
           <label className="report-desc-label fw-bold">Address</label>
           <div className="d-flex align-items-center gap-2 report-desc-text-display">
             <MapPin size={16} color="#3D5A80" />
-            <span>{address}</span>
+            <span>{report.address || "Address not available"}</span>
           </div>
         </div>
 

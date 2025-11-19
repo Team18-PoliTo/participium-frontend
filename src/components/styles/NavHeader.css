@@ -71,7 +71,8 @@
 }
 
 .nav-login-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-2px);
 }
 
 .nav-register-button {
@@ -80,6 +81,6 @@
 }
 
 .nav-register-button:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.1) !important;
   transform: translateY(-2px);
 }

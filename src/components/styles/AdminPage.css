@@ -1,6 +1,6 @@
 .admin-board {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
   background-color: #E1EDF4;
@@ -143,7 +143,7 @@
   border-radius: 20px;
   padding: 1rem 2rem;
   margin-left: 5rem;
-  max-height: 400px;
+  max-height: 250px;
   display: flex;
   flex-direction: column;
 }
@@ -307,14 +307,12 @@
 .custom-dropdown-toggle:hover {
   background: #87b5ce !important;
   border-color: #293241 !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .custom-dropdown-toggle:focus,
 .custom-dropdown-toggle:active {
   background: #87b5ce !important;
   border-color: #EE6C4D !important;
-  box-shadow: 0 0 0 0.25rem rgba(238, 108, 77, 0.25) !important;
 }
 
 .custom-dropdown-menu {
@@ -323,7 +321,6 @@
   border-radius: 15px;
   padding: 0.5rem 0;
   width: 100% !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .custom-dropdown-item {
@@ -377,8 +374,8 @@
 .search-email-input:focus {
   background: #87b5ce !important;
   border-color: #EE6C4D !important;
-  box-shadow: 0 0 0 0.25rem rgba(238, 108, 77, 0.25) !important;
   outline: none;
+  box-shadow: none !important;
 }
 
 /* Media Queries per Mobile */

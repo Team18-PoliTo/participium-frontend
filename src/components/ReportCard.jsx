@@ -37,30 +37,42 @@ function ReportCard({ report, onClick }) {
   }, [report.location]);
 
   const getCategoryIcon = (category) => {
-    const iconProps = { size: 40, color: "#3D5A80" };
+    const iconProps = { size: 30, color: "#3D5A80" };
     
+    let icon;
     switch (category) {
       case "Water Supply – Drinking Water":
-        return <Droplets {...iconProps} />;
+        icon = <Droplets {...iconProps} />;
+        break;
       case "Architectural Barriers":
-        return <Accessibility {...iconProps} />;
+        icon = <Accessibility {...iconProps} />;
+        break;
       case "Sewer System":
-        return <Waves {...iconProps} />;
+        icon = <Waves {...iconProps} />;
+        break;
       case "Public Lighting":
-        return <Lightbulb {...iconProps} />;
+        icon = <Lightbulb {...iconProps} />;
+        break;
       case "Waste":
-        return <Trash2 {...iconProps} />;
+        icon = <Trash2 {...iconProps} />;
+        break;
       case "Road Signs and Traffic Lights":
-        return <TrafficCone {...iconProps} />;
+        icon = <TrafficCone {...iconProps} />;
+        break;
       case "Roads and Urban Furnishings":
-        return <Construction {...iconProps} />;
+        icon = <Construction {...iconProps} />;
+        break;
       case "Public Green Areas and Playgrounds":
-        return <Trees {...iconProps} />;
+        icon = <Trees {...iconProps} />;
+        break;
       case "Other":
-        return <Wrench {...iconProps} />;
+        icon = <Wrench {...iconProps} />;
+        break;
       default:
-        return <Wrench {...iconProps} />;
+        icon = <Wrench {...iconProps} />;
     }
+
+    return <div className="category-icon-circle">{icon}</div>;
   };
 
   const getCategoryBadge = (category) => {

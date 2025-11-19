@@ -18,6 +18,7 @@ import RoleBasedRedirect from "./components/RoleBasedRedirect";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
+export const MobileContext = createContext();
 
 function App() {
   const [navbarText, setNavbarText] = useState("PARTICIPIUM");
@@ -27,6 +28,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   const checkAuth = async () => {
     try {
@@ -50,6 +52,19 @@ function App() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    const checkIfMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const mobileDevices = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
   if (isCheckingAuth) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
@@ -68,67 +83,59 @@ function App() {
       }}
     >
       <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
-        <Routes>
-          <Route element={<DefaultLayout />}>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/register" element={<Registration />} />
-            <Route path="/login" element={<Login />} />
-            
-            {/* Redirect basato sul ruolo */}
-            <Route path="/dashboard" element={<RoleBasedRedirect />} />
-            
-            {/* Route per Citizen */}
-            <Route
-              path="/how-it-works"
-              element={
-                <ProtectedRoute requireCitizen>
-                  <HowItWorks />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/map"
-              element={
-                <ProtectedRoute requireCitizen>
-                  <MapPage />
-                </ProtectedRoute>
-              }
-            />
-            
-            {/* Route per Admin */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute allowedRoles={["ADMIN"]}>
-                  <AdminPage />
-                </ProtectedRoute>
-              }
-            />
-            
-            {/* Route per Public Relations Officer */}
-            <Route
-              path="/pro"
-              element={
-                <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
-                  <PublicRelationsOfficer />
-                </ProtectedRoute>
-              }
-            />
-            
-            {/* Aggiungi altre route per altri ruoli */}
-            {/* <Route
-              path="/area-manager"
-              element={
-                <ProtectedRoute allowedRoles={["AREA_MANAGER"]}>
-                  <AreaManagerPage />
-                </ProtectedRoute>
-              }
-            /> */}
-            
-            <Route path="/not-authorized" element={<NotAuthorized />} />
-            <Route path="*" element={<Navigate replace to="/" />} />
-          </Route>
-        </Routes>
+        <MobileContext.Provider value={{ isMobile, setIsMobile }}>
+          <Routes>
+            <Route element={<DefaultLayout />}>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/register" element={<Registration />} />
+              <Route path="/login" element={<Login />} />
+              
+              {/* Redirect basato sul ruolo */}
+              <Route path="/dashboard" element={<RoleBasedRedirect />} />
+              
+              {/* Route per Citizen */}
+              <Route
+                path="/how-it-works"
+                element={
+                  <ProtectedRoute requireCitizen>
+                    <HowItWorks />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/map"
+                element={
+                  <ProtectedRoute requireCitizen>
+                    <MapPage />
+                  </ProtectedRoute>
+                }
+              />
+              
+              {/* Route per Admin */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={["ADMIN"]}>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              
+              {/* Route per Public Relations Officer */}
+              <Route
+                path="/pro"
+                element={
+                  <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
+                    <PublicRelationsOfficer />
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route path="/not-authorized" element={<NotAuthorized />} />
+              <Route path="*" element={<Navigate replace to="/" />} />
+            </Route>
+          </Routes>
+        </MobileContext.Provider>
       </NavbarTextContext.Provider>
     </UserContext.Provider>
   );

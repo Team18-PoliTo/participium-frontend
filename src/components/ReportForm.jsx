@@ -17,13 +17,14 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
   // Form state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [categories, setCategories] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [citizenId, setCitizenId] = useState(null);
 
-  // Get citizen ID on component mount
+  // Get citizen ID and categories on component mount
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -34,7 +35,18 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         setError("Error loading user information. Please login again.");
       }
     };
+
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await API.getAllCategories();
+        setCategories(categoriesData);
+      } catch (err) {
+        setError("Error loading categories. Please try again.");
+      }
+    };
+
     fetchUserInfo();
+    fetchCategories();
   }, []);
 
   /**
@@ -113,7 +125,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       !position ||
       !title ||
       !description ||
-      !category ||
+      !categoryId ||
       photos.length === 0
     ) {
       setError("All fields are required.");
@@ -143,7 +155,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         title,
         description,
         citizenId,
-        category,
+        categoryId: parseInt(categoryId),
         location: {
           latitude: position.lat,
           longitude: position.lng,
@@ -161,7 +173,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       // Reset form
       setTitle("");
       setDescription("");
-      setCategory("");
+      setCategoryId("");
       setPhotos([]);
 
       // Call the callback to handle success
@@ -262,21 +274,17 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
           Category (Required)
         </Form.Label>
         <Form.Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
           required
           className="report-form__select"
         >
           <option value="">Choose a category...</option>
-          <option value="water">Water Supply - Drinking Water</option>
-          <option value="barriers">Architectural Barriers</option>
-          <option value="sewer">Sewer System</option>
-          <option value="lighting">Public Lighting</option>
-          <option value="waste">Waste</option>
-          <option value="signs">Road Signs and Traffic Lights</option>
-          <option value="roads">Roads and Urban Furnishings</option>
-          <option value="green">Public Green Areas and Playgrounds</option>
-          <option value="other">Other</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
         </Form.Select>
       </Form.Group>
 

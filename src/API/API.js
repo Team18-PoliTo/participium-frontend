@@ -304,7 +304,7 @@ const addNewReport = async (reportData) => {
       title: reportData.title,
       description: reportData.description,
       citizenId: reportData.citizenId,
-      category: reportData.category,
+      categoryId: reportData.categoryId,
       location: reportData.location,
     };
 
@@ -357,7 +357,7 @@ const addNewReport = async (reportData) => {
   }
 };
 
-const judgeReport = async (reportId, status, category, explanation) => {
+const judgeReport = async (reportId, status, categoryId, explanation) => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
     const response = await fetch(
@@ -371,7 +371,7 @@ const judgeReport = async (reportId, status, category, explanation) => {
         credentials: "include",
         body: JSON.stringify({
           status: status,
-          category: category,
+          categoryId: categoryId,
           explanation: explanation,
         }),
       }
@@ -383,6 +383,29 @@ const judgeReport = async (reportId, status, category, explanation) => {
       const errorData = await response.json();
       throw new Error(
         errorData.error || errorData.message || "Failed to judge report"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllCategories = async () => {
+  try {
+    const response = await fetch(`${SERVER_URL}api/categories`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch categories"
       );
     }
   } catch (error) {
@@ -402,6 +425,7 @@ const API = {
   getAllRoles,
   addNewReport,
   judgeReport,
+  getAllCategories,
 };
 
 export default API;

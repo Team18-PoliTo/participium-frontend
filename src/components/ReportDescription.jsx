@@ -20,27 +20,29 @@ import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
 
-const categories = [
-  "Water Supply – Drinking Water",
-  "Architectural Barriers",
-  "Sewer System",
-  "Public Lighting",
-  "Waste",
-  "Road Signs and Traffic Lights",
-  "Roads and Urban Furnishings",
-  "Public Green Areas and Playgrounds",
-  "Other"
-];
-
 function ReportDescription({ show, onHide, report }) {
-  const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [explanation, setExplanation] = useState("");
   const [address, setAddress] = useState("Loading address...");
   const [error, setError] = useState(null);
 
+  // Fetch categories when component mounts
   useEffect(() => {
-    if (report) {
-      setSelectedCategory(report.category || "");
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await API.getAllCategories();
+        setCategories(categoriesData);
+      } catch (err) {
+        console.error("Error loading categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (report && report.category) {
+      setSelectedCategoryId(report.category.id);
       setError(null);
       
       // Fetch address
@@ -52,10 +54,10 @@ function ReportDescription({ show, onHide, report }) {
     }
   }, [report]);
 
-  const getCategoryIcon = (category, size = 20) => {
+  const getCategoryIcon = (categoryName, size = 20) => {
     const iconProps = { size, color: "#3D5A80" };
     
-    switch (category) {
+    switch (categoryName) {
       case "Water Supply – Drinking Water":
         return <Droplets {...iconProps} />;
       case "Architectural Barriers":
@@ -79,10 +81,16 @@ function ReportDescription({ show, onHide, report }) {
     }
   };
 
+  // Get category name from ID
+  const getCategoryNameById = (categoryId) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : "";
+  };
+
   const handleApprove = async () => {
     try {
       setError(null);
-      const updatedReport = await API.judgeReport(report.id, "Assigned", selectedCategory, explanation);
+      const updatedReport = await API.judgeReport(report.id, "Assigned", selectedCategoryId, explanation);
       handleClose();
     } catch (error) {
       setError(error.message || "Failed to approve the report. Please try again.");
@@ -92,7 +100,7 @@ function ReportDescription({ show, onHide, report }) {
   const handleReject = async () => {
     try {
       setError(null);
-      const updatedReport = await API.judgeReport(report.id, "Rejected", selectedCategory, explanation);
+      const updatedReport = await API.judgeReport(report.id, "Rejected", selectedCategoryId, explanation);
       handleClose();
     } catch (error) {
       setError(error.message || "Failed to reject the report. Please try again.");
@@ -101,7 +109,7 @@ function ReportDescription({ show, onHide, report }) {
 
   const handleClose = () => {
     setExplanation("");
-    setSelectedCategory(report?.category || "");
+    setSelectedCategoryId(report?.category?.id || null);
     setAddress("Loading address...");
     setError(null);
     onHide();
@@ -166,20 +174,20 @@ function ReportDescription({ show, onHide, report }) {
           <Dropdown className="report-desc-category-dropdown">
             <Dropdown.Toggle id="report-category-dropdown">
               <div className="d-flex align-items-center gap-2">
-                {getCategoryIcon(selectedCategory, 18)}
-                <span>{selectedCategory}</span>
+                {getCategoryIcon(getCategoryNameById(selectedCategoryId), 18)}
+                <span>{getCategoryNameById(selectedCategoryId)}</span>
               </div>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {categories.map((category) => (
                 <Dropdown.Item
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  active={selectedCategory === category}
+                  key={category.id}
+                  onClick={() => setSelectedCategoryId(category.id)}
+                  active={selectedCategoryId === category.id}
                 >
                   <div className="d-flex align-items-center gap-2">
-                    {getCategoryIcon(category, 16)}
-                    <span>{category}</span>
+                    {getCategoryIcon(category.name, 16)}
+                    <span>{category.name}</span>
                   </div>
                 </Dropdown.Item>
               ))}

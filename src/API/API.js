@@ -390,6 +390,27 @@ const judgeReport = async (reportId, status, category, explanation) => {
   }
 };
 
+const getAllCategories = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    
+    const response = await fetch(`${SERVER_URL}api/categories`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+      },
+      credentials: "include"
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
+  }catch (error) { 
+    throw error;
+   }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -402,6 +423,7 @@ const API = {
   getAllRoles,
   addNewReport,
   judgeReport,
+  getAllCategories
 };
 
 export default API;

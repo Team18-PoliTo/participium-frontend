@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Dropdown } from "react-bootstrap";
 import "./styles/ReportForm.css";
 import API from "../API/API";
-
+import { getCategoryIcon } from "../constants/categoryIcons";
 /**
  * ReportForm Component
  *
@@ -22,13 +22,26 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [citizenId, setCitizenId] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Load categories (could be fetched from API if needed)
+    const loadCategories = async () => {
+      try {
+        const fetchedCategories = await API.getAllCategories();
+        setCategories(fetchedCategories);
+      } catch (err) {
+        setCategories([]);
+      }
+    };
+    loadCategories();
+  }, []);
 
   // Get citizen ID on component mount
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const user = await API.getUserInfo();
-        // ID is in user.profile.id, not user.id
         setCitizenId(user.profile.id);
       } catch (err) {
         setError("Error loading user information. Please login again.");
@@ -261,23 +274,43 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         <Form.Label className="report-form__label">
           Category (Required)
         </Form.Label>
-        <Form.Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="report-form__select"
-        >
-          <option value="">Choose a category...</option>
-          <option value="water">Water Supply - Drinking Water</option>
-          <option value="barriers">Architectural Barriers</option>
-          <option value="sewer">Sewer System</option>
-          <option value="lighting">Public Lighting</option>
-          <option value="waste">Waste</option>
-          <option value="signs">Road Signs and Traffic Lights</option>
-          <option value="roads">Roads and Urban Furnishings</option>
-          <option value="green">Public Green Areas and Playgrounds</option>
-          <option value="other">Other</option>
-        </Form.Select>
+        <Dropdown className="w-100">
+          <Dropdown.Toggle
+            variant="light"
+            id="category-dropdown"
+            className="w-100 text-start d-flex align-items-center justify-content-between report-form__select report-form__category-toggle"
+          >
+            {category ? (
+              <div className="d-flex align-items-center gap-2 report-form__category-selected">
+                <span className="report-form__category-icon">
+                  {getCategoryIcon(category, 18)}
+                </span>
+                <span className="report-form__category-text">{category}</span>
+              </div>
+            ) : (
+              <span className="text-muted">Choose a category...</span>
+            )}
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="w-100 report-form__category-menu">
+            {categories.map((categorie) => (
+              <Dropdown.Item
+                key={categorie.id}
+                onClick={() => setCategory(categorie.name)}
+                active={category === categorie.name}
+                className="report-form__category-item"
+              >
+                <div className="d-flex align-items-center gap-2 report-form__category-item-content">
+                  <span className="report-form__category-icon">
+                    {getCategoryIcon(categorie.name, 16)}
+                  </span>
+                  <span className="report-form__category-item-text">
+                    {categorie.name}
+                  </span>
+                </div>
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
       </Form.Group>
 
       {/* Photo upload section */}

@@ -163,3 +163,43 @@
 .report-form__remove-photo-btn:hover {
     background-color: #c82333 !important;
 }
+
+/* Category Dropdown Styles */
+.report-form__category-toggle {
+    overflow: hidden;
+}
+
+.report-form__category-selected {
+    min-width: 0;
+    flex: 1;
+}
+
+.report-form__category-icon {
+    flex-shrink: 0;
+}
+
+.report-form__category-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.report-form__category-menu {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.report-form__category-item {
+    overflow: hidden;
+}
+
+.report-form__category-item-content {
+    min-width: 0;
+}
+
+.report-form__category-item-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}

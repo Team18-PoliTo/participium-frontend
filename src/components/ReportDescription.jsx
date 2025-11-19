@@ -1,42 +1,19 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col, Dropdown, Alert } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { 
-  Droplets, 
-  Accessibility, 
-  Waves, 
-  Lightbulb, 
-  Trash2, 
-  TrafficCone,
-  Construction,
-  Trees,
-  Wrench,
-  MapPin,
-  X,
-  Check
-} from "lucide-react";
+import { MapPin, X, Check } from "lucide-react";
 import { getAddressFromCoordinates } from "../utils/geocoding";
+import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
-
-const categories = [
-  "Water Supply – Drinking Water",
-  "Architectural Barriers",
-  "Sewer System",
-  "Public Lighting",
-  "Waste",
-  "Road Signs and Traffic Lights",
-  "Roads and Urban Furnishings",
-  "Public Green Areas and Playgrounds",
-  "Other"
-];
 
 function ReportDescription({ show, onHide, report }) {
   const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
   const [explanation, setExplanation] = useState("");
   const [address, setAddress] = useState("Loading address...");
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (report) {
@@ -52,32 +29,18 @@ function ReportDescription({ show, onHide, report }) {
     }
   }, [report]);
 
-  const getCategoryIcon = (category, size = 20) => {
-    const iconProps = { size, color: "#3D5A80" };
-    
-    switch (category) {
-      case "Water Supply – Drinking Water":
-        return <Droplets {...iconProps} />;
-      case "Architectural Barriers":
-        return <Accessibility {...iconProps} />;
-      case "Sewer System":
-        return <Waves {...iconProps} />;
-      case "Public Lighting":
-        return <Lightbulb {...iconProps} />;
-      case "Waste":
-        return <Trash2 {...iconProps} />;
-      case "Road Signs and Traffic Lights":
-        return <TrafficCone {...iconProps} />;
-      case "Roads and Urban Furnishings":
-        return <Construction {...iconProps} />;
-      case "Public Green Areas and Playgrounds":
-        return <Trees {...iconProps} />;
-      case "Other":
-        return <Wrench {...iconProps} />;
-      default:
-        return <Wrench {...iconProps} />;
-    }
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await API.getAllCategories();
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleApprove = async () => {
     try {
@@ -173,13 +136,13 @@ function ReportDescription({ show, onHide, report }) {
             <Dropdown.Menu>
               {categories.map((category) => (
                 <Dropdown.Item
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  active={selectedCategory === category}
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.name)}
+                  active={selectedCategory === category.name}
                 >
                   <div className="d-flex align-items-center gap-2">
-                    {getCategoryIcon(category, 16)}
-                    <span>{category}</span>
+                    {getCategoryIcon(category.name, 16)}
+                    <span>{category.name}</span>
                   </div>
                 </Dropdown.Item>
               ))}

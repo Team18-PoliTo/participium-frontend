@@ -34,93 +34,90 @@ function NavHeader() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
-      <Navbar className="navbar-custom">
-        <Container>
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Navbar.Brand>{navbarText}</Navbar.Brand>
-          </Link>
-          
-          {isMobile ? (
-            // Mobile hamburger menu
-            <button 
-              className="hamburger-button" 
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              <Menu size={24} />
-            </button>
-          ) : (
-            // Desktop buttons
-            <>
-              {(citizenLoggedIn || userLoggedIn) && (
-                <Link className="btn home-button" to="/" onClick={handleLogout}>
-                  Logout
-                </Link>
-              )}
-              {!citizenLoggedIn && !userLoggedIn && (
-                <div className="nav-auth-buttons">
-                  <Link className="btn nav-login-button" to="/login">
-                    Login
-                  </Link>
-                  <Link className="btn nav-register-button" to="/register">
-                    Sign Up
-                  </Link>
-                </div>
-              )}
-            </>
-          )}
-        </Container>
-      </Navbar>
-      
-      {/* Overlay - solo se menu aperto */}
+      {/* Overlay per chiudere il menu */}
       {isMobile && isMenuOpen && (
-        <div className="menu-overlay" onClick={toggleMenu}></div>
+        <div className="menu-overlay" onClick={closeMenu}></div>
       )}
       
-      {/* Mobile side menu - solo se menu aperto */}
-      {isMobile && isMenuOpen && (
-        <div className="mobile-side-menu open">
-          <div className="mobile-menu-header">
-            <button 
-              className="close-menu-button" 
-              onClick={toggleMenu}
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
-          </div>
-          <div className="mobile-menu-content">
-            {(citizenLoggedIn || userLoggedIn) ? (
-              <Link 
-                className="mobile-menu-item" 
-                to="/" 
-                onClick={handleLogout}
+      <div style={{ position: 'relative' }}>
+        <Navbar className="navbar-custom">
+          <Container>
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+              <Navbar.Brand>{navbarText}</Navbar.Brand>
+            </Link>
+            
+            {isMobile ? (
+              // Mobile hamburger menu
+              <button 
+                className="hamburger-button" 
+                onClick={toggleMenu}
+                aria-label="Toggle menu"
               >
-                Logout
-              </Link>
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             ) : (
+              // Desktop buttons
               <>
-                <Link 
-                  className="mobile-menu-item" 
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  className="mobile-menu-item" 
-                  to="/register"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
+                {(citizenLoggedIn || userLoggedIn) && (
+                  <Link className="btn home-button" to="/" onClick={handleLogout}>
+                    Logout
+                  </Link>
+                )}
+                {!citizenLoggedIn && !userLoggedIn && (
+                  <div className="nav-auth-buttons">
+                    <Link className="btn nav-login-button" to="/login">
+                      Login
+                    </Link>
+                    <Link className="btn nav-register-button" to="/register">
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
               </>
             )}
+          </Container>
+        </Navbar>
+        
+        {/* Mobile dropdown menu - sotto la navbar */}
+        {isMobile && (
+          <div className={`mobile-dropdown-menu ${isMenuOpen ? 'open' : ''}`}>
+            <div className="mobile-menu-content">
+              {(citizenLoggedIn || userLoggedIn) ? (
+                <Link 
+                  className="mobile-menu-item" 
+                  to="/" 
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Link>
+              ) : (
+                <>
+                  <Link 
+                    className="mobile-menu-item" 
+                    to="/login"
+                    onClick={closeMenu}
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    className="mobile-menu-item" 
+                    to="/register"
+                    onClick={closeMenu}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }

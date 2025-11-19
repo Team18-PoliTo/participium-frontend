@@ -2,9 +2,12 @@ import "./styles/Homepage.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { MapPin, FileText, CheckCircle, Users } from "lucide-react";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 function Homepage() {
   const navigate = useNavigate();
+  const { citizenLoggedIn } = useContext(UserContext);
 
   const features = [
     {
@@ -124,9 +127,9 @@ function Homepage() {
           </p>
           <Button
             className="cta-button-large"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate(citizenLoggedIn ? "/map" : "/register")}
           >
-            Sign Up for Free
+            {citizenLoggedIn ? "Go to the Map" : "Sign Up for Free"}
           </Button>
         </Container>
       </section>

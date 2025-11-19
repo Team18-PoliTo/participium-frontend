@@ -82,7 +82,7 @@ function ReportCard({ report, onClick }) {
   return (
     <Card 
       className="shadow-sm report-card-clickable" 
-      onClick={() => onClick(report)}
+      onClick={() => onClick({ ...report, address })}
       style={{ cursor: 'pointer' }}
     >
       <Card.Body className="d-flex justify-content-between align-items-center">

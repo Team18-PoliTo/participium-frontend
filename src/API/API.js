@@ -299,22 +299,14 @@ const addNewReport = async (reportData) => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
 
-    // Build request body, only including fields that exist
+    // Build request body with photoIds instead of binary data
     const requestBody = {
       title: reportData.title,
       description: reportData.description,
-      citizenId: reportData.citizenId,
       categoryId: reportData.categoryId,
       location: reportData.location,
+      photoIds: reportData.photoIds, // Array of uploaded file IDs
     };
-
-    // Add photos only if they exist
-    if (reportData.binaryPhoto1)
-      requestBody.binaryPhoto1 = reportData.binaryPhoto1;
-    if (reportData.binaryPhoto2)
-      requestBody.binaryPhoto2 = reportData.binaryPhoto2;
-    if (reportData.binaryPhoto3)
-      requestBody.binaryPhoto3 = reportData.binaryPhoto3;
 
     const response = await fetch(`${SERVER_URL}api/citizens/reports`, {
       method: "POST",
@@ -413,6 +405,64 @@ const getAllCategories = async () => {
   }
 };
 
+const uploadFile = async (formData) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/files/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "File validation failed");
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to upload file"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteTempFile = async (fileId) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/files/temp/${fileId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to delete file"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -426,6 +476,8 @@ const API = {
   addNewReport,
   judgeReport,
   getAllCategories,
+  uploadFile,
+  deleteTempFile,
 };
 
 export default API;

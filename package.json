@@ -9,7 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "clean-branches": "git fetch -p && git branch -vv | findstr \": gone]\" | for /f \"tokens=1\" %i in ('more') do git branch -D %i"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

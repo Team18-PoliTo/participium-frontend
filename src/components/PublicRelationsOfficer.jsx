@@ -157,6 +157,7 @@ function PublicRelationsOfficer() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [sortOrder, setSortOrder] = useState("desc"); // "asc" o "desc"
 
   const {navbarText, setNavbarSubtitle} = useContext(NavbarTextContext);
 
@@ -166,7 +167,7 @@ function PublicRelationsOfficer() {
 
   useEffect(() => {
     applyFilters();
-  }, [reports, selectedCategory, startDate, endDate]);
+  }, [reports, selectedCategory, startDate, endDate, sortOrder]);
 
   const fetchReports = async () => {
     try {
@@ -239,6 +240,13 @@ function PublicRelationsOfficer() {
       );
     }
 
+    // Ordinamento per data
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+
     setFilteredReports(filtered);
   };
 
@@ -246,6 +254,7 @@ function PublicRelationsOfficer() {
     setSelectedCategory("");
     setStartDate(null);
     setEndDate(null);
+    setSortOrder("desc");
   };
 
   const handleReportClick = (report) => {
@@ -274,7 +283,7 @@ function PublicRelationsOfficer() {
         {/* Sezione Filtri */}
         <div className="filters-section">
           <Row className="g-3">
-            <Col md={4}>
+            <Col md={3}>
               <label className="filter-label">Category</label>
               <Dropdown className="custom-category-dropdown">
                 <Dropdown.Toggle id="category-dropdown">
@@ -307,7 +316,7 @@ function PublicRelationsOfficer() {
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-            <Col md={3}>
+            <Col md={2}>
               <label className="filter-label">Start Date</label>
               <DatePicker
                 selected={startDate}
@@ -318,7 +327,7 @@ function PublicRelationsOfficer() {
                 wrapperClassName="w-100"
               />
             </Col>
-            <Col md={3}>
+            <Col md={2}>
               <label className="filter-label">End Date</label>
               <DatePicker
                 selected={endDate}
@@ -328,6 +337,28 @@ function PublicRelationsOfficer() {
                 className="custom-date-picker-input"
                 wrapperClassName="w-100"
               />
+            </Col>
+            <Col md={3}>
+              <label className="filter-label">Sort by Date</label>
+              <Dropdown className="custom-category-dropdown">
+                <Dropdown.Toggle id="sort-dropdown">
+                  <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item 
+                    onClick={() => setSortOrder("desc")}
+                    active={sortOrder === "desc"}
+                  >
+                    Newest First
+                  </Dropdown.Item>
+                  <Dropdown.Item 
+                    onClick={() => setSortOrder("asc")}
+                    active={sortOrder === "asc"}
+                  >
+                    Oldest First
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Col>
             <Col md={2} className="d-flex align-items-end">
               <button

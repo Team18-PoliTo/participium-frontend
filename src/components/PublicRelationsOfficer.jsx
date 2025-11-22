@@ -10,119 +10,6 @@ import "./styles/PublicRelationsOfficer.css";
 import { NavbarTextContext } from "../App";
 import { getCategoryIcon } from "../constants/categoryIcons";
 
-// Dati dummy per testing
-const dummyReports = [
-  {
-    id: 1,
-    title: "Broken Water Fountain",
-    description: "Public water fountain not working in the city center.",
-    category: "Water Supply – Drinking Water",
-    status: "PENDING",
-    createdAt: "2025-11-15T10:30:00",
-
-    location: {
-      latitude: 45.0703,
-      longitude: 7.6869
-    }
-  },
-  {
-    id: 2,
-    title: "Missing Wheelchair Ramp",
-    description: "No accessibility ramp at the entrance of public building.",
-    category: "Architectural Barriers",
-    status: "IN_PROGRESS",
-    createdAt: "2025-11-14T14:20:00",
-    location: {
-      latitude: 45.0677,
-      longitude: 7.6824
-    }
-  },
-  {
-    id: 3,
-    title: "Clogged Storm Drain",
-    description: "Storm drain is clogged causing water accumulation on the street.",
-    category: "Sewer System",
-    status: "RESOLVED",
-    createdAt: "2025-11-10T08:45:00",
-    location: {
-      latitude: 45.0705,
-      longitude: 7.6868
-    }
-  },
-  {
-    id: 4,
-    title: "Broken Street Light",
-    description: "Street light not working near the park entrance.",
-    category: "Public Lighting",
-    status: "PENDING",
-    createdAt: "2025-11-17T11:00:00",
-    location: {
-      latitude: 45.0689,
-      longitude: 7.6812
-    }
-  },
-  {
-    id: 5,
-    title: "Overflowing Trash Bin",
-    description: "Public trash bin is full and overflowing, creating unsanitary conditions.",
-    category: "Waste",
-    status: "IN_PROGRESS",
-    createdAt: "2025-11-12T15:30:00",
-    location: {
-      latitude: 45.0538,
-      longitude: 7.6853
-    }
-  },
-  {
-    id: 6,
-    title: "Malfunctioning Traffic Light",
-    description: "Traffic light stuck on red causing traffic congestion.",
-    category: "Road Signs and Traffic Lights",
-    status: "REJECTED",
-    createdAt: "2025-11-13T09:15:00",
-    location: {
-      latitude: 45.0643,
-      longitude: 7.6958
-    }
-  },
-  {
-    id: 7,
-    title: "Large Pothole on Main Road",
-    description: "Dangerous pothole causing damage to vehicles.",
-    category: "Roads and Urban Furnishings",
-    status: "IN_PROGRESS",
-    createdAt: "2025-11-16T07:20:00",
-    location: {
-      latitude: 45.0456,
-      longitude: 7.6698
-    }
-  },
-  {
-    id: 8,
-    title: "Broken Playground Equipment",
-    description: "Swing set is broken and unsafe for children.",
-    category: "Public Green Areas and Playgrounds",
-    status: "PENDING",
-    createdAt: "2025-11-18T08:00:00",
-    location: {
-      latitude: 45.0832,
-      longitude: 7.6547
-    }
-  },
-  {
-    id: 9,
-    title: "Graffiti on Public Wall",
-    description: "Vandalism on municipal building wall.",
-    category: "Other",
-    status: "RESOLVED",
-    createdAt: "2025-11-11T16:45:00",
-    location: {
-      latitude: 45.0625,
-      longitude: 7.6721
-    }
-  }
-];
-
 
 function PublicRelationsOfficer() {
   const [reports, setReports] = useState([]);
@@ -132,7 +19,7 @@ function PublicRelationsOfficer() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState([]);
-  
+
   // Filtri
   const [selectedCategory, setSelectedCategory] = useState("");
   const [startDate, setStartDate] = useState(null);
@@ -142,39 +29,45 @@ function PublicRelationsOfficer() {
   const {navbarText, setNavbarSubtitle} = useContext(NavbarTextContext);
 
   useEffect(() => {
-    fetchReports();
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await API.getAllCategories();
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchReportsIsPending = async () => {
+      try {
+        setLoading(true);
+        const fetchedReports = await API.getAllReportsIsPending();
+        setReports(fetchedReports);
+        setError(null);
+      } catch (error) {
+        console.error("Failed to fetch reports:", error);
+        setError("Failed to load reports. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReportsIsPending();
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [reports, selectedCategory, startDate, endDate, sortOrder]);
 
-  const fetchReports = async () => {
-    try {
-      setLoading(true);
-      // Commenta questa riga per usare i dati dummy
-      // const data = await API.getReports();
-      
-      // Simula una chiamata API con un delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const data = dummyReports;
-      
-      setReports(data);
-      setError(null);
-    } catch (err) {
-      setError("Failed to load reports. Please try again.");
-      console.error("Error fetching reports:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const applyFilters = () => {
     let filtered = [...reports];
 
     // Filtro per categoria
     if (selectedCategory) {
-      filtered = filtered.filter(report => report.category === selectedCategory);
+      filtered = filtered.filter(report => report.category.name === selectedCategory);
     }
 
     // Filtro per data inizio
@@ -256,13 +149,13 @@ function PublicRelationsOfficer() {
                   </Dropdown.Item>
                   {categories.map((category) => (
                     <Dropdown.Item
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      active={selectedCategory === category}
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.name)}
+                      active={selectedCategory === category.id}
                     >
                       <div className="d-flex align-items-center gap-2">
-                        {getCategoryIcon(category, 18)}
-                        <span>{category}</span>
+                        {getCategoryIcon(categories.find((c) => c.id === selectedCategory)?.name || "", 18)}
+                        <span>{category.name}</span>
                       </div>
                     </Dropdown.Item>
                   ))}

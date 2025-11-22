@@ -88,7 +88,13 @@ function ReportDescription({ show, onHide, report }) {
   if (!report) return null;
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+      centered
+      fullscreen="md-down"
+    >
       <Modal.Header closeButton className="report-desc-modal-header">
         <Modal.Title>Report Details</Modal.Title>
       </Modal.Header>
@@ -195,9 +201,9 @@ function ReportDescription({ show, onHide, report }) {
           <label className="report-desc-label fw-bold">Included Photos</label>
           <div className="report-desc-photos-container">
             {report.photos && report.photos.length > 0 ? (
-              <Row className="g-2">
+              <Row className="g-3">
                 {report.photos.map((photo, index) => (
-                  <Col key={index} xs={6} md={4}>
+                  <Col key={index} xs={12} md={4}>
                     <img
                       src={photo}
                       alt={`Report photo ${index + 1}`}

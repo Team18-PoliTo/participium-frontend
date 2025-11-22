@@ -69,6 +69,21 @@
   align-items: center !important;
   justify-content: flex-start !important;
   transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.custom-category-dropdown .dropdown-toggle > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.custom-category-dropdown .dropdown-toggle > div > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .custom-category-dropdown .dropdown-toggle::after {
@@ -107,6 +122,20 @@
   font-weight: 400;
   padding: 0.5rem 0.75rem;
   transition: all 0.2s ease;
+}
+
+.custom-category-dropdown .dropdown-item > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.custom-category-dropdown .dropdown-item > div > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .custom-category-dropdown .dropdown-item:hover {

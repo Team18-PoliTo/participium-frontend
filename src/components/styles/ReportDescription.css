@@ -53,6 +53,9 @@
   align-items: center !important;
   justify-content: flex-start !important;
   transition: all 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .report-desc-category-dropdown .dropdown-toggle::after {
@@ -61,6 +64,20 @@
   top: 50%;
   transform: translateY(-50%);
   margin-left: 0 !important;
+}
+
+.report-desc-category-dropdown .dropdown-toggle > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.report-desc-category-dropdown .dropdown-toggle > div > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .report-desc-category-dropdown .dropdown-toggle:hover {
@@ -91,6 +108,20 @@
   font-weight: 400;
   padding: 0.5rem 0.75rem;
   transition: all 0.2s ease;
+}
+
+.report-desc-category-dropdown .dropdown-item > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.report-desc-category-dropdown .dropdown-item > div > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .report-desc-category-dropdown .dropdown-item:hover {
@@ -141,16 +172,77 @@
 
 .report-desc-photo {
   width: 100%;
-  height: 150px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #3D5A80;
+  border-radius: 12px;
+  border: 2px solid #3D5A80;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .report-desc-photo:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(61, 90, 128, 0.3);
+  border-color: #EE6C4D;
+  z-index: 10;
+}
+
+/* Modal per visualizzare l'immagine ingrandita */
+.photo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+  animation: fadeIn 0.2s ease;
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.photo-modal-container {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-modal-content {
+  max-width: 100%;
+  max-height: 95vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  animation: zoomIn 0.25s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .report-desc-btn-cancel {

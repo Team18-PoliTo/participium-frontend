@@ -281,17 +281,18 @@ function ReportDescription({ show, onHide, report }) {
       <Modal
         show={!!selectedPhoto}
         onHide={() => setSelectedPhoto(null)}
-        size="xl"
+        size="lg"
         centered
+        className="photo-preview-modal"
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton className="report-desc-modal-header">
           <Modal.Title>Photo Preview</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-0">
+        <Modal.Body className="p-0 bg-dark">
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ width: '100%', height: 'auto' }}
+            style={{ width: '100%', height: 'auto', display: 'block' }}
           />
         </Modal.Body>
       </Modal>

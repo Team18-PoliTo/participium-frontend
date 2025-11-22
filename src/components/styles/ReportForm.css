@@ -189,6 +189,26 @@
     overflow-y: auto;
 }
 
+/* Stile per la scrollbar */
+.report-form__category-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-track {
+    background: #d0dfe8;
+    border-radius: 10px;
+    margin: 0.5rem 0;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb {
+    background: #3D5A80;
+    border-radius: 10px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb:hover {
+    background: #293241;
+}
+
 .report-form__category-item {
     overflow: hidden;
 }

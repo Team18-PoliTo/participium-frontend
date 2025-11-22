@@ -38,7 +38,9 @@ function ReportCard({ report, onClick }) {
     >
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center gap-3">
-          {getCategoryIcon(report.category.name,30)}
+          <div className="category-icon-circle">
+            {getCategoryIcon(report.category.name, 32)}
+          </div>
           <div className="d-flex flex-column gap-1">
             <Card.Title className="mb-0">{report.title}</Card.Title>
             <div className="d-flex align-items-center gap-1 text-muted small">

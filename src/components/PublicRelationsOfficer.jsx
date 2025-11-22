@@ -151,10 +151,10 @@ function PublicRelationsOfficer() {
                     <Dropdown.Item
                       key={category.id}
                       onClick={() => setSelectedCategory(category.name)}
-                      active={selectedCategory === category.id}
+                      active={selectedCategory === category.name}
                     >
                       <div className="d-flex align-items-center gap-2">
-                        {getCategoryIcon(categories.find((c) => c.id === selectedCategory)?.name || "", 18)}
+                        {getCategoryIcon(category.name, 18)}
                         <span>{category.name}</span>
                       </div>
                     </Dropdown.Item>

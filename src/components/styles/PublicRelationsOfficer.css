@@ -113,6 +113,28 @@
   padding: 0.5rem 0;
   width: 100% !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Stile per la scrollbar */
+.custom-category-dropdown .dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-category-dropdown .dropdown-menu::-webkit-scrollbar-track {
+  background: #d0dfe8;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+}
+
+.custom-category-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+  background: #3D5A80;
+  border-radius: 10px;
+}
+
+.custom-category-dropdown .dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #293241;
 }
 
 .custom-category-dropdown .dropdown-item {

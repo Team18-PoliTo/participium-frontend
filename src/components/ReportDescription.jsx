@@ -16,7 +16,7 @@ import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
 
-function ReportDescription({ show, onHide, report }) {
+function ReportDescription({ show, onHide, report, onReportUpdated }) {
   const [selectedCategory, setSelectedCategory] = useState(
     report?.category?.id || ""
   );
@@ -24,11 +24,14 @@ function ReportDescription({ show, onHide, report }) {
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [isRejecting, setIsRejecting] = useState(false);
 
   useEffect(() => {
     if (report) {
       setSelectedCategory(report.category?.id || "");
       setError(null);
+      setIsRejecting(false);
+      setExplanation("");
     }
   }, [report]);
 
@@ -45,36 +48,26 @@ function ReportDescription({ show, onHide, report }) {
     fetchCategories();
   }, []);
 
-  const handleApprove = async () => {
+  const handleConfirm = async () => {
     try {
       setError(null);
+      const status = isRejecting ? "Rejected" : "Assigned";
+      const explanationText = isRejecting ? explanation : "No explanation required";
       const updatedReport = await API.judgeReport(
         report.id,
-        "Assigned",
+        status,
         selectedCategory,
-        explanation
+        explanationText
       );
+      
+      if (onReportUpdated) {
+        onReportUpdated(report.id);
+      }
+      
       handleClose();
     } catch (error) {
       setError(
-        error.message || "Failed to approve the report. Please try again."
-      );
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      setError(null);
-      const updatedReport = await API.judgeReport(
-        report.id,
-        "Rejected",
-        selectedCategory,
-        explanation
-      );
-      handleClose();
-    } catch (error) {
-      setError(
-        error.message || "Failed to reject the report. Please try again."
+        error.message || `Failed to ${isRejecting ? 'reject' : 'approve'} the report. Please try again.`
       );
     }
   };
@@ -83,6 +76,7 @@ function ReportDescription({ show, onHide, report }) {
     setExplanation("");
     setSelectedCategory(report?.category?.id || "");
     setError(null);
+    setIsRejecting(false);
     onHide();
   };
 
@@ -222,17 +216,39 @@ function ReportDescription({ show, onHide, report }) {
             </div>
           </div>
 
-          {/* Explanation */}
+          {/* Action Toggle */}
+          <div className="mb-3">
+            <label className="report-desc-label fw-bold">Action</label>
+            <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
+              <Button
+                className={`report-desc-toggle-btn ${!isRejecting ? 'active' : ''}`}
+                variant="link"
+                onClick={() => setIsRejecting(false)}
+              >
+                Approve
+              </Button>
+              <Button
+                className={`report-desc-toggle-btn ${isRejecting ? 'active' : ''}`}
+                variant="link"
+                onClick={() => setIsRejecting(true)}
+              >
+                Reject
+              </Button>
+            </div>
+          </div>
+
+          {/* Explanation - always shown */}
           <div className="mb-3">
             <label className="report-desc-label fw-bold">Explanation</label>
             <Form.Control
               as="textarea"
               rows={4}
-              placeholder="Enter your explanation here..."
-              value={explanation}
+              placeholder={isRejecting ? "Enter your explanation here..." : "No explanation required"}
+              value={isRejecting ? explanation : ""}
               onChange={(e) => setExplanation(e.target.value)}
               className="report-desc-textarea"
-              required
+              disabled={!isRejecting}
+              required={isRejecting}
             />
           </div>
 
@@ -256,24 +272,14 @@ function ReportDescription({ show, onHide, report }) {
           >
             Cancel
           </Button>
-          <div className="d-flex gap-2">
-            <Button
-              variant="danger"
-              onClick={handleReject}
-              className="report-desc-btn-reject d-flex align-items-center gap-2"
-            >
-              <X size={18} />
-              Reject
-            </Button>
-            <Button
-              variant="success"
-              onClick={handleApprove}
-              className="report-desc-btn-approve d-flex align-items-center gap-2"
-            >
-              <Check size={18} />
-              Approve
-            </Button>
-          </div>
+          <Button
+            variant={isRejecting ? "danger" : "success"}
+            onClick={handleConfirm}
+            className={`d-flex align-items-center gap-2 ${isRejecting ? 'report-desc-btn-reject' : 'report-desc-btn-approve'}`}
+          >
+            {isRejecting ? <X size={18} /> : <Check size={18} />}
+            {isRejecting ? "Reject Report" : "Approve Report"}
+          </Button>
         </Modal.Footer>
       </Modal>
 

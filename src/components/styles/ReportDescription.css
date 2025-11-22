@@ -226,7 +226,7 @@
 
 .report-desc-photo:hover {
   transform: scale(1.08);
-  box-shadow: 0 8px 20px rgba(61, 90, 128, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   border-color: #EE6C4D;
   z-index: 10;
 }
@@ -279,4 +279,89 @@
   background-color: #d85a3a !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.report-desc-radio {
+  font-size: 1rem;
+  color: #3D5A80;
+}
+
+.report-desc-radio .form-check-input {
+  border-color: #3D5A80;
+  cursor: pointer;
+}
+
+.report-desc-radio .form-check-input:checked {
+  background-color: #3D5A80;
+  border-color: #3D5A80;
+}
+
+.report-desc-radio .form-check-label {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.report-desc-action-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    background-color: rgba(61, 90, 128, 0.2);
+    border-radius: 25px;
+    padding: 4px;
+    max-width: 300px;
+    position: relative;
+}
+
+.report-desc-action-toggle::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background-color: #EE6C4D;
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 0;
+}
+
+.report-desc-action-toggle.reject-active::before {
+    transform: translateX(100%);
+    background-color: #3D5A80;
+}
+
+.report-desc-toggle-btn {
+    flex: 1;
+    border-radius: 20px !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500 !important;
+    position: relative;
+    z-index: 1;
+    background-color: transparent !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.report-desc-toggle-btn:not(.active) {
+    color: rgba(61, 90, 128, 0.7) !important;
+}
+
+.report-desc-toggle-btn.active {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.report-desc-toggle-btn:hover:not(.active) {
+    color: rgba(61, 90, 128, 0.9) !important;
+}
+
+.report-desc-toggle-btn:hover {
+    text-decoration: none !important;
+}
+
+.report-desc-toggle-btn:active {
+    transform: scale(0.93);
 }

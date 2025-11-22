@@ -108,6 +108,12 @@ function PublicRelationsOfficer() {
     setShowModal(true);
   };
 
+  const handleReportUpdated = (reportId) => {
+    // Rimuovi il report dalla lista
+    setReports(prevReports => prevReports.filter(r => r.id !== reportId));
+    setShowModal(false);
+  };
+
   if (loading) {
     return <LoadingSpinner message="Loading reports..." />;
   }
@@ -242,6 +248,7 @@ function PublicRelationsOfficer() {
           show={showModal}
           onHide={() => setShowModal(false)}
           report={selectedReport}
+          onReportUpdated={handleReportUpdated}
         />
       </Container>
     </div>

@@ -397,7 +397,7 @@ const getAllCategories = async () => {
     });
     if (response.ok) {
       const data = await response.json();
-      return data;
+      return data.slice(0, 8);
     }
   }catch (error) { 
     throw error;

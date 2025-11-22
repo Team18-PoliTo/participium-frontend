@@ -10,7 +10,6 @@ import {
 } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { MapPin, X, Check } from "lucide-react";
-import { getAddressFromCoordinates } from "../utils/geocoding";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";

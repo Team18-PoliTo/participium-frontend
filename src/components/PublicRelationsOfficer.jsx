@@ -109,7 +109,6 @@ function PublicRelationsOfficer() {
   };
 
   const handleReportUpdated = (reportId) => {
-    // Rimuovi il report dalla lista
     setReports(prevReports => prevReports.filter(r => r.id !== reportId));
     setShowModal(false);
   };

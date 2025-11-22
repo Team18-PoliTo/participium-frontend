@@ -178,6 +178,14 @@
     margin: 0;
 }
 
+@media (max-width: 768px) {
+    .step-description {
+        text-align: justify;
+        text-align-last: left;
+        hyphens: auto;
+    }
+}
+
 /* Features Section */
 .features-section {
     padding: 80px 0;
@@ -224,6 +232,14 @@
     margin: 0;
 }
 
+@media (max-width: 768px) {
+    .feature-description {
+        text-align: justify;
+        text-align-last: left;
+        hyphens: auto;
+    }
+}
+
 /* Info Section */
 .info-section {
     padding: 80px 0;
@@ -243,6 +259,14 @@
     color: #eee;
     line-height: 1.8;
     margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+    .info-text {
+        text-align: justify;
+        text-align-last: left;
+        hyphens: auto;
+    }
 }
 
 .info-highlights {
@@ -338,6 +362,9 @@
 @media (max-width: 992px) {
     .hero-title {
         font-size: 2.5rem;
+        text-align: initial;
+        margin-right: 1rem;
+        margin-left: 1rem;
     }
 
     .hero-subtitle {
@@ -345,7 +372,7 @@
     }
 
     .hero-section {
-        padding: 60px 0;
+        padding: 30px 0 60px 0;
     }
 
     .section-title {
@@ -359,15 +386,49 @@
     .cta-title {
         font-size: 2.2rem;
     }
+
+    .info-text{
+        margin : 0 1rem 0.5rem 1rem;
+    }
+
+    .info-highlights {
+        margin: 0.7rem 1rem 0 1rem;
+    }
+
+    .cta-text {
+        margin: 0 1rem 1rem 1rem;
+    }
+
+    .feature-card {
+        text-align: center;
+        margin: 1rem 1rem 0 1rem;
+    }
+
 }
 
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2rem;
+        text-align: initial;
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+
+    .hero-subtitle {
+        text-align: justify;
+        text-align-last: left;
+        hyphens: auto;
+        margin-left: 1rem;
+        margin-right: 1rem;    
+    }
+
+    .hero-content {
+        text-align: center;
     }
 
     .hero-buttons {
         flex-direction: column;
+        justify-content: center;
     }
 
     .cta-button {
@@ -376,18 +437,52 @@
 
     .image-placeholder {
         height: 300px;
-        margin-top: 40px;
+        margin-right: 2rem;
+        margin-left: 2rem;
     }
 
     .how-it-works-section,
     .features-section,
     .info-section,
     .cta-section {
-        padding: 60px 0;
+        padding: 30px 0;
     }
 
     .section-title {
         font-size: 1.8rem;
         margin-bottom: 40px;
+        text-align: center;
     }
+
+    .feature-card {
+        text-align: center;
+        margin: 1rem 1rem 0 1rem;
+    }
+
+    .info-title {
+        text-align: center;
+    }
+
+    .info-text{
+        margin : 0 1rem 0.5rem 1rem;
+    }
+
+    .info-highlights {
+        margin: 0.7rem 1rem 0 1rem;
+    }
+
+    .cta-title {
+        text-align: center;
+    }
+
+    .cta-text {
+        text-align: center;
+        margin: 0 1rem 1rem 1rem;
+    }
+
+    .highlight-item {
+        justify-content: center;
+        text-align: center;
+    }
+
 }

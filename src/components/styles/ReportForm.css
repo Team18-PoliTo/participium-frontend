@@ -163,3 +163,63 @@
 .report-form__remove-photo-btn:hover {
     background-color: #c82333 !important;
 }
+
+/* Category Dropdown Styles */
+.report-form__category-toggle {
+    overflow: hidden;
+}
+
+.report-form__category-selected {
+    min-width: 0;
+    flex: 1;
+}
+
+.report-form__category-icon {
+    flex-shrink: 0;
+}
+
+.report-form__category-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.report-form__category-menu {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Stile per la scrollbar */
+.report-form__category-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-track {
+    background: #d0dfe8;
+    border-radius: 10px;
+    margin: 0.5rem 0;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb {
+    background: #3D5A80;
+    border-radius: 10px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb:hover {
+    background: #293241;
+}
+
+.report-form__category-item {
+    overflow: hidden;
+}
+
+.report-form__category-item-content {
+    min-width: 0;
+}
+
+.report-form__category-item-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}

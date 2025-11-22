@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col, Dropdown, Alert } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  Row,
+  Col,
+  Dropdown,
+  Alert,
+} from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { MapPin, X, Check } from "lucide-react";
 import { getAddressFromCoordinates } from "../utils/geocoding";
@@ -9,14 +17,16 @@ import "./styles/ReportDescription.css";
 import API from "../API/API";
 
 function ReportDescription({ show, onHide, report }) {
-  const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
+  const [selectedCategory, setSelectedCategory] = useState(
+    report?.categoryId || ""
+  );
   const [explanation, setExplanation] = useState("");
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (report) {
-      setSelectedCategory(report.category || "");
+      setSelectedCategory(report.categoryId || "");
       setError(null);
     }
   }, [report]);
@@ -37,26 +47,40 @@ function ReportDescription({ show, onHide, report }) {
   const handleApprove = async () => {
     try {
       setError(null);
-      const updatedReport = await API.judgeReport(report.id, "Assigned", selectedCategory, explanation);
+      const updatedReport = await API.judgeReport(
+        report.id,
+        "Assigned",
+        selectedCategory,
+        explanation
+      );
       handleClose();
     } catch (error) {
-      setError(error.message || "Failed to approve the report. Please try again.");
+      setError(
+        error.message || "Failed to approve the report. Please try again."
+      );
     }
   };
 
   const handleReject = async () => {
     try {
       setError(null);
-      const updatedReport = await API.judgeReport(report.id, "Rejected", selectedCategory, explanation);
+      const updatedReport = await API.judgeReport(
+        report.id,
+        "Rejected",
+        selectedCategory,
+        explanation
+      );
       handleClose();
     } catch (error) {
-      setError(error.message || "Failed to reject the report. Please try again.");
+      setError(
+        error.message || "Failed to reject the report. Please try again."
+      );
     }
   };
 
   const handleClose = () => {
     setExplanation("");
-    setSelectedCategory(report?.category || "");
+    setSelectedCategory(report?.categoryId || "");
     setError(null);
     onHide();
   };
@@ -108,7 +132,12 @@ function ReportDescription({ show, onHide, report }) {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <Marker position={[report.location.latitude, report.location.longitude]} />
+                <Marker
+                  position={[
+                    report.location.latitude,
+                    report.location.longitude,
+                  ]}
+                />
               </MapContainer>
             </div>
           </div>
@@ -120,16 +149,22 @@ function ReportDescription({ show, onHide, report }) {
           <Dropdown className="report-desc-category-dropdown">
             <Dropdown.Toggle id="report-category-dropdown">
               <div className="d-flex align-items-center gap-2">
-                {getCategoryIcon(selectedCategory, 18)}
-                <span>{selectedCategory}</span>
+                {getCategoryIcon(
+                  categories.find((c) => c.id === selectedCategory)?.name || "",
+                  18
+                )}
+                <span>
+                  {categories.find((c) => c.id === selectedCategory)?.name ||
+                    "Select a category"}
+                </span>
               </div>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {categories.map((category) => (
                 <Dropdown.Item
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.name)}
-                  active={selectedCategory === category.name}
+                  onClick={() => setSelectedCategory(category.id)}
+                  active={selectedCategory === category.id}
                 >
                   <div className="d-flex align-items-center gap-2">
                     {getCategoryIcon(category.name, 16)}
@@ -145,12 +180,12 @@ function ReportDescription({ show, onHide, report }) {
         <div className="mb-3">
           <label className="report-desc-label fw-bold">Creation Date</label>
           <p className="report-desc-text-display">
-            {new Date(report.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
+            {new Date(report.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             })}
           </p>
         </div>
@@ -163,9 +198,9 @@ function ReportDescription({ show, onHide, report }) {
               <Row className="g-2">
                 {report.photos.map((photo, index) => (
                   <Col key={index} xs={6} md={4}>
-                    <img 
-                      src={photo} 
-                      alt={`Report photo ${index + 1}`} 
+                    <img
+                      src={photo}
+                      alt={`Report photo ${index + 1}`}
                       className="report-desc-photo"
                     />
                   </Col>
@@ -193,21 +228,38 @@ function ReportDescription({ show, onHide, report }) {
 
         {/* Error Alert */}
         {error && (
-          <Alert variant="danger" dismissible onClose={() => setError(null)} className="mb-0">
+          <Alert
+            variant="danger"
+            dismissible
+            onClose={() => setError(null)}
+            className="mb-0"
+          >
             {error}
           </Alert>
         )}
       </Modal.Body>
       <Modal.Footer className="report-desc-modal-footer d-flex justify-content-between">
-        <Button variant="secondary" onClick={handleClose} className="report-desc-btn-cancel">
+        <Button
+          variant="secondary"
+          onClick={handleClose}
+          className="report-desc-btn-cancel"
+        >
           Cancel
         </Button>
         <div className="d-flex gap-2">
-          <Button variant="danger" onClick={handleReject} className="report-desc-btn-reject d-flex align-items-center gap-2">
+          <Button
+            variant="danger"
+            onClick={handleReject}
+            className="report-desc-btn-reject d-flex align-items-center gap-2"
+          >
             <X size={18} />
             Reject
           </Button>
-          <Button variant="success" onClick={handleApprove} className="report-desc-btn-approve d-flex align-items-center gap-2">
+          <Button
+            variant="success"
+            onClick={handleApprove}
+            className="report-desc-btn-approve d-flex align-items-center gap-2"
+          >
             <Check size={18} />
             Approve
           </Button>

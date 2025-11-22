@@ -2,23 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Container, Stack, Alert, Row, Col, Dropdown } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { 
-  Droplets, 
-  Accessibility, 
-  Waves, 
-  Lightbulb, 
-  Trash2, 
-  TrafficCone,
-  Construction,
-  Trees,
-  Wrench
-} from "lucide-react";
 import API from "../API/API";
 import ReportCard from "./ReportCard";
 import ReportDescription from "./ReportDescription";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/PublicRelationsOfficer.css";
 import { NavbarTextContext } from "../App";
+import { getCategoryIcon } from "../constants/categoryIcons";
 
 // Dati dummy per testing
 const dummyReports = [
@@ -133,17 +123,6 @@ const dummyReports = [
   }
 ];
 
-const categories = [
-  "Water Supply – Drinking Water",
-  "Architectural Barriers",
-  "Sewer System",
-  "Public Lighting",
-  "Waste",
-  "Road Signs and Traffic Lights",
-  "Roads and Urban Furnishings",
-  "Public Green Areas and Playgrounds",
-  "Other"
-];
 
 function PublicRelationsOfficer() {
   const [reports, setReports] = useState([]);
@@ -152,6 +131,7 @@ function PublicRelationsOfficer() {
   const [error, setError] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [categories, setCategories] = useState([]);
   
   // Filtri
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -186,33 +166,6 @@ function PublicRelationsOfficer() {
       console.error("Error fetching reports:", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getCategoryIcon = (category, size = 20) => {
-    const iconProps = { size, color: "#3D5A80" };
-    
-    switch (category) {
-      case "Water Supply – Drinking Water":
-        return <Droplets {...iconProps} />;
-      case "Architectural Barriers":
-        return <Accessibility {...iconProps} />;
-      case "Sewer System":
-        return <Waves {...iconProps} />;
-      case "Public Lighting":
-        return <Lightbulb {...iconProps} />;
-      case "Waste":
-        return <Trash2 {...iconProps} />;
-      case "Road Signs and Traffic Lights":
-        return <TrafficCone {...iconProps} />;
-      case "Roads and Urban Furnishings":
-        return <Construction {...iconProps} />;
-      case "Public Green Areas and Playgrounds":
-        return <Trees {...iconProps} />;
-      case "Other":
-        return <Wrench {...iconProps} />;
-      default:
-        return <Wrench {...iconProps} />;
     }
   };
 

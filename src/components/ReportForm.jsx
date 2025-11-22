@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Form, Button, Alert, Dropdown } from "react-bootstrap";
 import "./styles/ReportForm.css";
 import API from "../API/API";
@@ -17,12 +17,20 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
   // Form state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [photos, setPhotos] = useState([]);
+  const [categoryId, setCategoryId] = useState("");
+  const [uploadedPhotos, setUploadedPhotos] = useState([]);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [citizenId, setCitizenId] = useState(null);
   const [categories, setCategories] = useState([]);
+
+  const uploadedPhotosRef = useRef(uploadedPhotos);
+
+  // Sync ref with state
+  useEffect(() => {
+    uploadedPhotosRef.current = uploadedPhotos;
+  }, [uploadedPhotos]);
 
   useEffect(() => {
     // Load categories (could be fetched from API if needed)
@@ -50,16 +58,36 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
     fetchUserInfo();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      // Cleanup: Delete any uploaded temp files when form closes
+      uploadedPhotosRef.current.forEach(async (photo) => {
+        try {
+          await API.deleteTempFile(photo.fileId);
+        } catch (error) {
+          console.error("Failed to cleanup temp file:", photo.fileId);
+        }
+      });
+
+      // Cleanup: Revoke object URLs for previews
+      uploadedPhotosRef.current.forEach((photo) => {
+        if (photo.preview) {
+          URL.revokeObjectURL(photo.preview);
+        }
+      });
+    };
+  }, []);
+
   /**
-   * Handle photo file upload
-   * Validates that total photos don't exceed 3 and adds new photos to state
+   * Handle photo file upload - Upload immediately to temporary storage
+   * Validates that total photos don't exceed 3 and uploads new photos
    */
-  const handlePhotoUpload = (event) => {
+  const handlePhotoUpload = async (event) => {
     const files = Array.from(event.target.files);
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
 
     // Check if adding new files would exceed the 3 photo limit
-    if (photos.length + files.length > 3) {
+    if (uploadedPhotos.length + files.length > 3) {
       setError("You can upload a maximum of 3 photos.");
       return;
     }
@@ -75,42 +103,67 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       return;
     }
 
-    // Add new photos to existing photos array
-    setPhotos((prevPhotos) => [...prevPhotos, ...files]);
+    setUploadingPhotos(true);
     setError("");
-    event.target.value = ""; // Reset input to allow re-uploading same file
+
+    try {
+      // Upload each file immediately
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const uploadedFile = await API.uploadFile(formData);
+
+        // Store file ID and create preview
+        const newPhoto = {
+          fileId: uploadedFile.fileId,
+          filename: uploadedFile.filename,
+          preview: URL.createObjectURL(file),
+          size: uploadedFile.size,
+        };
+
+        setUploadedPhotos((prev) => [...prev, newPhoto]);
+      }
+    } catch (error) {
+      setError(error.message || "Failed to upload photo. Please try again.");
+    } finally {
+      setUploadingPhotos(false);
+      event.target.value = ""; // Reset input to allow re-uploading same file
+    }
   };
 
   /**
-   * Remove a photo from the upload list
+   * Remove a photo from the upload list and delete from temp storage
    * @param {number} indexToRemove - Index of the photo to remove
+   * @param {string} fileId - The file ID to delete from backend
    */
-  const handleRemovePhoto = (indexToRemove) => {
-    setPhotos((prevPhotos) =>
-      prevPhotos.filter((_, index) => index !== indexToRemove)
-    );
-  };
+  const handleRemovePhoto = async (indexToRemove, fileId) => {
+    try {
+      // Delete from backend temp storage
+      await API.deleteTempFile(fileId);
 
-  /**
-   * Convert a File object to BinaryFileDTO format
-   * @param {File} file - The file to convert
-   * @returns {Promise<Object>} BinaryFileDTO object with base64 data
-   */
-  const convertFileToBinaryDTO = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64Data = reader.result.split(",")[1]; // Remove data:image/...;base64, prefix
-        resolve({
-          filename: file.name,
-          mimetype: file.type,
-          size: file.size,
-          data: base64Data,
-        });
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+      // Revoke object URL
+      const photoToRemove = uploadedPhotos[indexToRemove];
+      if (photoToRemove?.preview) {
+        URL.revokeObjectURL(photoToRemove.preview);
+      }
+
+      // Remove from local state
+      setUploadedPhotos((prevPhotos) =>
+        prevPhotos.filter((_, index) => index !== indexToRemove)
+      );
+    } catch (error) {
+      console.error("Failed to delete temp file:", error);
+      // Still remove from UI even if backend delete fails
+      const photoToRemove = uploadedPhotos[indexToRemove];
+      if (photoToRemove?.preview) {
+        URL.revokeObjectURL(photoToRemove.preview);
+      }
+
+      setUploadedPhotos((prevPhotos) =>
+        prevPhotos.filter((_, index) => index !== indexToRemove)
+      );
+    }
   };
 
   /**
@@ -126,56 +179,47 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       !position ||
       !title ||
       !description ||
-      !category ||
-      photos.length === 0
+      !categoryId ||
+      uploadedPhotos.length === 0
     ) {
       setError("All fields are required.");
       return;
     }
-    if (photos.length < 1 || photos.length > 3) {
+    if (uploadedPhotos.length < 1 || uploadedPhotos.length > 3) {
       setError("You must upload between 1 and 3 photos.");
-      return;
-    }
-    if (!citizenId) {
-      setError("User information not loaded. Please try again.");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Convert photos to BinaryFileDTO format
-      const binaryPhotos = await Promise.all(
-        photos.map((photo) => convertFileToBinaryDTO(photo))
-      );
-
-      console.log("Binary photos:", binaryPhotos);
-
       // Prepare report data according to API specification
       const reportData = {
         title,
         description,
-        citizenId,
-        category,
+        categoryId: parseInt(categoryId), // Ensure categoryId is a number
+        citizenId: parseInt(citizenId),
         location: {
           latitude: position.lat,
           longitude: position.lng,
         },
+        photoIds: uploadedPhotos.map((photo) => photo.fileId),
       };
-
-      // Add photos only if they exist (don't send undefined fields)
-      if (binaryPhotos[0]) reportData.binaryPhoto1 = binaryPhotos[0];
-      if (binaryPhotos[1]) reportData.binaryPhoto2 = binaryPhotos[1];
-      if (binaryPhotos[2]) reportData.binaryPhoto3 = binaryPhotos[2];
 
       // Call API to create report
       const createdReport = await API.addNewReport(reportData);
 
+      uploadedPhotos.forEach((photo) => {
+        if (photo.preview) {
+          URL.revokeObjectURL(photo.preview);
+        }
+      });
+
       // Reset form
       setTitle("");
       setDescription("");
-      setCategory("");
-      setPhotos([]);
+      setCategoryId("");
+      setUploadedPhotos([]);
 
       // Call the callback to handle success
       onReportResult(true, "Your report has been submitted successfully!");
@@ -280,12 +324,17 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
             id="category-dropdown"
             className="w-100 text-start d-flex align-items-center justify-content-between report-form__select report-form__category-toggle"
           >
-            {category ? (
+            {categoryId ? (
               <div className="d-flex align-items-center gap-2 report-form__category-selected">
                 <span className="report-form__category-icon">
-                  {getCategoryIcon(category, 18)}
+                  {getCategoryIcon(
+                    categories.find((c) => c.id === categoryId)?.name || "",
+                    18
+                  )}
                 </span>
-                <span className="report-form__category-text">{category}</span>
+                <span className="report-form__category-text">
+                  {categories.find((c) => c.id === categoryId)?.name || ""}
+                </span>
               </div>
             ) : (
               <span className="text-muted">Choose a category...</span>
@@ -295,8 +344,8 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
             {categories.map((categorie) => (
               <Dropdown.Item
                 key={categorie.id}
-                onClick={() => setCategory(categorie.name)}
-                active={category === categorie.name}
+                onClick={() => setCategoryId(categorie.id)}
+                active={categoryId === categorie.id}
                 className="report-form__category-item"
               >
                 <div className="d-flex align-items-center gap-2 report-form__category-item-content">
@@ -328,37 +377,42 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
             onChange={handlePhotoUpload}
             id="photo-upload-input"
             className="report-form__file-input-hidden"
-            disabled={photos.length >= 3}
+            disabled={uploadedPhotos.length >= 3 || uploadingPhotos}
           />
           <label
             htmlFor="photo-upload-input"
             className={`report-form__upload-btn ${
-              photos.length >= 3 ? "report-form__upload-btn--disabled" : ""
+              uploadedPhotos.length >= 3 || uploadingPhotos
+                ? "report-form__upload-btn--disabled"
+                : ""
             }`}
           >
-            <i className="bi bi-camera-fill"></i> Upload Photo
+            <i className="bi bi-camera-fill"></i>{" "}
+            {uploadingPhotos ? "Uploading..." : "Upload Photo"}{" "}
           </label>
           <span className="report-form__photo-count">
-            {photos.length}/3 photos uploaded
+            {uploadedPhotos.length}/3 photos uploaded
           </span>
         </div>
 
         {/* List of uploaded photos with preview and remove option */}
-        {photos.length > 0 && (
+        {uploadedPhotos.length > 0 && (
           <div className="report-form__photo-list">
-            {photos.map((photo, index) => (
-              <div key={index} className="report-form__photo-item">
+            {uploadedPhotos.map((photo, index) => (
+              <div key={photo.fileId} className="report-form__photo-item">
                 <img
-                  src={URL.createObjectURL(photo)}
+                  src={photo.preview}
                   alt={`Preview ${index + 1}`}
                   className="report-form__photo-preview"
                 />
                 <div className="report-form__photo-info">
-                  <span className="report-form__photo-name">{photo.name}</span>
+                  <span className="report-form__photo-name">
+                    {photo.filename}
+                  </span>
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleRemovePhoto(index)}
+                    onClick={() => handleRemovePhoto(index, photo.fileId)}
                     className="report-form__remove-photo-btn"
                   >
                     <i className="bi bi-x-lg"></i>
@@ -375,9 +429,13 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         variant="primary"
         type="submit"
         className="w-100 report-form__submit-btn"
-        disabled={loading}
+        disabled={loading || uploadingPhotos}
       >
-        {loading ? "Submitting..." : "Submit Report"}
+        {loading
+          ? "Submitting..."
+          : uploadingPhotos
+          ? "Uploading Photos..."
+          : "Submit Report"}
       </Button>
     </Form>
   );

@@ -1,13 +1,66 @@
 import "./styles/Homepage.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { MapPin, FileText, CheckCircle, Users } from "lucide-react";
-import { useContext } from "react";
+import { MapPin, FileText, CheckCircle, Users, ArrowDown } from "lucide-react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
 
 function Homepage() {
   const navigate = useNavigate();
   const { citizenLoggedIn } = useContext(UserContext);
+  // State to track if button should be shown based on scroll position
+  const [showScrollButton, setShowScrollButton] = useState(true);
+  // State to control actual DOM rendering (delayed for animation)
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Effect to handle scroll events and determine button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      // Get current scroll position
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      // Get total scrollable height
+      const scrollHeight = document.documentElement.scrollHeight;
+      // Get viewport height
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Hide button if user is within 100px of page bottom
+      if (scrollTop + clientHeight >= scrollHeight - 100) {
+        setShowScrollButton(false);
+      } else {
+        setShowScrollButton(true);
+      }
+    };
+
+    // Attach scroll listener
+    window.addEventListener('scroll', handleScroll);
+    // Check initial state on component mount
+    handleScroll();
+
+    // Cleanup: remove listener on unmount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Effect to handle fade-out animation before removing button from DOM
+  useEffect(() => {
+    if (!showScrollButton) {
+      // Wait for fade-out animation to complete (300ms) before removing from DOM
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      // Immediately show button when scrolling up
+      setIsVisible(true);
+    }
+  }, [showScrollButton]);
+
+  // Smooth scroll to bottom of page when button is clicked
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
 
   const features = [
     {
@@ -133,6 +186,16 @@ function Homepage() {
           </Button>
         </Container>
       </section>
+
+      {/* Floating Scroll Button */}
+      {isVisible && (
+        <button 
+          className={`floating-scroll-btn ${!showScrollButton ? 'hide' : ''}`} 
+          onClick={scrollToBottom}
+        >
+          <ArrowDown size={24} />
+        </button>
+      )}
     </div>
   );
 }

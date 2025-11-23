@@ -209,6 +209,26 @@
     background: #293241;
 }
 
+.report-form__category-menu .dropdown-item.active {
+  background: #3D5A80 !important;
+  color: white !important;
+}
+
+.report-form__category-menu .dropdown-item.active svg {
+  color: white !important;
+  stroke: white !important;
+}
+
+.report-form__category-menu .dropdown-item:active {
+  background: #3D5A80 !important;
+  color: white !important;
+}
+
+.report-form__category-menu .dropdown-item:active svg {
+  color: white !important;
+  stroke: white !important;
+}
+
 .report-form__category-item {
     overflow: hidden;
 }

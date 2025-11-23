@@ -20,6 +20,7 @@ import pointInPolygon from "point-in-polygon";
 import turinGeoJSON from "../data/turin-boundaries.json";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { getAddressFromCoordinates } from "../utils/geocoding";
+import GetBoundsLogger from "./GetBoundsLogger";
 
 // --- MOCK DATA ---
 const mockReports = [
@@ -639,6 +640,7 @@ function MapPage() {
           {clickedPosition && showForm && <Marker position={clickedPosition} />}
           {inverseMask && <GeoJSON data={inverseMask} style={inverseMaskStyle} />}
           {turinFeature && <GeoJSON data={turinFeature} style={turinStyle} />}
+          <GetBoundsLogger onReportsFetched={setReports} />
         </MapContainer>
       </div>
 

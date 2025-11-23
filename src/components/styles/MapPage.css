@@ -1,7 +1,20 @@
+/* MapPage.css */
+
+/* --- LAYOUT PRINCIPALE --- */
+
+/* Il wrapper diventa un contenitore Flex per affiancare mappa e sidebar */
 .map-page-wrapper {
-  height: calc(100vh - 80px); 
+  height: calc(100vh - 80px); /* Altezza totale meno la navbar */
   width: 100%;
   display: flex;
+  overflow: hidden;
+}
+
+/* La sezione mappa si espande per occupare tutto lo spazio rimanente */
+.map-section {
+  flex: 1;
+  position: relative;
+  height: 100%;
 }
 
 .fullpage-leaflet-container {
@@ -9,6 +22,74 @@
   width: 100%;
 }
 
+/* --- SIDEBAR LATERALE (Visibile solo su Desktop) --- */
+.reports-sidebar {
+  width: 400px; /* Larghezza fissa */
+  background-color: #f8f9fa;
+  border-left: 3px solid #3D5A80;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  z-index: 1000; /* Assicura che stia sopra se necessario */
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+}
+
+.reports-sidebar-header {
+  padding: 1.5rem;
+  background-color: #3D5A80;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.reports-sidebar-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Lista scrollabile dei report */
+.reports-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Scrollbar personalizzata per la sidebar */
+.reports-list::-webkit-scrollbar {
+  width: 8px;
+}
+.reports-list::-webkit-scrollbar-track {
+  background: #e1edf4;
+}
+.reports-list::-webkit-scrollbar-thumb {
+  background: #3D5A80;
+  border-radius: 4px;
+}
+
+/* Nascondi la sidebar su dispositivi mobili e tablet (< 992px) */
+@media (max-width: 992px) {
+  .reports-sidebar {
+    display: none;
+  }
+}
+
+/* --- CLUSTER MARKER (Cerchio Arancione) --- */
+.cluster-marker {
+  color: #fff;
+  background: #EE6C4D; /* Colore principale (arancione) */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  border: 2px solid white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* --- OFFCANVAS (Pannello creazione report) --- */
 .report-offcanvas {
     width: 580px !important;
     max-width: 90vw !important;
@@ -31,10 +112,10 @@
 }
 
 .report-offcanvas .btn-close {
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1); /* Rende la X bianca */
 }
 
-/* GeoSearch Bar Styles */
+/* --- BARRA DI RICERCA (GeoSearch) --- */
 .leaflet-control-geosearch {
     border: none !important;
     background: transparent !important;
@@ -54,7 +135,7 @@
     display: none !important;
 }
 
-/* Stile solo per l'input */
+/* Input di ricerca */
 .leaflet-control-geosearch input {
     font-family: 'Inter', sans-serif !important;
     font-size: 15px !important;
@@ -81,7 +162,7 @@
     color: #98a2b3 !important;
 }
 
-/* Risultati di ricerca */
+/* Risultati della ricerca */
 .leaflet-control-geosearch .results {
     border-radius: 12px !important;
     border: none !important;
@@ -113,7 +194,7 @@
     padding: 0 !important;
 }
 
-/* Remove any default leaflet control borders */
+/* Rimuovi bordi default di leaflet */
 .leaflet-control-geosearch.leaflet-control {
     border: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;

@@ -4,17 +4,7 @@ import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
 import API from "../API/API";
-import unassignedIcon from "../resources/Immagine1.png";
-import proIcon from "../resources/Immagine2.png";
-import adminIcon from "../resources/Immagine3.png";
-import techIcon from "../resources/Immagine4.png";
-
-const iconMap = {
-  0: unassignedIcon,
-  2: proIcon,
-  3: techIcon,
-  4: adminIcon,
-};
+import { getRoleIcon } from "../constants/roleIcons";
 
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(null);
@@ -191,10 +181,9 @@ function AdminPage() {
               <div className="legend-grid">
                 {visibleRoles.map((role) => (
                   <div key={role.id} className="legend-item">
-                    <img
-                      src={iconMap[role.id] || unassignedIcon}
-                      alt={role.role}
-                    />
+                    <div className="legend-icon">
+                      {getRoleIcon(role.role, 30)}
+                    </div>
                     <span>{role.role}</span>
                   </div>
                 ))}

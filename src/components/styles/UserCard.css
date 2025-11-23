@@ -16,10 +16,16 @@
 }
 
 .user-icon {
-  width: 65px;
-  height: 62px;
+  background-color: #E1EDF4;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  margin-right: 1rem;
 }
 
 .user-info {

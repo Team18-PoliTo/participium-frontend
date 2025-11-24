@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Dropdown } from "react-bootstrap";
+import { Row, Col, Dropdown, Modal } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { MapPin } from "lucide-react";
 import { getCategoryIcon } from "../constants/categoryIcons";
@@ -9,6 +9,7 @@ import API from "../API/API";
 
 function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCategory }) {
   const [categories, setCategories] = useState([]);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -143,6 +144,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                     alt={`Report photo ${index + 1}`}
                     className="report-desc-photo"
                     style={{ cursor: 'pointer' }}
+                    onClick={() => setSelectedPhoto(photo)}
                   />
                 </Col>
               ))}
@@ -152,6 +154,26 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
           )}
         </div>
       </div>
+
+      {/* Photo Viewer Modal */}
+      <Modal
+        show={!!selectedPhoto}
+        onHide={() => setSelectedPhoto(null)}
+        size="lg"
+        centered
+        className="photo-preview-modal"
+      >
+        <Modal.Header closeButton className="report-desc-modal-header">
+          <Modal.Title>Photo Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0 bg-dark">
+          <img
+            src={selectedPhoto}
+            alt="Full size preview"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

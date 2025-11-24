@@ -43,7 +43,7 @@ function Login() {
                 const user = await API.getUserInfo();
                 setUser(user);
                 setCitizenLoggedIn(true);
-                navigate('/dashboard'); // Cambiato da '/map' a '/dashboard'
+                navigate('/map');
                 return { ...prevState, citizen, token };
             }
         } catch (error) {

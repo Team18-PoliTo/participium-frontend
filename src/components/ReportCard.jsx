@@ -1,11 +1,11 @@
 import { Card, Badge } from "react-bootstrap";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
-import { MapPin } from "lucide-react";
+import { MapPin, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 
-function ReportCard({ report, onClick }) {
+function ReportCard({ report, onClick, showUser = false }) {
   const [address, setAddress] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ function ReportCard({ report, onClick }) {
 
   // Carica l'indirizzo solo quando la card diventa visibile
   useEffect(() => {
-    if (isVisible && !address && !isLoading) {
+    if (isVisible && !address && !isLoading && !showUser) {
       setIsLoading(true);
 
       const loadAddress = async () => {
@@ -97,9 +97,9 @@ function ReportCard({ report, onClick }) {
           </div>
           <div className="d-flex flex-column gap-1">
             <Card.Title className="mb-0">{report.title}</Card.Title>
-            <div className="d-flex align-items-center gap-1 text-muted small">
-              <MapPin size={14} />
-              <span>{locationDisplay}</span>
+            <div className="d-flex align-items-center gap-1 text-muted small">              
+              {!showUser && <><MapPin size={14} /> <span>{locationDisplay}</span></>}
+              {showUser &&  <><User size={14} /><span>  {report.citizen.firstName} {report.citizen.lastName}</span></>}
             </div>
             <div>{getCategoryBadge(report.category.name)}</div>
           </div>

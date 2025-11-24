@@ -4,7 +4,7 @@
 
 /* Il wrapper diventa un contenitore Flex per affiancare mappa e sidebar */
 .map-page-wrapper {
-  height: calc(100vh - 80px); /* Altezza totale meno la navbar */
+  height: calc(100vh - 65px); /* Altezza totale meno la navbar */
   width: 100%;
   display: flex;
   overflow: hidden;
@@ -27,7 +27,7 @@
   position: fixed;
   right: 0;
   width: 450px;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 65px); /* Altezza totale meno la navbar */;
   background-color: #ffffff;
   border-left: 3px solid #3D5A80;
   display: flex;
@@ -198,8 +198,32 @@
   align-items: center;
   font-weight: bold;
   font-family: 'Inter', sans-serif;
-  border: 2px solid white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 3px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cluster-marker:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* --- CUSTOM PIN MARKER --- */
+.custom-pin-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-pin-marker {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.custom-pin-marker:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
 }
 
 /* --- OFFCANVAS (Pannello creazione report) --- */
@@ -311,4 +335,97 @@
 .leaflet-control-geosearch.leaflet-control {
     border: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --- CUSTOM POPUP --- */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  padding: 0 !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 250px;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.popup-address {
+  background-color: #98C1D9;
+  color: #000;
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #3D5A80;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  font-weight: 300;
+}
+
+.popup-close-btn:hover {
+  color: #EE6C4D;
+}
+
+.popup-content {
+  position: relative;
+}
+
+.popup-add-report-btn {
+  background-color: #EE6C4D;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.popup-add-report-btn:hover {
+  background-color: #d85a3a;
+}
+
+.popup-add-report-btn:active {
+  background-color: #c24e2f;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.leaflet-popup-tip {
+  background-color: #EE6C4D !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-close-button {
+  display: none !important;
 }

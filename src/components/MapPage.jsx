@@ -3,6 +3,7 @@ import {
   MapContainer,
   TileLayer,
   Marker,
+  Popup,
   useMap,
   useMapEvents,
   GeoJSON,
@@ -13,6 +14,7 @@ import API from "../API/API";
 import { Offcanvas, Button } from "react-bootstrap";
 import ReportForm from "./ReportForm";
 import ReportCard from "./ReportCard";
+import ReportMapDescription from "./ReportMapDescription";
 import "leaflet-geosearch/dist/geosearch.css";
 import "./styles/MapPage.css";
 import InvalidLocationModal from "./InvalidLocationModal";
@@ -21,7 +23,7 @@ import pointInPolygon from "point-in-polygon";
 import turinGeoJSON from "../data/turin-boundaries.json";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { getAddressFromCoordinates } from "../utils/geocoding";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 // --- MOCK DATA ---
 const mockReports = [
@@ -34,6 +36,7 @@ const mockReports = [
     location: { latitude: 45.071, longitude: 7.686 },
     createdAt: "2023-11-01T10:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Mario", lastName: "Rossi" },
   },
   {
     id: 102,
@@ -43,6 +46,7 @@ const mockReports = [
     location: { latitude: 45.0712, longitude: 7.6862 },
     createdAt: "2023-11-02T11:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Luigi", lastName: "Verdi" },
   },
   {
     id: 103,
@@ -52,6 +56,7 @@ const mockReports = [
     location: { latitude: 45.0708, longitude: 7.6858 },
     createdAt: "2023-11-03T09:15:00Z",
     status: "Pending",
+    citizen: { firstName: "Anna", lastName: "Bianchi" },
   },
   {
     id: 104,
@@ -61,6 +66,7 @@ const mockReports = [
     location: { latitude: 45.0705, longitude: 7.6855 },
     createdAt: "2023-11-04T14:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Giulia", lastName: "Neri" },
   },
   {
     id: 105,
@@ -70,6 +76,7 @@ const mockReports = [
     location: { latitude: 45.0715, longitude: 7.6865 },
     createdAt: "2023-11-05T16:20:00Z",
     status: "Pending",
+    citizen: { firstName: "Marco", lastName: "Ferrari" },
   },
   {
     id: 106,
@@ -79,6 +86,7 @@ const mockReports = [
     location: { latitude: 45.0702, longitude: 7.6868 },
     createdAt: "2023-11-06T09:45:00Z",
     status: "Pending",
+    citizen: { firstName: "Paolo", lastName: "Romano" },
   },
 
   // --- CLUSTER PORTA NUOVA / SAN SALVARIO ---
@@ -90,6 +98,7 @@ const mockReports = [
     location: { latitude: 45.0621, longitude: 7.6785 },
     createdAt: "2023-11-05T14:20:00Z",
     status: "Pending",
+    citizen: { firstName: "Elena", lastName: "Costa" },
   },
   {
     id: 202,
@@ -99,6 +108,7 @@ const mockReports = [
     location: { latitude: 45.0625, longitude: 7.679 },
     createdAt: "2023-11-06T16:45:00Z",
     status: "Pending",
+    citizen: { firstName: "Davide", lastName: "Greco" },
   },
   {
     id: 203,
@@ -108,6 +118,7 @@ const mockReports = [
     location: { latitude: 45.0615, longitude: 7.6795 },
     createdAt: "2023-11-07T08:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Francesca", lastName: "Bruno" },
   },
   {
     id: 204,
@@ -117,6 +128,7 @@ const mockReports = [
     location: { latitude: 45.0605, longitude: 7.678 },
     createdAt: "2023-11-08T23:15:00Z",
     status: "Pending",
+    citizen: { firstName: "Alessandro", lastName: "Gallo" },
   },
   {
     id: 205,
@@ -126,6 +138,7 @@ const mockReports = [
     location: { latitude: 45.063, longitude: 7.68 },
     createdAt: "2023-11-09T10:10:00Z",
     status: "Pending",
+    citizen: { firstName: "Sara", lastName: "Conti" },
   },
 
   // --- CLUSTER POLITECNICO / CROCETTA ---
@@ -137,6 +150,7 @@ const mockReports = [
     location: { latitude: 45.062, longitude: 7.66 },
     createdAt: "2023-11-10T08:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Roberto", lastName: "Esposito" },
   },
   {
     id: 302,
@@ -146,6 +160,7 @@ const mockReports = [
     location: { latitude: 45.0625, longitude: 7.661 },
     createdAt: "2023-11-11T09:20:00Z",
     status: "Pending",
+    citizen: { firstName: "Chiara", lastName: "Rizzo" },
   },
   {
     id: 303,
@@ -155,6 +170,7 @@ const mockReports = [
     location: { latitude: 45.0618, longitude: 7.6595 },
     createdAt: "2023-11-12T12:45:00Z",
     status: "Pending",
+    citizen: { firstName: "Michele", lastName: "De Luca" },
   },
   {
     id: 304,
@@ -164,6 +180,7 @@ const mockReports = [
     location: { latitude: 45.063, longitude: 7.6605 },
     createdAt: "2023-11-13T15:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Laura", lastName: "Mancini" },
   },
 
   // --- CLUSTER PARCO DEL VALENTINO ---
@@ -175,6 +192,7 @@ const mockReports = [
     location: { latitude: 45.055, longitude: 7.685 },
     createdAt: "2023-11-14T11:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Antonio", lastName: "Ricci" },
   },
   {
     id: 402,
@@ -184,6 +202,7 @@ const mockReports = [
     location: { latitude: 45.056, longitude: 7.686 },
     createdAt: "2023-11-15T16:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Silvia", lastName: "Marino" },
   },
   {
     id: 403,
@@ -193,6 +212,7 @@ const mockReports = [
     location: { latitude: 45.054, longitude: 7.684 },
     createdAt: "2023-11-16T10:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Giorgio", lastName: "Barbieri" },
   },
   {
     id: 404,
@@ -202,6 +222,7 @@ const mockReports = [
     location: { latitude: 45.0555, longitude: 7.6855 },
     createdAt: "2023-11-17T18:20:00Z",
     status: "Pending",
+    citizen: { firstName: "Lucia", lastName: "Moretti" },
   },
 
   // --- CLUSTER LINGOTTO / MILLEFONTI ---
@@ -213,6 +234,7 @@ const mockReports = [
     location: { latitude: 45.03, longitude: 7.665 },
     createdAt: "2023-11-18T09:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Federico", lastName: "Lombardi" },
   },
   {
     id: 502,
@@ -222,6 +244,7 @@ const mockReports = [
     location: { latitude: 45.031, longitude: 7.666 },
     createdAt: "2023-11-19T20:00:00Z",
     status: "Pending",
+    citizen: { firstName: "Valentina", lastName: "Giordano" },
   },
   {
     id: 503,
@@ -231,6 +254,7 @@ const mockReports = [
     location: { latitude: 45.029, longitude: 7.664 },
     createdAt: "2023-11-20T13:15:00Z",
     status: "Pending",
+    citizen: { firstName: "Matteo", lastName: "Russo" },
   },
 
   // --- CLUSTER BARRIERA DI MILANO / NORD ---
@@ -242,6 +266,7 @@ const mockReports = [
     location: { latitude: 45.09, longitude: 7.69 },
     createdAt: "2023-11-21T07:45:00Z",
     status: "Pending",
+    citizen: { firstName: "Stefano", lastName: "Colombo" },
   },
   {
     id: 602,
@@ -251,6 +276,7 @@ const mockReports = [
     location: { latitude: 45.091, longitude: 7.691 },
     createdAt: "2023-11-22T15:50:00Z",
     status: "Pending",
+    citizen: { firstName: "Simona", lastName: "Santoro" },
   },
   {
     id: 603,
@@ -260,6 +286,7 @@ const mockReports = [
     location: { latitude: 45.089, longitude: 7.689 },
     createdAt: "2023-11-23T11:10:00Z",
     status: "Pending",
+    citizen: { firstName: "Giovanni", lastName: "Amato" },
   },
 
   // --- PUNTI SPARSI (Singoli) ---
@@ -271,6 +298,7 @@ const mockReports = [
     location: { latitude: 45.065, longitude: 7.693 },
     createdAt: "2023-11-24T19:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Alice", lastName: "Pellegrini" },
   },
   {
     id: 702,
@@ -280,6 +308,7 @@ const mockReports = [
     location: { latitude: 45.06, longitude: 7.7 },
     createdAt: "2023-11-25T14:45:00Z",
     status: "Pending",
+    citizen: { firstName: "Daniele", lastName: "Ruggiero" },
   },
   {
     id: 703,
@@ -289,6 +318,7 @@ const mockReports = [
     location: { latitude: 45.076, longitude: 7.67 },
     createdAt: "2023-11-26T10:20:00Z",
     status: "Pending",
+    citizen: { firstName: "Martina", lastName: "Gatti" },
   },
   {
     id: 704,
@@ -298,6 +328,7 @@ const mockReports = [
     location: { latitude: 45.073, longitude: 7.688 },
     createdAt: "2023-11-27T16:10:00Z",
     status: "Pending",
+    citizen: { firstName: "Fabio", lastName: "Monti" },
   },
   {
     id: 705,
@@ -307,6 +338,7 @@ const mockReports = [
     location: { latitude: 45.05, longitude: 7.65 }, // Zona San Paolo
     createdAt: "2023-11-28T08:55:00Z",
     status: "Pending",
+    citizen: { firstName: "Cristina", lastName: "Villa" },
   },
   {
     id: 706,
@@ -316,6 +348,7 @@ const mockReports = [
     location: { latitude: 45.04, longitude: 7.66 }, // Zona Santa Rita
     createdAt: "2023-11-29T12:30:00Z",
     status: "Pending",
+    citizen: { firstName: "Enrico", lastName: "Palmieri" },
   },
   {
     id: 707,
@@ -325,6 +358,7 @@ const mockReports = [
     location: { latitude: 45.08, longitude: 7.64 }, // Zona Parella
     createdAt: "2023-11-30T17:40:00Z",
     status: "Pending",
+    citizen: { firstName: "Monica", lastName: "Bernardi" },
   },
 ];
 
@@ -425,19 +459,32 @@ const createClusterIcon = (count, size) => {
   });
 };
 
-const pinIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+const pinIcon = L.divIcon({
+  html: `<div class="custom-pin-marker">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" 
+                   fill="#EE6C4D" stroke="#fff" stroke-width="1.5"/>
+             <circle cx="12" cy="9" r="2.5" fill="#fff"/>
+           </svg>
+         </div>`,
+  className: "custom-pin-icon",
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
 });
 
 // 4. MapUpdater (SPOSTATO FUORI e con PROPS)
-// Riceve setBounds e setZoom come props per evitare il loop
-function MapUpdater({ setBounds, setZoom }) {
+// Riceve setBounds, setZoom e mapRef come props per evitare il loop
+function MapUpdater({ setBounds, setZoom, mapRef }) {
   const map = useMap();
 
   useEffect(() => {
     if (!map) return;
+
+    // Salva il riferimento alla mappa
+    if (mapRef) {
+      mapRef.current = map;
+    }
 
     const updateMapState = () => {
       const b = map.getBounds();
@@ -454,7 +501,7 @@ function MapUpdater({ setBounds, setZoom }) {
     updateMapState(); // Inizializza subito
 
     return () => map.off("moveend", updateMapState);
-  }, [map, setBounds, setZoom]); // Dipendenze corrette
+  }, [map, setBounds, setZoom, mapRef]); // Dipendenze corrette
 
   return null;
 }
@@ -473,7 +520,13 @@ function MapPage() {
   const [showReportsSidebar, setShowReportsSidebar] = useState(true);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(true);
 
-  // Modali di stato
+  // Popup per il pin selezionato
+  const [selectedPin, setSelectedPin] = useState(null);
+
+  // Modal per i dettagli del report
+  const [showReportDetails, setShowReportDetails] = useState(false);
+  const [selectedReportForDetails, setSelectedReportForDetails] =
+    useState(null); // Modali di stato
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportModalIsSuccess, setReportModalIsSuccess] = useState(false);
   const [reportModalMessage, setReportModalMessage] = useState("");
@@ -616,14 +669,34 @@ function MapPage() {
     }, 300);
   };
 
-  const handleReportCardClick = (report) => {
+  const handleReportCardClick = async (report) => {
+    // Carica l'indirizzo se non presente
+    let address = report.address;
+    if (!address) {
+      try {
+        address = await getAddressFromCoordinates(
+          report.location.latitude,
+          report.location.longitude
+        );
+      } catch (error) {
+        address = `Lat ${report.location.latitude.toFixed(
+          4
+        )}, Long ${report.location.longitude.toFixed(4)}`;
+      }
+    }
+
+    // Apri il popup del pin (assicurati di avere reportId)
+    setSelectedPin({ ...report, address, reportId: report.id });
+
     // Centra la mappa sul report selezionato
     if (mapRef.current) {
-      mapRef.current.setView(
-        [report.location.latitude, report.location.longitude],
-        17,
-        { animate: true }
-      );
+      setTimeout(() => {
+        mapRef.current.setView(
+          [report.location.latitude, report.location.longitude],
+          17,
+          { animate: true }
+        );
+      }, 300);
     }
   };
 
@@ -651,7 +724,6 @@ function MapPage() {
           center={initialPosition}
           zoom={13}
           className="fullpage-leaflet-container"
-          whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -667,8 +739,8 @@ function MapPage() {
             onMapClick={(latlng, map) => handleMapClick(latlng, map)}
           />
 
-          {/* QUI È LA FIX: Passiamo le funzioni come props */}
-          <MapUpdater setBounds={setBounds} setZoom={setZoom} />
+          {/* QUI È LA FIX: Passiamo le funzioni e mapRef come props */}
+          <MapUpdater setBounds={setBounds} setZoom={setZoom} mapRef={mapRef} />
 
           {/* Render Clusters */}
           {clusters.map((cluster) => {
@@ -710,14 +782,76 @@ function MapPage() {
                 position={[latitude, longitude]}
                 icon={pinIcon}
                 eventHandlers={{
-                  click: (e) => {
+                  click: async (e) => {
                     e.originalEvent.stopPropagation();
-                    console.log("Report cliccato:", cluster.properties);
+                    const report = cluster.properties;
+
+                    // Carica l'indirizzo se non presente
+                    let address = report.address;
+                    if (!address) {
+                      try {
+                        address = await getAddressFromCoordinates(
+                          report.location.latitude,
+                          report.location.longitude
+                        );
+                      } catch (error) {
+                        address = `Lat ${report.location.latitude.toFixed(
+                          4
+                        )}, Long ${report.location.longitude.toFixed(4)}`;
+                      }
+                    }
+
+                    setSelectedPin({ ...report, address });
                   },
                 }}
-              />
+              ></Marker>
             );
           })}
+
+          {selectedPin && (
+            <Popup
+              position={[
+                selectedPin.location.latitude,
+                selectedPin.location.longitude,
+              ]}
+              offset={[0, -40]}
+              onClose={() => setSelectedPin(null)}
+              className="custom-popup"
+            >
+              <div className="popup-content">
+                <button
+                  className="popup-close-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setSelectedPin(null);
+                  }}
+                  title="Close"
+                >
+                  ×
+                </button>
+                <div className="popup-address">{selectedPin.title}</div>
+                <button
+                  className="popup-add-report-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    // Salva lo stato della sidebar e chiudila
+                    if (showReportsSidebar) {
+                      setShowReportsSidebar(false);
+                    }
+
+                    setSelectedReportForDetails(selectedPin);
+                    setShowReportDetails(true);
+                    setSelectedPin(null);
+                  }}
+                >
+                  Show Details
+                </button>
+              </div>
+            </Popup>
+          )}
 
           {clickedPosition && showForm && <Marker position={clickedPosition} />}
           {inverseMask && (
@@ -757,6 +891,7 @@ function MapPage() {
                     key={report.id}
                     report={report}
                     onClick={handleReportCardClick}
+                    showUser={true}
                   />
                 ))
               )}
@@ -806,6 +941,20 @@ function MapPage() {
         onClose={() => setShowReportModal(false)}
         isSuccess={reportModalIsSuccess}
         message={reportModalMessage}
+      />
+
+      <ReportMapDescription
+        show={showReportDetails}
+        onHide={() => {
+          setShowReportDetails(false);
+          // Riapri la sidebar se era aperta prima
+          if (wasSidebarOpen) {
+            setTimeout(() => {
+              setShowReportsSidebar(true);
+            }, 300);
+          }
+        }}
+        report={selectedReportForDetails}
       />
     </>
   );

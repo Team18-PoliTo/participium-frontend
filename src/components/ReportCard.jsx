@@ -30,6 +30,14 @@ function ReportCard({ report, onClick }) {
     return <Badge className="custom-category-badge">{category}</Badge>;
   };
 
+  const getStatusBadge = (status) => {
+    let bg = "secondary";
+    if (status === "Assigned") bg = "primary";
+    else if (status === "Rejected") bg = "danger";
+    else if (status === "Resolved") bg = "success";
+    return <Badge className="custom-status-badge" bg={bg}>{status}</Badge>;
+  };
+
   return (
     <Card 
       className="shadow-sm report-card-clickable" 
@@ -52,8 +60,9 @@ function ReportCard({ report, onClick }) {
             </div>
           </div>
         </div>
-        <div className="text-muted small">
-          {new Date(report.createdAt).toLocaleDateString()}
+        <div className="d-flex flex-column align-items-end gap-1">
+          {getStatusBadge(report.status)}
+          <span className="text-muted small">{new Date(report.createdAt).toLocaleDateString()}</span>
         </div>
       </Card.Body>
     </Card>

@@ -2,72 +2,110 @@ import { useState, useEffect, useContext } from "react";
 import { Container, Stack, Alert, Row, Col, Dropdown } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import API from "../API/API";
 import ReportCard from "./ReportCard";
 import ReportDescriptionModal from "./ReportDescriptionModal";
 import LoadingSpinner from "./LoadingSpinner";
-import "./styles/PublicRelationsOfficer.css";
-import { NavbarTextContext } from "../App";
-import { getCategoryIcon } from "../constants/categoryIcons";
+import "./styles/OfficerPage.css";
+import { getRoleIcon } from "../constants/roleIcons";
+import { UserContext } from "../App";
 
+// MOCK DATA
+const mockReports = [
+  {
+    id: 1,
+    title: "Broken streetlight on Via Roma",
+    description: "The streetlight has been out for 3 days.",
+    createdAt: "2025-11-20T10:30:00Z",
+    status: "Assigned",
+    address: "Via Roma, Torino",
+    location: {
+      latitude: 45.0703,
+      longitude: 7.6869,
+    },
+    category: {
+      id: 2,
+      name: "Public Lighting",
+    },
+    photos: [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca"
+    ],
+  },
+  {
+    id: 2,
+    title: "Overflowing trash bin",
+    description: "Trash bin near Piazza Castello is full.",
+    createdAt: "2025-11-22T14:15:00Z",
+    status: "Assigned",
+    address: "Piazza Castello, Torino",
+    location: {
+      latitude: 45.0705,
+      longitude: 7.6867,
+    },
+    category: {
+      id: 4,
+      name: "Waste Management",
+    },
+    photos: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308"
+    ],
+  },
+  {
+    id: 3,
+    title: "Pothole on Corso Francia",
+    description: "Large pothole causing traffic issues.",
+    createdAt: "2025-11-21T09:00:00Z",
+    status: "Assigned",
+    address: "Corso Francia, Torino",
+    location: {
+      latitude: 45.0720,
+      longitude: 7.6850,
+    },
+    category: {
+      id: 1,
+      name: "Street Maintenance",
+    },
+    photos: [],
+  },
+];
 
-function PublicRelationsOfficer() {
+function OfficerPage() {
+
+  const { userRole } = useContext(UserContext);
+
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [categories, setCategories] = useState([]);
 
   // Filtri
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [sortOrder, setSortOrder] = useState("desc"); // "asc" o "desc"
-
-  const {navbarText, setNavbarSubtitle} = useContext(NavbarTextContext);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await API.getAllCategories();
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    const fetchReportsIsPending = async () => {
-      try {
-        setLoading(true);
-        const fetchedReports = await API.getAllReportsIsPending();
-        setReports(fetchedReports);
-        setError(null);
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
-        setError("Failed to load reports. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReportsIsPending();
+    // Simula caricamento dati mock
+    setLoading(true);
+    setTimeout(() => {
+      setReports(mockReports);
+      setLoading(false);
+      setError(null);
+    }, 700);
   }, []);
 
   useEffect(() => {
     applyFilters();
-  }, [reports, selectedCategory, startDate, endDate, sortOrder]);
+  }, [reports, startDate, endDate, sortOrder, statusFilter]);
 
   const applyFilters = () => {
     let filtered = [...reports];
 
-    // Filtro per categoria
-    if (selectedCategory) {
-      filtered = filtered.filter(report => report.category.name === selectedCategory);
+    // Filtro per status
+    if (statusFilter !== "All") {
+      filtered = filtered.filter(report => report.status === statusFilter);
     }
 
     // Filtro per data inizio
@@ -97,10 +135,10 @@ function PublicRelationsOfficer() {
   };
 
   const handleResetFilters = () => {
-    setSelectedCategory("");
     setStartDate(null);
     setEndDate(null);
     setSortOrder("desc");
+    setStatusFilter("All");
   };
 
   const handleReportClick = (report) => {
@@ -126,48 +164,20 @@ function PublicRelationsOfficer() {
   }
 
   return (
-    <div className="public-relations-officer-page">
+    <div className="officer-page">
       <Container className="pt-4 pb-4">
         {/* Titolo */}
-        <h1 className="page-title mb-4">Reports Dashboard</h1>
+        <div className="officer-role-header mb-4 d-flex align-items-center gap-3">
+          <div className="officer-role-icon-circle">
+            {getRoleIcon(userRole, 48, "#fff")}
+          </div>
+          <span className="officer-role-name">{userRole}</span>
+        </div>
 
         {/* Sezione Filtri */}
         <div className="filters-section">
-          <Row className="g-3">
+          <Row className="g-3 align-items-end">
             <Col md={3}>
-              <label className="filter-label">Category</label>
-              <Dropdown className="custom-category-dropdown">
-                <Dropdown.Toggle id="category-dropdown">
-                  <div className="d-flex align-items-center gap-2">
-                    {selectedCategory && getCategoryIcon(selectedCategory, 20)}
-                    <span>{selectedCategory || "All Categories"}</span>
-                  </div>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item 
-                    onClick={() => setSelectedCategory("")}
-                    active={selectedCategory === ""}
-                  >
-                    <div className="d-flex align-items-center gap-2">
-                      <span>All Categories</span>
-                    </div>
-                  </Dropdown.Item>
-                  {categories.map((category) => (
-                    <Dropdown.Item
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.name)}
-                      active={selectedCategory === category.name}
-                    >
-                      <div className="d-flex align-items-center gap-2">
-                        {getCategoryIcon(category.name, 18)}
-                        <span>{category.name}</span>
-                      </div>
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-            <Col md={2}>
               <label className="filter-label">Start Date</label>
               <DatePicker
                 selected={startDate}
@@ -178,7 +188,7 @@ function PublicRelationsOfficer() {
                 wrapperClassName="w-100"
               />
             </Col>
-            <Col md={2}>
+            <Col md={3}>
               <label className="filter-label">End Date</label>
               <DatePicker
                 selected={endDate}
@@ -211,7 +221,29 @@ function PublicRelationsOfficer() {
                 </Dropdown.Menu>
               </Dropdown>
             </Col>
-            <Col md={2} className="d-flex align-items-end">
+            <Col md={2}>
+              <label className="filter-label">Status</label>
+              <Dropdown className="custom-category-dropdown w-100">
+                <Dropdown.Toggle id="status-dropdown" className="w-100">
+                  <span>{statusFilter}</span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setStatusFilter("All")} active={statusFilter === "All"}>
+                    All
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setStatusFilter("Assigned")} active={statusFilter === "Assigned"}>
+                    Assigned
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setStatusFilter("Rejected")} active={statusFilter === "Rejected"}>
+                    Rejected
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setStatusFilter("Resolved")} active={statusFilter === "Resolved"}>
+                    Resolved
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+            <Col md={1} className="d-flex justify-content-end">
               <button
                 className="reset-filters-btn"
                 onClick={handleResetFilters}
@@ -224,7 +256,7 @@ function PublicRelationsOfficer() {
 
         {/* Counter */}
         <div className="results-counter">
-          Showing {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''}
+          Showing {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''} assigned to you
         </div>
 
         {/* Lista Reports */}
@@ -248,10 +280,11 @@ function PublicRelationsOfficer() {
           onHide={() => setShowModal(false)}
           report={selectedReport}
           onReportUpdated={handleReportUpdated}
+          isOfficerView={true}
         />
       </Container>
     </div>
   );
 }
 
-export default PublicRelationsOfficer;
+export default OfficerPage;

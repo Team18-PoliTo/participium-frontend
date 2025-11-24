@@ -48,7 +48,7 @@ function NavHeader() {
       <div style={{ position: 'relative' }}>
         <Navbar className="navbar-custom">
           <Container>
-            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
               <Navbar.Brand>{navbarText}</Navbar.Brand>
             </Link>
             

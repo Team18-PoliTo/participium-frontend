@@ -10,8 +10,9 @@ import {
 import useSupercluster from "use-supercluster";
 import L from "leaflet";
 import API from "../API/API";
-import { Offcanvas } from "react-bootstrap";
+import { Offcanvas, Button } from "react-bootstrap";
 import ReportForm from "./ReportForm";
+import ReportCard from "./ReportCard";
 import "leaflet-geosearch/dist/geosearch.css";
 import "./styles/MapPage.css";
 import InvalidLocationModal from "./InvalidLocationModal";
@@ -20,6 +21,7 @@ import pointInPolygon from "point-in-polygon";
 import turinGeoJSON from "../data/turin-boundaries.json";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { getAddressFromCoordinates } from "../utils/geocoding";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // --- MOCK DATA ---
 const mockReports = [
@@ -29,7 +31,7 @@ const mockReports = [
     title: "Lampione rotto",
     description: "Il lampione non si accende la sera.",
     category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.0710, longitude: 7.6860 },
+    location: { latitude: 45.071, longitude: 7.686 },
     createdAt: "2023-11-01T10:00:00Z",
     status: "Pending",
   },
@@ -94,7 +96,7 @@ const mockReports = [
     title: "Segnale stradale storto",
     description: "Il cartello di stop è stato urtato.",
     category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0625, longitude: 7.6790 },
+    location: { latitude: 45.0625, longitude: 7.679 },
     createdAt: "2023-11-06T16:45:00Z",
     status: "Pending",
   },
@@ -112,7 +114,7 @@ const mockReports = [
     title: "Schiamazzi notturni",
     description: "Disturbo della quiete pubblica.",
     category: { id: 9, name: "Other" },
-    location: { latitude: 45.0605, longitude: 7.6780 },
+    location: { latitude: 45.0605, longitude: 7.678 },
     createdAt: "2023-11-08T23:15:00Z",
     status: "Pending",
   },
@@ -121,7 +123,7 @@ const mockReports = [
     title: "Tombino intasato",
     description: "L'acqua non defluisce.",
     category: { id: 3, name: "Sewer System" },
-    location: { latitude: 45.0630, longitude: 7.6800 },
+    location: { latitude: 45.063, longitude: 7.68 },
     createdAt: "2023-11-09T10:10:00Z",
     status: "Pending",
   },
@@ -132,7 +134,7 @@ const mockReports = [
     title: "Perdita d'acqua",
     description: "Tubo rotto che perde acqua sul marciapiede.",
     category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.0620, longitude: 7.6600 },
+    location: { latitude: 45.062, longitude: 7.66 },
     createdAt: "2023-11-10T08:00:00Z",
     status: "Pending",
   },
@@ -141,7 +143,7 @@ const mockReports = [
     title: "Rastrelliera bici piena",
     description: "Servono più posti per le bici.",
     category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0625, longitude: 7.6610 },
+    location: { latitude: 45.0625, longitude: 7.661 },
     createdAt: "2023-11-11T09:20:00Z",
     status: "Pending",
   },
@@ -159,7 +161,7 @@ const mockReports = [
     title: "Gradino rotto ingresso",
     description: "Pericoloso per gli studenti.",
     category: { id: 2, name: "Architectural Barriers" },
-    location: { latitude: 45.0630, longitude: 7.6605 },
+    location: { latitude: 45.063, longitude: 7.6605 },
     createdAt: "2023-11-13T15:30:00Z",
     status: "Pending",
   },
@@ -170,7 +172,7 @@ const mockReports = [
     title: "Albero pericolante",
     description: "Grosso ramo spezzato dopo il temporale.",
     category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.0550, longitude: 7.6850 },
+    location: { latitude: 45.055, longitude: 7.685 },
     createdAt: "2023-11-14T11:00:00Z",
     status: "Pending",
   },
@@ -179,7 +181,7 @@ const mockReports = [
     title: "Giochi bimbi rotti",
     description: "Altalena mancante.",
     category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.0560, longitude: 7.6860 },
+    location: { latitude: 45.056, longitude: 7.686 },
     createdAt: "2023-11-15T16:00:00Z",
     status: "Pending",
   },
@@ -188,7 +190,7 @@ const mockReports = [
     title: "Fontanella guasta",
     description: "Non esce acqua.",
     category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.0540, longitude: 7.6840 },
+    location: { latitude: 45.054, longitude: 7.684 },
     createdAt: "2023-11-16T10:30:00Z",
     status: "Pending",
   },
@@ -208,7 +210,7 @@ const mockReports = [
     title: "Marciapiede dissestato",
     description: "Radici degli alberi hanno alzato l'asfalto.",
     category: { id: 2, name: "Architectural Barriers" },
-    location: { latitude: 45.0300, longitude: 7.6650 },
+    location: { latitude: 45.03, longitude: 7.665 },
     createdAt: "2023-11-18T09:00:00Z",
     status: "Pending",
   },
@@ -217,7 +219,7 @@ const mockReports = [
     title: "Luci sottopasso spente",
     description: "Buio totale nel sottopassaggio.",
     category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.0310, longitude: 7.6660 },
+    location: { latitude: 45.031, longitude: 7.666 },
     createdAt: "2023-11-19T20:00:00Z",
     status: "Pending",
   },
@@ -226,7 +228,7 @@ const mockReports = [
     title: "Parcheggio selvaggio",
     description: "Auto sulle strisce pedonali.",
     category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0290, longitude: 7.6640 },
+    location: { latitude: 45.029, longitude: 7.664 },
     createdAt: "2023-11-20T13:15:00Z",
     status: "Pending",
   },
@@ -237,7 +239,7 @@ const mockReports = [
     title: "Discarica abusiva",
     description: "Mobili abbandonati all'angolo.",
     category: { id: 5, name: "Waste" },
-    location: { latitude: 45.0900, longitude: 7.6900 },
+    location: { latitude: 45.09, longitude: 7.69 },
     createdAt: "2023-11-21T07:45:00Z",
     status: "Pending",
   },
@@ -246,7 +248,7 @@ const mockReports = [
     title: "Buca profonda",
     description: "Rischio per motociclisti.",
     category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0910, longitude: 7.6910 },
+    location: { latitude: 45.091, longitude: 7.691 },
     createdAt: "2023-11-22T15:50:00Z",
     status: "Pending",
   },
@@ -255,7 +257,7 @@ const mockReports = [
     title: "Segnaletica sbiadita",
     description: "Strisce pedonali non visibili.",
     category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0890, longitude: 7.6890 },
+    location: { latitude: 45.089, longitude: 7.689 },
     createdAt: "2023-11-23T11:10:00Z",
     status: "Pending",
   },
@@ -266,7 +268,7 @@ const mockReports = [
     title: "Lampione Piazza Vittorio",
     description: "Lampada intermittente.",
     category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.0650, longitude: 7.6930 },
+    location: { latitude: 45.065, longitude: 7.693 },
     createdAt: "2023-11-24T19:30:00Z",
     status: "Pending",
   },
@@ -275,7 +277,7 @@ const mockReports = [
     title: "Panchina rotta lungo Po",
     description: "Schienale mancante.",
     category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0600, longitude: 7.7000 },
+    location: { latitude: 45.06, longitude: 7.7 },
     createdAt: "2023-11-25T14:45:00Z",
     status: "Pending",
   },
@@ -284,7 +286,7 @@ const mockReports = [
     title: "Mancanza acqua fontana",
     description: "Piazza Statuto.",
     category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.0760, longitude: 7.6700 },
+    location: { latitude: 45.076, longitude: 7.67 },
     createdAt: "2023-11-26T10:20:00Z",
     status: "Pending",
   },
@@ -293,7 +295,7 @@ const mockReports = [
     title: "Rami pericolanti",
     description: "Giardini Reali.",
     category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.0730, longitude: 7.6880 },
+    location: { latitude: 45.073, longitude: 7.688 },
     createdAt: "2023-11-27T16:10:00Z",
     status: "Pending",
   },
@@ -302,7 +304,7 @@ const mockReports = [
     title: "Tombino rumoroso",
     description: "Ogni volta che passa un'auto fa rumore.",
     category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0500, longitude: 7.6500 }, // Zona San Paolo
+    location: { latitude: 45.05, longitude: 7.65 }, // Zona San Paolo
     createdAt: "2023-11-28T08:55:00Z",
     status: "Pending",
   },
@@ -311,7 +313,7 @@ const mockReports = [
     title: "Graffiti su muro scuola",
     description: "Scritte offensive.",
     category: { id: 9, name: "Other" },
-    location: { latitude: 45.0400, longitude: 7.6600 }, // Zona Santa Rita
+    location: { latitude: 45.04, longitude: 7.66 }, // Zona Santa Rita
     createdAt: "2023-11-29T12:30:00Z",
     status: "Pending",
   },
@@ -320,10 +322,10 @@ const mockReports = [
     title: "Semaforo spento",
     description: "Incrocio pericoloso.",
     category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0800, longitude: 7.6400 }, // Zona Parella
+    location: { latitude: 45.08, longitude: 7.64 }, // Zona Parella
     createdAt: "2023-11-30T17:40:00Z",
     status: "Pending",
-  }
+  },
 ];
 
 // --- LOGICA GEOJSON ---
@@ -346,7 +348,11 @@ try {
     }
 
     const worldBounds = [
-      [90, -180], [90, 180], [-90, 180], [-90, -180], [90, -180],
+      [90, -180],
+      [90, 180],
+      [-90, 180],
+      [-90, -180],
+      [90, -180],
     ];
     let holes = [];
     if (geometry.type === "Polygon") {
@@ -373,9 +379,11 @@ try {
 
 // 1. Gestore Click Mappa
 function MapClickHandler({ onMapClick }) {
+  const map = useMap();
+
   useMapEvents({
     click(e) {
-      onMapClick(e.latlng);
+      onMapClick(e.latlng, map);
     },
   });
   return null;
@@ -460,7 +468,11 @@ function MapPage() {
   const [reports, setReports] = useState([]);
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(13);
-  
+
+  // Sidebar destra per i report
+  const [showReportsSidebar, setShowReportsSidebar] = useState(true);
+  const [wasSidebarOpen, setWasSidebarOpen] = useState(true);
+
   // Modali di stato
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportModalIsSuccess, setReportModalIsSuccess] = useState(false);
@@ -509,12 +521,21 @@ function MapPage() {
 
   // Gestione Click Mappa
   const handleMapClick = async (latlng, mapInstance) => {
+    console.log("handleMapClick chiamato con:", latlng);
+
     // Usa la mappa passata o quella dal ref se disponibile (per searchbar)
     const activeMap = mapInstance || mapRef.current;
+
+    console.log("activeMap disponibile:", !!activeMap);
 
     if (!turinPolygons || turinPolygons.length === 0) {
       console.warn("Turin boundaries not loaded, validation skipped.");
       setClickedPosition(latlng);
+      // Salva lo stato corrente della sidebar prima di aprire il form
+      setWasSidebarOpen(showReportsSidebar);
+      if (showReportsSidebar) {
+        setShowReportsSidebar(false);
+      }
       setShowForm(true);
       return;
     }
@@ -525,30 +546,52 @@ function MapPage() {
       pointInPolygon(clickedPoint, polygon)
     );
 
+    console.log("Punto dentro Torino:", isInside);
+
     if (isInside) {
+      // Carica l'indirizzo per il form
+      let address = null;
       try {
-        const address = await getAddressFromCoordinates(lat, lng);
-        setClickedPosition({ ...latlng, address });
+        address = await getAddressFromCoordinates(lat, lng);
       } catch (error) {
-        setClickedPosition({ ...latlng, address: "Unable to retrieve address" });
+        console.error("Error loading address:", error);
+      }
+
+      setClickedPosition({ ...latlng, address });
+
+      // Salva lo stato corrente della sidebar e apri il form
+      setWasSidebarOpen(showReportsSidebar);
+
+      // Chiudi la sidebar immediatamente
+      if (showReportsSidebar) {
+        setShowReportsSidebar(false);
       }
 
       setShowForm(true);
+      console.log("Form aperto, inizio centratura mappa...");
 
-      // Centra la mappa tenendo conto dell'offcanvas
+      // Centra la mappa con il punto cliccato visibile a destra dell'offcanvas
       if (activeMap) {
         setTimeout(() => {
-          const mapSize = activeMap.getSize();
-          const offcanvasWidth = 600;
-          const projected = activeMap.project(latlng, 17);
-          const visibleWidth = mapSize.x - offcanvasWidth;
-          const offsetX = offcanvasWidth + visibleWidth / 2 - mapSize.x / 2;
-          const offsetProjected = projected.subtract([offsetX, 0]);
-          const targetLatLng = activeMap.unproject(offsetProjected, 17);
-          activeMap.setView(targetLatLng, 17, { animate: true });
-        }, 300);
+          console.log("Imposto zoom e centro mappa");
+          // Prima centra sul punto cliccato
+          activeMap.setView(latlng, 17, { animate: true });
+
+          // Poi sposta la mappa a sinistra per compensare l'offcanvas
+          setTimeout(() => {
+            const offcanvasWidth = 500;
+            const offsetPixels = offcanvasWidth / 2;
+
+            console.log("Sposto mappa di", offsetPixels, "pixel a sinistra");
+            activeMap.panBy([-offsetPixels, 0], {
+              animate: true,
+              duration: 0.3,
+            });
+          }, 200);
+        }, 350);
       }
     } else {
+      console.log("Punto fuori Torino, mostro modal");
       setShowInvalidModal(true);
     }
   };
@@ -556,6 +599,12 @@ function MapPage() {
   const handleFormClose = () => {
     setShowForm(false);
     setClickedPosition(null);
+    // Riapri la sidebar se era aperta prima
+    if (wasSidebarOpen) {
+      setTimeout(() => {
+        setShowReportsSidebar(true);
+      }, 300); // Attendi che l'offcanvas si chiuda
+    }
   };
 
   const handleReportSubmit = (isSuccess, message) => {
@@ -567,8 +616,33 @@ function MapPage() {
     }, 300);
   };
 
-  const turinStyle = { color: "#EE6C4D", weight: 5, opacity: 0.8, fillOpacity: 0 };
-  const inverseMaskStyle = { color: "transparent", weight: 0, fillColor: "#EE6C4D", fillOpacity: 0.25 };
+  const handleReportCardClick = (report) => {
+    // Centra la mappa sul report selezionato
+    if (mapRef.current) {
+      mapRef.current.setView(
+        [report.location.latitude, report.location.longitude],
+        17,
+        { animate: true }
+      );
+    }
+  };
+
+  const toggleReportsSidebar = () => {
+    setShowReportsSidebar(!showReportsSidebar);
+  };
+
+  const turinStyle = {
+    color: "#EE6C4D",
+    weight: 5,
+    opacity: 0.8,
+    fillOpacity: 0,
+  };
+  const inverseMaskStyle = {
+    color: "transparent",
+    weight: 0,
+    fillColor: "#EE6C4D",
+    fillOpacity: 0.25,
+  };
 
   return (
     <>
@@ -584,10 +658,14 @@ function MapPage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          <SearchBar onLocationSelected={(latlng, map) => handleMapClick(latlng, map)} />
-          
-          {/* Passiamo mapRef.current se map non è disponibile nel contesto diretto, ma qui MapClickHandler usa useMapEvents interno */}
-          <MapClickHandler onMapClick={(latlng) => handleMapClick(latlng, mapRef.current)} />
+          <SearchBar
+            onLocationSelected={(latlng, map) => handleMapClick(latlng, map)}
+          />
+
+          {/* Click handler ottiene la mappa dall'interno del contesto */}
+          <MapClickHandler
+            onMapClick={(latlng, map) => handleMapClick(latlng, map)}
+          />
 
           {/* QUI È LA FIX: Passiamo le funzioni come props */}
           <MapUpdater setBounds={setBounds} setZoom={setZoom} />
@@ -595,7 +673,8 @@ function MapPage() {
           {/* Render Clusters */}
           {clusters.map((cluster) => {
             const [longitude, latitude] = cluster.geometry.coordinates;
-            const { cluster: isCluster, point_count: pointCount } = cluster.properties;
+            const { cluster: isCluster, point_count: pointCount } =
+              cluster.properties;
 
             if (isCluster) {
               return (
@@ -612,9 +691,13 @@ function MapPage() {
                         supercluster.getClusterExpansionZoom(cluster.id),
                         20
                       );
-                      mapRef.current.setView([latitude, longitude], expansionZoom, {
-                        animate: true,
-                      });
+                      mapRef.current.setView(
+                        [latitude, longitude],
+                        expansionZoom,
+                        {
+                          animate: true,
+                        }
+                      );
                     },
                   }}
                 />
@@ -637,14 +720,70 @@ function MapPage() {
           })}
 
           {clickedPosition && showForm && <Marker position={clickedPosition} />}
-          {inverseMask && <GeoJSON data={inverseMask} style={inverseMaskStyle} />}
+          {inverseMask && (
+            <GeoJSON data={inverseMask} style={inverseMaskStyle} />
+          )}
           {turinFeature && <GeoJSON data={turinFeature} style={turinStyle} />}
         </MapContainer>
+
+        {/* Sidebar Report a Destra */}
+        <div
+          className={`reports-sidebar ${
+            showReportsSidebar ? "open" : "closed"
+          }`}
+        >
+          <div className="reports-sidebar-content">
+            <div className="reports-sidebar-header-wrapper">
+              <h5 className="reports-sidebar-title">
+                Reports ({reports.length})
+              </h5>
+              <button
+                className="reports-sidebar-toggle"
+                onClick={toggleReportsSidebar}
+                title="Close sidebar"
+                aria-label="Close sidebar"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="reports-list">
+              {reports.length === 0 ? (
+                <p className="text-muted text-center mt-4">
+                  No reports available
+                </p>
+              ) : (
+                reports.map((report) => (
+                  <ReportCard
+                    key={report.id}
+                    report={report}
+                    onClick={handleReportCardClick}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Tab laterale per riaprire la sidebar quando è chiusa */}
+        {!showReportsSidebar && (
+          <div className="reports-sidebar-tab" onClick={toggleReportsSidebar}>
+            <ChevronLeft size={20} className="reports-sidebar-tab-icon" />
+            <span className="reports-sidebar-tab-text">Reports</span>
+            <span className="reports-sidebar-tab-count">{reports.length}</span>
+          </div>
+        )}
       </div>
 
-      <Offcanvas show={showForm} onHide={handleFormClose} placement="start" className="report-offcanvas">
+      <Offcanvas
+        show={showForm}
+        onHide={handleFormClose}
+        placement="start"
+        className="report-offcanvas"
+      >
         <Offcanvas.Header closeButton className="report-offcanvas__header">
-          <Offcanvas.Title className="report-offcanvas__title">Create New Report</Offcanvas.Title>
+          <Offcanvas.Title className="report-offcanvas__title">
+            Create New Report
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="report-offcanvas__body">
           {showForm && (
@@ -657,8 +796,11 @@ function MapPage() {
         </Offcanvas.Body>
       </Offcanvas>
 
-      <InvalidLocationModal showInvalidModal={showInvalidModal} setShowInvalidModal={setShowInvalidModal} />
-      
+      <InvalidLocationModal
+        showInvalidModal={showInvalidModal}
+        setShowInvalidModal={setShowInvalidModal}
+      />
+
       <ReportStatusModal
         show={showReportModal}
         onClose={() => setShowReportModal(false)}

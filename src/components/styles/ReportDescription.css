@@ -34,6 +34,9 @@
   border: 1px solid #3D5A80;
   margin-bottom: 0;
   font-family: 'Inter', sans-serif;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Dropdown categoria */

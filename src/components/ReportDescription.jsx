@@ -14,6 +14,7 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
+import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportDescription({ show, onHide, report, onReportUpdated }) {
   const [selectedCategory, setSelectedCategory] = useState(
@@ -24,6 +25,7 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     if (report) {
@@ -31,6 +33,26 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
       setError(null);
       setIsRejecting(false);
       setExplanation("");
+      setAddress(null);
+
+      // Carica l'indirizzo se non è già presente
+      if (report.location && !report.address) {
+        getAddressFromCoordinates(
+          report.location.latitude,
+          report.location.longitude
+        )
+          .then((addr) => setAddress(addr))
+          .catch((error) => {
+            console.error("Error loading address:", error);
+            setAddress(
+              `${report.location.latitude.toFixed(
+                4
+              )}, ${report.location.longitude.toFixed(4)}`
+            );
+          });
+      } else if (report.address) {
+        setAddress(report.address);
+      }
     }
   }, [report]);
 
@@ -51,22 +73,27 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
     try {
       setError(null);
       const status = isRejecting ? "Rejected" : "Assigned";
-      const explanationText = isRejecting ? explanation : "No explanation required";
+      const explanationText = isRejecting
+        ? explanation
+        : "No explanation required";
       const updatedReport = await API.judgeReport(
         report.id,
         status,
         selectedCategory,
         explanationText
       );
-      
+
       if (onReportUpdated) {
         onReportUpdated(report.id);
       }
-      
+
       handleClose();
     } catch (error) {
       setError(
-        error.message || `Failed to ${isRejecting ? 'reject' : 'approve'} the report. Please try again.`
+        error.message ||
+          `Failed to ${
+            isRejecting ? "reject" : "approve"
+          } the report. Please try again.`
       );
     }
   };
@@ -111,7 +138,14 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
             <label className="report-desc-label fw-bold">Address</label>
             <div className="d-flex align-items-center gap-2 report-desc-text-display">
               <MapPin size={16} color="#3D5A80" />
-              <span>{report.address || "Address not available"}</span>
+              <span>
+                {address ||
+                  (report.location
+                    ? `${report.location.latitude.toFixed(
+                        4
+                      )}, ${report.location.longitude.toFixed(4)}`
+                    : "Address not available")}
+              </span>
             </div>
           </div>
 
@@ -123,7 +157,11 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
                 <MapContainer
                   center={[report.location.latitude, report.location.longitude]}
                   zoom={16}
-                  style={{ height: "250px", width: "100%", borderRadius: "8px" }}
+                  style={{
+                    height: "250px",
+                    width: "100%",
+                    borderRadius: "8px",
+                  }}
                   scrollWheelZoom={false}
                   dragging={false}
                   zoomControl={false}
@@ -151,7 +189,8 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
               <Dropdown.Toggle id="report-category-dropdown">
                 <div className="d-flex align-items-center gap-2">
                   {getCategoryIcon(
-                    categories.find((c) => c.id === selectedCategory)?.name || "",
+                    categories.find((c) => c.id === selectedCategory)?.name ||
+                      "",
                     18
                   )}
                   <span>
@@ -204,7 +243,7 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
                         alt={`Report photo ${index + 1}`}
                         className="report-desc-photo"
                         onClick={() => setSelectedPhoto(photo)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: "pointer" }}
                       />
                     </Col>
                   ))}
@@ -218,16 +257,24 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
           {/* Action Toggle */}
           <div className="mb-3">
             <label className="report-desc-label fw-bold">Action</label>
-            <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
+            <div
+              className={`report-desc-action-toggle ${
+                isRejecting ? "reject-active" : ""
+              }`}
+            >
               <Button
-                className={`report-desc-toggle-btn ${!isRejecting ? 'active' : ''}`}
+                className={`report-desc-toggle-btn ${
+                  !isRejecting ? "active" : ""
+                }`}
                 variant="link"
                 onClick={() => setIsRejecting(false)}
               >
                 Approve
               </Button>
               <Button
-                className={`report-desc-toggle-btn ${isRejecting ? 'active' : ''}`}
+                className={`report-desc-toggle-btn ${
+                  isRejecting ? "active" : ""
+                }`}
                 variant="link"
                 onClick={() => setIsRejecting(true)}
               >
@@ -242,7 +289,11 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
             <Form.Control
               as="textarea"
               rows={4}
-              placeholder={isRejecting ? "Enter your explanation here..." : "No explanation required"}
+              placeholder={
+                isRejecting
+                  ? "Enter your explanation here..."
+                  : "No explanation required"
+              }
               value={isRejecting ? explanation : ""}
               onChange={(e) => setExplanation(e.target.value)}
               className="report-desc-textarea"
@@ -274,7 +325,9 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
           <Button
             variant={isRejecting ? "danger" : "success"}
             onClick={handleConfirm}
-            className={`d-flex align-items-center gap-2 ${isRejecting ? 'report-desc-btn-reject' : 'report-desc-btn-approve'}`}
+            className={`d-flex align-items-center gap-2 ${
+              isRejecting ? "report-desc-btn-reject" : "report-desc-btn-approve"
+            }`}
           >
             {isRejecting ? <X size={18} /> : <Check size={18} />}
             {isRejecting ? "Reject Report" : "Approve Report"}
@@ -297,7 +350,7 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            style={{ width: "100%", height: "auto", display: "block" }}
           />
         </Modal.Body>
       </Modal>

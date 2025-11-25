@@ -24,18 +24,29 @@ RUN npm run build
 # Stage 2: Serve with nginx
 FROM nginx:alpine
 
+# Create non-root user
+RUN addgroup -g 1001 -S nginx-user && \
+    adduser -S nginx-user -u 1001 -G nginx-user
+
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration for SPA routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Note: nginx runs as non-root user 'nginx' by default in alpine image
-# The nginx process itself runs as 'nginx' user, only the master process runs as root
-# This is the standard and secure configuration for nginx containers
+# Change ownership of nginx directories to non-root user
+RUN chown -R nginx-user:nginx-user /usr/share/nginx/html && \
+    chown -R nginx-user:nginx-user /var/cache/nginx && \
+    chown -R nginx-user:nginx-user /var/log/nginx && \
+    chown -R nginx-user:nginx-user /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx-user:nginx-user /var/run/nginx.pid
 
-# Expose port
-EXPOSE 80
+# Switch to non-root user
+USER nginx-user
+
+# Expose port 8080 (non-root users cannot bind to ports < 1024)
+EXPOSE 8080
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

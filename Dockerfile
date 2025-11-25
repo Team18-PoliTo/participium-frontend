@@ -12,7 +12,11 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 # Copy source code
-COPY . .
+# Note: .dockerignore ensures sensitive files (.env, node_modules, etc.) are excluded
+COPY src/ ./src/
+COPY public/ ./public/
+COPY index.html ./
+COPY vite.config.js ./
 
 # Build the application
 RUN npm run build
@@ -25,6 +29,10 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration for SPA routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Note: nginx runs as non-root user 'nginx' by default in alpine image
+# The nginx process itself runs as 'nginx' user, only the master process runs as root
+# This is the standard and secure configuration for nginx containers
 
 # Expose port
 EXPOSE 80

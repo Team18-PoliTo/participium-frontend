@@ -44,18 +44,18 @@ function NavHeader() {
       {isMobile && isMenuOpen && (
         <div className="menu-overlay" onClick={closeMenu}></div>
       )}
-      
-      <div style={{ position: 'relative' }}>
+
+      <div style={{ position: "relative" }}>
         <Navbar className="navbar-custom">
           <Container>
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
               <Navbar.Brand>{navbarText}</Navbar.Brand>
             </Link>
-            
+
             {isMobile ? (
               // Mobile hamburger menu
-              <button 
-                className="hamburger-button" 
+              <button
+                className="hamburger-button"
                 onClick={toggleMenu}
                 aria-label="Toggle menu"
               >
@@ -65,9 +65,20 @@ function NavHeader() {
               // Desktop buttons
               <>
                 {(citizenLoggedIn || userLoggedIn) && (
-                  <Link className="btn home-button" to="/" onClick={handleLogout}>
-                    Logout
-                  </Link>
+                  <div className="nav-auth-buttons">
+                    {citizenLoggedIn && location.pathname !== "/profile" && (
+                      <Link className="btn home-button" to="/profile">
+                        Profile
+                      </Link>
+                    )}
+                    <Link
+                      className="btn home-button"
+                      to="/"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Link>
+                  </div>
                 )}
                 {!citizenLoggedIn && !userLoggedIn && (
                   <div className="nav-auth-buttons">
@@ -83,30 +94,41 @@ function NavHeader() {
             )}
           </Container>
         </Navbar>
-        
+
         {/* Mobile dropdown menu - sotto la navbar */}
         {isMobile && (
-          <div className={`mobile-dropdown-menu ${isMenuOpen ? 'open' : ''}`}>
+          <div className={`mobile-dropdown-menu ${isMenuOpen ? "open" : ""}`}>
             <div className="mobile-menu-content">
-              {(citizenLoggedIn || userLoggedIn) ? (
-                <Link 
-                  className="mobile-menu-item" 
-                  to="/" 
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Link>
+              {citizenLoggedIn || userLoggedIn ? (
+                <>
+                  {citizenLoggedIn && location.pathname !== "/user-profile" && (
+                    <Link
+                      className="mobile-menu-item"
+                      to="/user-profile"
+                      onClick={closeMenu}
+                    >
+                      Profile
+                    </Link>
+                  )}
+                  <Link
+                    className="mobile-menu-item"
+                    to="/"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Link>
+                </>
               ) : (
                 <>
-                  <Link 
-                    className="mobile-menu-item" 
+                  <Link
+                    className="mobile-menu-item"
                     to="/login"
                     onClick={closeMenu}
                   >
                     Login
                   </Link>
-                  <Link 
-                    className="mobile-menu-item" 
+                  <Link
+                    className="mobile-menu-item"
                     to="/register"
                     onClick={closeMenu}
                   >

@@ -127,13 +127,22 @@ function NavHeader() {
             <div className="mobile-menu-content">
               {citizenLoggedIn || userLoggedIn ? (
                 <>
-                  {citizenLoggedIn && location.pathname !== "/user-profile" && (
+                  {citizenLoggedIn && location.pathname !== "/map" && (
+                    <Link
+                      className="mobile-menu-item"
+                      to="/map"
+                      onClick={closeMenu}
+                    >
+                      <Map size={20} className="me-2" /> Map
+                    </Link>
+                  )}
+                  {citizenLoggedIn && location.pathname !== "/profile" && (
                     <Link
                       className="mobile-menu-item"
                       to="/profile"
                       onClick={closeMenu}
                     >
-                      <User size={16} className="me-2" /> Profile
+                      <User size={20} className="me-2" /> Profile
                     </Link>
                   )}
                   <Link
@@ -141,7 +150,7 @@ function NavHeader() {
                     to="/"
                     onClick={handleLogout}
                   >
-                    <LogOut size={16} className="me-2" /> Logout
+                    <LogOut size={20} className="me-2" /> Logout
                   </Link>
                 </>
               ) : (
@@ -151,14 +160,14 @@ function NavHeader() {
                     to="/login"
                     onClick={closeMenu}
                   >
-                    <LogIn size={16} className="me-2" /> Login
+                    <LogIn size={20} className="me-2" /> Login
                   </Link>
                   <Link
                     className="mobile-menu-item"
                     to="/register"
                     onClick={closeMenu}
                   >
-                    <UserPlus size={16} className="me-2" /> Sign Up
+                    <UserPlus size={20} className="me-2" /> Sign Up
                   </Link>
                 </>
               )}

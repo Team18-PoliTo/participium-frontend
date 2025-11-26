@@ -28,6 +28,9 @@ function GetBoundsLogger({ onReportsFetched }) {
     }
 
     map.on("moveend", handleMoveEnd);
+
+    handleMoveEnd();
+
     return () => {
       map.off("moveend", handleMoveEnd);
     };

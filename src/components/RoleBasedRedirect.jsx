@@ -24,7 +24,7 @@ function RoleBasedRedirect() {
     }
   }
 
-  return <Navigate replace to="/login" />;
+  return <Navigate replace to="/" />;
 }
 
 export default RoleBasedRedirect;

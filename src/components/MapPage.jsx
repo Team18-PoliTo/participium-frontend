@@ -665,12 +665,12 @@ function MapPage() {
           show={showReportDetails}
           onHide={() => {
             setShowReportDetails(false);
-            // Riapri la sidebar se era aperta prima
-            if (wasSidebarOpen) {
-              setTimeout(() => {
-                setShowReportsSidebar(true);
-              }, 300);
-            }
+            // Riapertura automatica della sidebar
+            // if (wasSidebarOpen) {
+            //   setTimeout(() => {
+            //     setShowReportsSidebar(true);
+            //   }, 300);
+            // }
           }}
           report={selectedReportForDetails}
         />

@@ -142,6 +142,14 @@ function ReportMapDescription({ show, onHide, report }) {
             </div>
           </div>
 
+          {/* Status */}
+          <div className="mb-3">
+            <label className="report-map-desc-label fw-bold">Status</label>
+            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
+              <span>{report.status}</span>
+            </div>
+          </div>
+
           {/* Creation Date */}
           <div className="mb-3">
             <label className="report-map-desc-label fw-bold">Creation Date</label>

@@ -24,343 +24,8 @@ import turinGeoJSON from "../data/turin-boundaries.json";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 import { ChevronLeft } from "lucide-react";
+import GetBoundsLogger from "./GetBoundsLogger";
 
-// --- MOCK DATA ---
-const mockReports = [
-  // --- CLUSTER CENTRO (Piazza Castello / Via Roma) ---
-  {
-    id: 101,
-    title: "Lampione rotto",
-    description: "Il lampione non si accende la sera.",
-    category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.071, longitude: 7.686 },
-    createdAt: "2023-11-01T10:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Mario", lastName: "Rossi" },
-  },
-  {
-    id: 102,
-    title: "Panchina danneggiata",
-    description: "Asse di legno rotto sulla panchina.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0712, longitude: 7.6862 },
-    createdAt: "2023-11-02T11:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Luigi", lastName: "Verdi" },
-  },
-  {
-    id: 103,
-    title: "Rifiuti abbandonati",
-    description: "Sacchi della spazzatura fuori dai cestini.",
-    category: { id: 5, name: "Waste" },
-    location: { latitude: 45.0708, longitude: 7.6858 },
-    createdAt: "2023-11-03T09:15:00Z",
-    status: "Pending",
-    citizen: { firstName: "Anna", lastName: "Bianchi" },
-  },
-  {
-    id: 104,
-    title: "Pavimentazione sconnessa",
-    description: "Sanpietrini saltati in via Roma.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0705, longitude: 7.6855 },
-    createdAt: "2023-11-04T14:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Giulia", lastName: "Neri" },
-  },
-  {
-    id: 105,
-    title: "Graffiti su monumento",
-    description: "Imbrattamento alla base della statua.",
-    category: { id: 9, name: "Other" },
-    location: { latitude: 45.0715, longitude: 7.6865 },
-    createdAt: "2023-11-05T16:20:00Z",
-    status: "Pending",
-    citizen: { firstName: "Marco", lastName: "Ferrari" },
-  },
-  {
-    id: 106,
-    title: "Cartello caduto",
-    description: "Segnale di divieto a terra.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0702, longitude: 7.6868 },
-    createdAt: "2023-11-06T09:45:00Z",
-    status: "Pending",
-    citizen: { firstName: "Paolo", lastName: "Romano" },
-  },
-
-  // --- CLUSTER PORTA NUOVA / SAN SALVARIO ---
-  {
-    id: 201,
-    title: "Buche stradali",
-    description: "Asfalto rovinato vicino all'incrocio.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0621, longitude: 7.6785 },
-    createdAt: "2023-11-05T14:20:00Z",
-    status: "Pending",
-    citizen: { firstName: "Elena", lastName: "Costa" },
-  },
-  {
-    id: 202,
-    title: "Segnale stradale storto",
-    description: "Il cartello di stop è stato urtato.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0625, longitude: 7.679 },
-    createdAt: "2023-11-06T16:45:00Z",
-    status: "Pending",
-    citizen: { firstName: "Davide", lastName: "Greco" },
-  },
-  {
-    id: 203,
-    title: "Vetro rotto a terra",
-    description: "Bottiglie rotte sul marciapiede.",
-    category: { id: 5, name: "Waste" },
-    location: { latitude: 45.0615, longitude: 7.6795 },
-    createdAt: "2023-11-07T08:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Francesca", lastName: "Bruno" },
-  },
-  {
-    id: 204,
-    title: "Schiamazzi notturni",
-    description: "Disturbo della quiete pubblica.",
-    category: { id: 9, name: "Other" },
-    location: { latitude: 45.0605, longitude: 7.678 },
-    createdAt: "2023-11-08T23:15:00Z",
-    status: "Pending",
-    citizen: { firstName: "Alessandro", lastName: "Gallo" },
-  },
-  {
-    id: 205,
-    title: "Tombino intasato",
-    description: "L'acqua non defluisce.",
-    category: { id: 3, name: "Sewer System" },
-    location: { latitude: 45.063, longitude: 7.68 },
-    createdAt: "2023-11-09T10:10:00Z",
-    status: "Pending",
-    citizen: { firstName: "Sara", lastName: "Conti" },
-  },
-
-  // --- CLUSTER POLITECNICO / CROCETTA ---
-  {
-    id: 301,
-    title: "Perdita d'acqua",
-    description: "Tubo rotto che perde acqua sul marciapiede.",
-    category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.062, longitude: 7.66 },
-    createdAt: "2023-11-10T08:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Roberto", lastName: "Esposito" },
-  },
-  {
-    id: 302,
-    title: "Rastrelliera bici piena",
-    description: "Servono più posti per le bici.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.0625, longitude: 7.661 },
-    createdAt: "2023-11-11T09:20:00Z",
-    status: "Pending",
-    citizen: { firstName: "Chiara", lastName: "Rizzo" },
-  },
-  {
-    id: 303,
-    title: "Semaforo pedonale guasto",
-    description: "Non diventa mai verde.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.0618, longitude: 7.6595 },
-    createdAt: "2023-11-12T12:45:00Z",
-    status: "Pending",
-    citizen: { firstName: "Michele", lastName: "De Luca" },
-  },
-  {
-    id: 304,
-    title: "Gradino rotto ingresso",
-    description: "Pericoloso per gli studenti.",
-    category: { id: 2, name: "Architectural Barriers" },
-    location: { latitude: 45.063, longitude: 7.6605 },
-    createdAt: "2023-11-13T15:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Laura", lastName: "Mancini" },
-  },
-
-  // --- CLUSTER PARCO DEL VALENTINO ---
-  {
-    id: 401,
-    title: "Albero pericolante",
-    description: "Grosso ramo spezzato dopo il temporale.",
-    category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.055, longitude: 7.685 },
-    createdAt: "2023-11-14T11:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Antonio", lastName: "Ricci" },
-  },
-  {
-    id: 402,
-    title: "Giochi bimbi rotti",
-    description: "Altalena mancante.",
-    category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.056, longitude: 7.686 },
-    createdAt: "2023-11-15T16:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Silvia", lastName: "Marino" },
-  },
-  {
-    id: 403,
-    title: "Fontanella guasta",
-    description: "Non esce acqua.",
-    category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.054, longitude: 7.684 },
-    createdAt: "2023-11-16T10:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Giorgio", lastName: "Barbieri" },
-  },
-  {
-    id: 404,
-    title: "Cestini stracolmi",
-    description: "Rifiuti ovunque nel prato.",
-    category: { id: 5, name: "Waste" },
-    location: { latitude: 45.0555, longitude: 7.6855 },
-    createdAt: "2023-11-17T18:20:00Z",
-    status: "Pending",
-    citizen: { firstName: "Lucia", lastName: "Moretti" },
-  },
-
-  // --- CLUSTER LINGOTTO / MILLEFONTI ---
-  {
-    id: 501,
-    title: "Marciapiede dissestato",
-    description: "Radici degli alberi hanno alzato l'asfalto.",
-    category: { id: 2, name: "Architectural Barriers" },
-    location: { latitude: 45.03, longitude: 7.665 },
-    createdAt: "2023-11-18T09:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Federico", lastName: "Lombardi" },
-  },
-  {
-    id: 502,
-    title: "Luci sottopasso spente",
-    description: "Buio totale nel sottopassaggio.",
-    category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.031, longitude: 7.666 },
-    createdAt: "2023-11-19T20:00:00Z",
-    status: "Pending",
-    citizen: { firstName: "Valentina", lastName: "Giordano" },
-  },
-  {
-    id: 503,
-    title: "Parcheggio selvaggio",
-    description: "Auto sulle strisce pedonali.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.029, longitude: 7.664 },
-    createdAt: "2023-11-20T13:15:00Z",
-    status: "Pending",
-    citizen: { firstName: "Matteo", lastName: "Russo" },
-  },
-
-  // --- CLUSTER BARRIERA DI MILANO / NORD ---
-  {
-    id: 601,
-    title: "Discarica abusiva",
-    description: "Mobili abbandonati all'angolo.",
-    category: { id: 5, name: "Waste" },
-    location: { latitude: 45.09, longitude: 7.69 },
-    createdAt: "2023-11-21T07:45:00Z",
-    status: "Pending",
-    citizen: { firstName: "Stefano", lastName: "Colombo" },
-  },
-  {
-    id: 602,
-    title: "Buca profonda",
-    description: "Rischio per motociclisti.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.091, longitude: 7.691 },
-    createdAt: "2023-11-22T15:50:00Z",
-    status: "Pending",
-    citizen: { firstName: "Simona", lastName: "Santoro" },
-  },
-  {
-    id: 603,
-    title: "Segnaletica sbiadita",
-    description: "Strisce pedonali non visibili.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.089, longitude: 7.689 },
-    createdAt: "2023-11-23T11:10:00Z",
-    status: "Pending",
-    citizen: { firstName: "Giovanni", lastName: "Amato" },
-  },
-
-  // --- PUNTI SPARSI (Singoli) ---
-  {
-    id: 701,
-    title: "Lampione Piazza Vittorio",
-    description: "Lampada intermittente.",
-    category: { id: 4, name: "Public Lighting" },
-    location: { latitude: 45.065, longitude: 7.693 },
-    createdAt: "2023-11-24T19:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Alice", lastName: "Pellegrini" },
-  },
-  {
-    id: 702,
-    title: "Panchina rotta lungo Po",
-    description: "Schienale mancante.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.06, longitude: 7.7 },
-    createdAt: "2023-11-25T14:45:00Z",
-    status: "Pending",
-    citizen: { firstName: "Daniele", lastName: "Ruggiero" },
-  },
-  {
-    id: 703,
-    title: "Mancanza acqua fontana",
-    description: "Piazza Statuto.",
-    category: { id: 1, name: "Water Supply – Drinking Water" },
-    location: { latitude: 45.076, longitude: 7.67 },
-    createdAt: "2023-11-26T10:20:00Z",
-    status: "Pending",
-    citizen: { firstName: "Martina", lastName: "Gatti" },
-  },
-  {
-    id: 704,
-    title: "Rami pericolanti",
-    description: "Giardini Reali.",
-    category: { id: 8, name: "Public Green Areas and Playgrounds" },
-    location: { latitude: 45.073, longitude: 7.688 },
-    createdAt: "2023-11-27T16:10:00Z",
-    status: "Pending",
-    citizen: { firstName: "Fabio", lastName: "Monti" },
-  },
-  {
-    id: 705,
-    title: "Tombino rumoroso",
-    description: "Ogni volta che passa un'auto fa rumore.",
-    category: { id: 7, name: "Roads and Urban Furnishings" },
-    location: { latitude: 45.05, longitude: 7.65 }, // Zona San Paolo
-    createdAt: "2023-11-28T08:55:00Z",
-    status: "Pending",
-    citizen: { firstName: "Cristina", lastName: "Villa" },
-  },
-  {
-    id: 706,
-    title: "Graffiti su muro scuola",
-    description: "Scritte offensive.",
-    category: { id: 9, name: "Other" },
-    location: { latitude: 45.04, longitude: 7.66 }, // Zona Santa Rita
-    createdAt: "2023-11-29T12:30:00Z",
-    status: "Pending",
-    citizen: { firstName: "Enrico", lastName: "Palmieri" },
-  },
-  {
-    id: 707,
-    title: "Semaforo spento",
-    description: "Incrocio pericoloso.",
-    category: { id: 6, name: "Road Signs and Traffic Lights" },
-    location: { latitude: 45.08, longitude: 7.64 }, // Zona Parella
-    createdAt: "2023-11-30T17:40:00Z",
-    status: "Pending",
-    citizen: { firstName: "Monica", lastName: "Bernardi" },
-  },
-];
 
 // --- LOGICA GEOJSON ---
 let turinFeature = null;
@@ -833,7 +498,7 @@ function MapPage() {
                 <div className="popup-address">{selectedPin.title}</div>
                 <button
                   className="popup-add-report-btn"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.stopPropagation();
                     e.preventDefault();
 
@@ -842,8 +507,16 @@ function MapPage() {
                       setShowReportsSidebar(false);
                     }
 
-                    setSelectedReportForDetails(selectedPin);
-                    setShowReportDetails(true);
+                    // Chiamata API per dettagli report
+                    try {
+                      const details = await API.getReportMapDetails(selectedPin.reportId);
+                      setSelectedReportForDetails(details);
+                      setShowReportDetails(true);
+                    } catch (error) {
+                      // Puoi gestire errori qui, ad esempio mostrare un messaggio
+                      setSelectedReportForDetails(selectedPin); // fallback
+                      setShowReportDetails(true);
+                    }
                     setSelectedPin(null);
                   }}
                 >
@@ -858,6 +531,7 @@ function MapPage() {
             <GeoJSON data={inverseMask} style={inverseMaskStyle} />
           )}
           {turinFeature && <GeoJSON data={turinFeature} style={turinStyle} />}
+          <GetBoundsLogger onReportsFetched={setReports} />
         </MapContainer>
 
         {/* Sidebar Report a Destra */}

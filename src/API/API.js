@@ -549,6 +549,59 @@ const getCitizenReports = async () => {
   }
 };
 
+const getReportsByMapArea = async (bounds) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/map`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        corners: bounds
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch reports by map area"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getReportMapDetails = async (reportId) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/${reportId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch report details"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -567,6 +620,10 @@ const API = {
   getAllReportsIsPending,
   getReportDetails,
   getCitizenReports,
+  getAllReportsApproved,
+  getReportDetails,
+  getReportsByMapArea,
+  getReportMapDetails,
 };
 
 export default API;

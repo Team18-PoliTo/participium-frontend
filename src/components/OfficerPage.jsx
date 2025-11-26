@@ -234,8 +234,11 @@ function OfficerPage() {
                   <Dropdown.Item onClick={() => setStatusFilter("Assigned")} active={statusFilter === "Assigned"}>
                     Assigned
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setStatusFilter("Rejected")} active={statusFilter === "Rejected"}>
-                    Rejected
+                  <Dropdown.Item onClick={() => setStatusFilter("In Progress")} active={statusFilter === "In Progress"}>
+                    In Progress
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setStatusFilter("Suspended")} active={statusFilter === "Suspended"}>
+                    Suspended
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setStatusFilter("Resolved")} active={statusFilter === "Resolved"}>
                     Resolved

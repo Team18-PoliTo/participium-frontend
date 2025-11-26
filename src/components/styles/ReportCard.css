@@ -84,8 +84,18 @@
 }
 
 .report-card-title {
-  max-width: 180px; /* Adatta la larghezza secondo necessità */
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
+}
+
+@media (max-width: 576px) {
+  .report-card-title {
+    max-width: 180px; 
+    display: block;
+    white-space: normal;    
+    overflow: visible;       
+    text-overflow: clip;     
+    word-break: break-word;  
+  }
 }

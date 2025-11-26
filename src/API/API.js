@@ -549,6 +549,34 @@ const getReportDetails = async (reportId) => {
   }
 };
 
+const getReportsByMapArea = async (bounds) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/map`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        corners: bounds
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch reports by map area"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -566,6 +594,8 @@ const API = {
   deleteTempFile,
   getAllReportsIsPending,
   getAllReportsApproved,
+  getReportDetails,
+  getReportsByMapArea,
 };
 
 export default API;

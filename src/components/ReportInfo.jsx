@@ -126,10 +126,10 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-          <div className="d-flex align-items-center gap-2">
-            {getCategoryIcon(report.category?.name || "", 18)}
-            <span>{report.category?.name || "No category"}</span>
-          </div>
+            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
+              {getCategoryIcon(report.category?.name || "", 18)}
+              <span>{report.category?.name || "No category"}</span>
+            </div>
         )}
       </div>
 

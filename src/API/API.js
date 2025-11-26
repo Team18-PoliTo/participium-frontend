@@ -303,7 +303,6 @@ const addNewReport = async (reportData) => {
     const requestBody = {
       title: reportData.title,
       description: reportData.description,
-      citizenId: reportData.citizenId,
       categoryId: reportData.categoryId,
       location: reportData.location,
       photoIds: reportData.photoIds,
@@ -393,13 +392,13 @@ const getAllCategories = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      credentials: "include"
+      credentials: "include",
     });
     if (response.ok) {
       const data = await response.json();
       return data.slice(0, 8);
     }
-  }catch (error) { 
+  } catch (error) {
     throw error;
   }
 };
@@ -482,11 +481,9 @@ const getAllReportsIsPending = async () => {
     } else if (response.status === 401) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Unauthorized");
-    }else {
+    } else {
       const errorData = await response.json();
-      throw new Error(
-        errorData.error || errorData.message
-      );
+      throw new Error(errorData.error || errorData.message);
     }
   } catch (error) {
     throw error;
@@ -496,14 +493,17 @@ const getAllReportsIsPending = async () => {
 const getReportDetails = async (reportId) => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
-    const response = await fetch(`${SERVER_URL}api/internal/reports/${reportId}`, {
+    const response = await fetch(
+      `${SERVER_URL}api/internal/reports/${reportId}`,
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-    });
+      }
+    );
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -521,14 +521,17 @@ const getReportDetails = async (reportId) => {
 const getCitizenReports = async () => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
-    const response = await fetch(`${SERVER_URL}api/citizens/reports/myReports`, {
+    const response = await fetch(
+      `${SERVER_URL}api/citizens/reports/myReports`,
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-    });
+      }
+    );
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -541,7 +544,9 @@ const getCitizenReports = async () => {
     } else {
       const errorData = await response.json();
       throw new Error(
-        errorData.error || errorData.message || "Failed to fetch citizen reports"
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch citizen reports"
       );
     }
   } catch (error) {
@@ -560,7 +565,7 @@ const getReportsByMapArea = async (bounds) => {
       },
       credentials: "include",
       body: JSON.stringify({
-        corners: bounds
+        corners: bounds,
       }),
     });
     if (response.ok) {
@@ -569,7 +574,9 @@ const getReportsByMapArea = async (bounds) => {
     } else {
       const errorData = await response.json();
       throw new Error(
-        errorData.error || errorData.message || "Failed to fetch reports by map area"
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch reports by map area"
       );
     }
   } catch (error) {
@@ -579,15 +586,18 @@ const getReportsByMapArea = async (bounds) => {
 
 const getReportMapDetails = async (reportId) => {
   try {
-    const token = JSON.parse(localStorage.getItem("authToken"));  
-    const response = await fetch(`${SERVER_URL}api/citizens/reports/getById/${reportId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/citizens/reports/getById/${reportId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -619,54 +629,6 @@ const getReportsAssignedToMe = async () => {
     } else if (response.status === 401) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Unauthorized");
-    }else if (response.status === 403) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Forbidden");
-    } else {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.error || errorData.message || "Failed to fetch internal user assigned reports"
-      );
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-const updateCitizenProfile = async (id, profileData) => {
-  try {
-    const token = JSON.parse(localStorage.getItem("authToken"));
-    const formData = new FormData();
-
-    if (profileData.email) formData.append("email", profileData.email);
-    if (profileData.username) formData.append("username", profileData.username);
-    if (profileData.firstName)
-      formData.append("firstName", profileData.firstName);
-    if (profileData.lastName) formData.append("lastName", profileData.lastName);
-    if (profileData.telegramUsername)
-      formData.append("telegramUsername", profileData.telegramUsername);
-    if (typeof profileData.emailNotificationsEnabled !== "undefined")
-      formData.append(
-        "emailNotificationsEnabled",
-        profileData.emailNotificationsEnabled
-      );
-    if (profileData.accountPhoto)
-      formData.append("accountPhoto", profileData.accountPhoto);
-
-    const response = await fetch(`${SERVER_URL}api/citizens/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-      credentials: "include",
-      body: formData,
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else if (response.status === 401) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Unauthorized");
     } else if (response.status === 403) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Forbidden");
@@ -676,6 +638,40 @@ const updateCitizenProfile = async (id, profileData) => {
         errorData.error ||
           errorData.message ||
           "Failed to fetch internal user assigned reports"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateCitizenProfile = async (profileData) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/citizens/me`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify(profileData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.profile || data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to update profile"
       );
     }
   } catch (error) {

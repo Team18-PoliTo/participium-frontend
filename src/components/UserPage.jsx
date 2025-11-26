@@ -16,6 +16,7 @@ import ReportCard from "./ReportCard";
 import ReportMapDescription from "./ReportMapDescription";
 import LoadingSpinner from "./LoadingSpinner";
 import defaultAvatar from "../resources/Immagine1.png";
+import { useNavigate } from "react-router";
 
 function UserProfile() {
   const { user, setUser } = useContext(UserContext);
@@ -32,11 +33,13 @@ function UserProfile() {
   const [username, setUsername] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(null); // URL anteprima
+  const [accountPhoto, setAccountPhoto] = useState(null); // URL anteprima
   const [selectedFile, setSelectedFile] = useState(null); // File reale per upload
   const [citizenReports, setCitizenReports] = useState([]);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
+
+  const navigate = useNavigate();
 
   // Valori originali per undo
   const [originalValues, setOriginalValues] = useState({
@@ -46,7 +49,7 @@ function UserProfile() {
     username: "",
     telegramUsername: "",
     emailNotifications: false,
-    photoUrl: null,
+    accountPhoto: null,
   });
 
   // Caricamento dati iniziali
@@ -63,8 +66,10 @@ function UserProfile() {
           setEmail(userData.profile.email || "");
           setUsername(userData.profile.username || "");
           setTelegramUsername(userData.profile.telegramUsername || "");
-          setEmailNotifications(userData.profile.emailNotifications || false);
-          setPhotoUrl(userData.profile.photoUrl || null);
+          setEmailNotifications(
+            userData.profile.emailNotificationsEnabled || false
+          );
+          setAccountPhoto(userData.profile.accountPhoto || null);
 
           // Salva i valori originali
           setOriginalValues({
@@ -73,8 +78,9 @@ function UserProfile() {
             email: userData.profile.email || "",
             username: userData.profile.username || "",
             telegramUsername: userData.profile.telegramUsername || "",
-            emailNotifications: userData.profile.emailNotifications || false,
-            photoUrl: userData.profile.photoUrl || null,
+            emailNotifications:
+              userData.profile.emailNotificationsEnabled || false,
+            accountPhoto: userData.profile.accountPhoto || null,
           });
         }
 
@@ -128,7 +134,7 @@ function UserProfile() {
     setUsername(originalValues.username);
     setTelegramUsername(originalValues.telegramUsername);
     setEmailNotifications(originalValues.emailNotifications);
-    setPhotoUrl(originalValues.photoUrl);
+    setAccountPhoto(originalValues.accountPhoto);
     setSelectedFile(null);
     setIsEditing(false);
   };
@@ -142,7 +148,7 @@ function UserProfile() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setPhotoUrl(URL.createObjectURL(file)); // Anteprima locale immediata
+      setAccountPhoto(URL.createObjectURL(file)); // Anteprima locale immediata
     }
   };
 
@@ -152,58 +158,69 @@ function UserProfile() {
     setMessage({ type: "", text: "" });
 
     try {
-      let uploadedPhotoPath = user.profile?.photoUrl;
+      let photoFileId = user.profile?.accountPhoto || null;
 
-      // 1. Se c'è un nuovo file, caricalo (PT09 - Upload foto)
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
+
         const uploadResult = await API.uploadFile(formData);
-        uploadedPhotoPath = uploadResult.filePath; // Assumendo che l'API restituisca il path
+
+        photoFileId = uploadResult.fileId;
       }
 
-      // 2. Aggiorna il profilo utente (PT09 - Configurazione)
-      // Nota: Questa funzione API.updateCitizenProfile va aggiunta in API.js
-      const updatedProfile = await API.updateCitizenProfile(user.profile.id, {
+      const updates = {
         email: email || null,
         username: username || null,
         firstName: firstName || null,
         lastName: lastName || null,
         telegramUsername: telegramUsername || null,
-        emailNotificationsEnabled:
-          typeof emailNotifications === "boolean" ? emailNotifications : null,
-        accountPhoto: uploadedPhotoPath || null,
-      });
+        emailNotificationsEnabled: emailNotifications,
+        accountPhoto: photoFileId,
+      };
 
-      // 3. Aggiorna lo stato globale
+      const updatedProfile = await API.updateCitizenProfile(updates);
+
+      if (originalValues.email !== updatedProfile.email) {
+        localStorage.removeItem("authToken");
+
+        setUser(null);
+        setCitizenLoggedIn(false);
+
+        try {
+          await API.logoutUser();
+        } catch (e) {
+          console.warn("Server logout failed, proceeding with local logout");
+        }
+
+        navigate("/login", { replace: true });
+        return;
+      }
+
       setUser((prev) => ({
         ...prev,
         profile: { ...prev.profile, ...updatedProfile },
       }));
 
-      // Aggiorna i valori originali
       setOriginalValues({
         firstName: updatedProfile.firstName ?? firstName,
         lastName: updatedProfile.lastName ?? lastName,
         email: updatedProfile.email ?? email,
         username: updatedProfile.username ?? username,
-        telegramUsername: updatedProfile.telegramUsername || telegramUsername,
+        telegramUsername: updatedProfile.telegramUsername ?? telegramUsername,
         emailNotifications:
-          updatedProfile.emailNotifications !== undefined
-            ? updatedProfile.emailNotifications
-            : emailNotifications,
-        photoUrl: uploadedPhotoPath,
+          updatedProfile.emailNotificationsEnabled ?? emailNotifications,
+        accountPhoto: updatedProfile.accountPhoto,
       });
 
       setMessage({ type: "success", text: "Profile updated successfully!" });
       setIsEditing(false);
       setSelectedFile(null);
-      // todo logout if email changed
     } catch (error) {
       console.error("Error updating profile:", error);
       setMessage({
         type: "danger",
-        text: "Failed to update profile. Please try again.",
+        text: error.message || "Failed to update profile.",
       });
     } finally {
       setSaving(false);
@@ -250,7 +267,7 @@ function UserProfile() {
             <Col md={4} className="text-center mb-4 mb-md-0">
               <div className="profile-image-wrapper">
                 <Image
-                  src={photoUrl || defaultAvatar} // Immagine di fallback
+                  src={accountPhoto || defaultAvatar} // Immagine di fallback
                   roundedCircle
                   className="profile-image"
                   alt="Profile"

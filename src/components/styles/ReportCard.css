@@ -91,12 +91,81 @@
 }
 
 @media (max-width: 576px) {
+
+  /* 1. Badge di Stato: Più compatto e meno invasivo */
+  .report-status-badge-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 12px 2px 0; /* Ridotto il padding inferiore */
+    margin-bottom: 0; /* Tolto il margine negativo */
+  }
+
+  .custom-status-badge {
+    font-size: 0.7rem !important; /* Font più piccolo */
+    padding: 3px 8px !important; /* Badge più snello */
+    border-radius: 12px !important;
+  }
+
+  /* 2. Corpo della Card: Layout Flex ottimizzato */
+  .report-card-clickable .card-body {
+    padding: 0.5rem 0.85rem 0.85rem 0.85rem !important; /* Padding ridotto */
+    align-items: flex-start !important;
+    gap: 10px !important; /* Distanza tra icona e testo */
+  }
+
+  /* 3. Icona Categoria: Ridimensionata */
+  .category-icon-circle {
+    width: 40px !important;  /* Più piccola (era 48 o 56) */
+    height: 40px !important;
+    min-width: 40px !important;
+    margin-top: 2px; /* Allineamento ottico col titolo */
+  }
+  
+  /* Se l'icona SVG interna è grande, la ridimensioniamo */
+  .category-icon-circle svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* 4. Titolo: Molto più piccolo e controllato */
   .report-card-title {
-    max-width: 180px; 
-    display: block;
-    white-space: normal;    
-    overflow: visible;       
-    text-overflow: clip;     
-    word-break: break-word;  
+    font-size: 0.95rem !important; /* Dimensione font ridotta drasticamente */
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.25rem !important; /* Meno spazio sotto il titolo */
+    word-break: break-word; /* Spezza parole lunghe come AAAAA... */
+  }
+
+  /* 5. Indirizzo / Testo secondario */
+  .text-muted.small {
+    font-size: 0.75rem !important; /* Testo più piccolo */
+    line-height: 1.2;
+    gap: 4px;
+    margin-bottom: 6px !important;
+  }
+  
+  /* Icone piccole (pin/user) */
+  .text-muted.small svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* 6. Badge Categoria (Arancione): Proporzionato */
+  .custom-category-badge {
+    font-size: 0.65rem !important; /* Testo piccolo */
+    padding: 0.25rem 0.5rem !important;
+    line-height: 1.1;
+    margin-top: 0 !important;
+    display: inline-block;
+    white-space: normal !important;
+  }
+  
+  /* Contenitore colonna testo */
+  .d-flex.flex-column.gap-1 {
+    gap: 2px !important; /* Riduce spazio tra titolo, indirizzo e badge cat */
   }
 }

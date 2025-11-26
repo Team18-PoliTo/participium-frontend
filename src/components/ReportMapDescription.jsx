@@ -1,38 +1,19 @@
 import { useState, useEffect } from "react";
-import {
-  Modal,
-  Button,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Alert,
-} from "react-bootstrap";
+import { Modal, Button, Row, Col } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { MapPin, X, Check } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
-import "./styles/ReportDescription.css";
-import API from "../API/API";
+import "./styles/ReportMapDescription.css";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 
-function ReportDescription({ show, onHide, report, onReportUpdated }) {
-  const [selectedCategory, setSelectedCategory] = useState(
-    report?.category?.id || ""
-  );
-  const [explanation, setExplanation] = useState("");
-  const [error, setError] = useState(null);
+function ReportMapDescription({ show, onHide, report }) {
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isRejecting, setIsRejecting] = useState(false);
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
     if (report) {
-      setSelectedCategory(report.category?.id || "");
-      setError(null);
-      setIsRejecting(false);
-      setExplanation("");
       setAddress(null);
 
       // Carica l'indirizzo se non è già presente
@@ -56,53 +37,7 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
     }
   }, [report]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await API.getAllCategories();
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  const handleConfirm = async () => {
-    try {
-      setError(null);
-      const status = isRejecting ? "Rejected" : "Assigned";
-      const explanationText = isRejecting
-        ? explanation
-        : "No explanation required";
-      const updatedReport = await API.judgeReport(
-        report.id,
-        status,
-        selectedCategory,
-        explanationText
-      );
-
-      if (onReportUpdated) {
-        onReportUpdated(report.id);
-      }
-
-      handleClose();
-    } catch (error) {
-      setError(
-        error.message ||
-          `Failed to ${
-            isRejecting ? "reject" : "approve"
-          } the report. Please try again.`
-      );
-    }
-  };
-
   const handleClose = () => {
-    setExplanation("");
-    setSelectedCategory(report?.category?.id || "");
-    setError(null);
-    setIsRejecting(false);
     onHide();
   };
 
@@ -121,6 +56,22 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
           <Modal.Title>Report Details</Modal.Title>
         </Modal.Header>
         <Modal.Body className="report-desc-modal-body">
+          {/* Citizen Details */}
+          <Row className="mb-3">
+            <Col xs={6}>
+              <label className="report-desc-label fw-bold">First Name</label>
+              <p className="report-desc-text-display">
+                {report.citizen?.firstName || "N/A"}
+              </p>
+            </Col>
+            <Col xs={6}>
+              <label className="report-desc-label fw-bold">Last Name</label>
+              <p className="report-desc-text-display">
+                {report.citizen?.lastName || "N/A"}
+              </p>
+            </Col>
+          </Row>
+          
           {/* Title */}
           <div className="mb-3">
             <label className="report-desc-label fw-bold">Title</label>
@@ -185,35 +136,10 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
           {/* Category */}
           <div className="mb-3">
             <label className="report-desc-label fw-bold">Category</label>
-            <Dropdown className="report-desc-category-dropdown">
-              <Dropdown.Toggle id="report-category-dropdown">
-                <div className="d-flex align-items-center gap-2">
-                  {getCategoryIcon(
-                    categories.find((c) => c.id === selectedCategory)?.name ||
-                      "",
-                    18
-                  )}
-                  <span>
-                    {categories.find((c) => c.id === selectedCategory)?.name ||
-                      "Select a category"}
-                  </span>
-                </div>
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {categories.map((category) => (
-                  <Dropdown.Item
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    active={selectedCategory === category.id}
-                  >
-                    <div className="d-flex align-items-center gap-2">
-                      {getCategoryIcon(category.name, 16)}
-                      <span>{category.name}</span>
-                    </div>
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+            <div className="d-flex align-items-center gap-2 report-desc-text-display">
+              {getCategoryIcon(report.category?.name || "", 18)}
+              <span>{report.category?.name || "No category"}</span>
+            </div>
           </div>
 
           {/* Creation Date */}
@@ -253,84 +179,14 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
               )}
             </div>
           </div>
-
-          {/* Action Toggle */}
-          <div className="mb-3">
-            <label className="report-desc-label fw-bold">Action</label>
-            <div
-              className={`report-desc-action-toggle ${
-                isRejecting ? "reject-active" : ""
-              }`}
-            >
-              <Button
-                className={`report-desc-toggle-btn ${
-                  !isRejecting ? "active" : ""
-                }`}
-                variant="link"
-                onClick={() => setIsRejecting(false)}
-              >
-                Approve
-              </Button>
-              <Button
-                className={`report-desc-toggle-btn ${
-                  isRejecting ? "active" : ""
-                }`}
-                variant="link"
-                onClick={() => setIsRejecting(true)}
-              >
-                Reject
-              </Button>
-            </div>
-          </div>
-
-          {/* Explanation - always shown */}
-          <div className="mb-3">
-            <label className="report-desc-label fw-bold">Explanation</label>
-            <Form.Control
-              as="textarea"
-              rows={4}
-              placeholder={
-                isRejecting
-                  ? "Enter your explanation here..."
-                  : "No explanation required"
-              }
-              value={isRejecting ? explanation : ""}
-              onChange={(e) => setExplanation(e.target.value)}
-              className="report-desc-textarea"
-              disabled={!isRejecting}
-              required={isRejecting}
-            />
-          </div>
-
-          {/* Error Alert */}
-          {error && (
-            <Alert
-              variant="danger"
-              dismissible
-              onClose={() => setError(null)}
-              className="mb-0"
-            >
-              {error}
-            </Alert>
-          )}
         </Modal.Body>
-        <Modal.Footer className="report-desc-modal-footer d-flex justify-content-between">
+        <Modal.Footer className="report-desc-modal-footer">
           <Button
-            variant="secondary"
+            variant="primary"
             onClick={handleClose}
             className="report-desc-btn-cancel"
           >
-            Cancel
-          </Button>
-          <Button
-            variant={isRejecting ? "danger" : "success"}
-            onClick={handleConfirm}
-            className={`d-flex align-items-center gap-2 ${
-              isRejecting ? "report-desc-btn-reject" : "report-desc-btn-approve"
-            }`}
-          >
-            {isRejecting ? <X size={18} /> : <Check size={18} />}
-            {isRejecting ? "Reject Report" : "Approve Report"}
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
@@ -358,4 +214,4 @@ function ReportDescription({ show, onHide, report, onReportUpdated }) {
   );
 }
 
-export default ReportDescription;
+export default ReportMapDescription;

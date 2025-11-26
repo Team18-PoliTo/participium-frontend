@@ -602,6 +602,37 @@ const getReportMapDetails = async (reportId) => {
   }
 };
 
+const getReportsAssignedToMe = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const response = await fetch(`${SERVER_URL}api/internal/reports/assigned`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    }else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch internal user assigned reports"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -622,6 +653,7 @@ const API = {
   getCitizenReports,
   getReportsByMapArea,
   getReportMapDetails,
+  getReportsAssignedToMe,
 };
 
 export default API;

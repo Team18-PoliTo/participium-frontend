@@ -8,6 +8,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import "./styles/OfficerPage.css";
 import { getRoleIcon } from "../constants/roleIcons";
 import { UserContext } from "../App";
+import API from "../API/API";
 
 // MOCK DATA
 const mockReports = [
@@ -87,13 +88,28 @@ function OfficerPage() {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    // Simula caricamento dati mock da sostituire con API reale
-    setLoading(true);
-    setTimeout(() => {
-      setReports(mockReports);
-      setLoading(false);
+    const fetchReports = async () => {
+      setLoading(true);
       setError(null);
-    }, 700);
+      try {
+        const reports = await API.getReportsAssignedToMe();
+        const normalize = (r) => {
+          if (!r) return [];
+          if (Array.isArray(r)) return r;
+          return [];
+        };
+        setReports(normalize(reports));
+      } catch (err) {
+        console.error("Error fetching reports:", err);
+        setError(
+          "Failed to load your assigned reports. Please try again later."
+        );
+        setReports([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
   }, []);
 
   useEffect(() => {
@@ -206,13 +222,13 @@ function OfficerPage() {
                   <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item 
+                  <Dropdown.Item
                     onClick={() => setSortOrder("desc")}
                     active={sortOrder === "desc"}
                   >
                     Newest First
                   </Dropdown.Item>
-                  <Dropdown.Item 
+                  <Dropdown.Item
                     onClick={() => setSortOrder("asc")}
                     active={sortOrder === "asc"}
                   >

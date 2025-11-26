@@ -43,7 +43,6 @@ function App() {
         setCitizenLoggedIn(true);
       }
     } catch (err) {
-      setLoggedIn(false);
       setUser(null);
     } finally {
       setIsCheckingAuth(false);

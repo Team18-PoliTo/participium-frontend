@@ -620,7 +620,6 @@ const API = {
   getAllReportsIsPending,
   getReportDetails,
   getCitizenReports,
-  getReportDetails,
   getReportsByMapArea,
   getReportMapDetails,
 };

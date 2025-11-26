@@ -15,6 +15,7 @@ import PublicRelationsOfficer from "./components/PublicRelationsOfficer";
 import LoadingSpinner from "./components/LoadingSpinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRedirect from "./components/RoleBasedRedirect";
+import UserPage from "./components/UserPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -89,7 +90,7 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="/register" element={<Registration />} />
               <Route path="/login" element={<Login />} />
-              
+              <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
               {/* Redirect basato sul ruolo */}
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
               

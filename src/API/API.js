@@ -1,4 +1,4 @@
-const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
+  const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
 
 const registerCitizen = async (credentials) => {
   try {
@@ -493,37 +493,6 @@ const getAllReportsIsPending = async () => {
   }
 };
 
-const getAllReportsApproved = async () => {
-  try {
-    const token = JSON.parse(localStorage.getItem("authToken"));
-    const response = await fetch(`${SERVER_URL}api/internal/reports/approved`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, 
-      },
-      credentials: "include",
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else if (response.status === 400) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error retrieving reports");
-    } else if (response.status === 401) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Unauthorized");
-    }else {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.error || errorData.message
-      );
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
 const getReportDetails = async (reportId) => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));  
@@ -542,6 +511,37 @@ const getReportDetails = async (reportId) => {
       const errorData = await response.json();
       throw new Error(
         errorData.error || errorData.message || "Failed to fetch report details"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getCitizenReports = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const response = await fetch(`${SERVER_URL}api/citizens/reports`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    }else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch citizen reports"
       );
     }
   } catch (error) {
@@ -618,6 +618,8 @@ const API = {
   uploadFile,
   deleteTempFile,
   getAllReportsIsPending,
+  getReportDetails,
+  getCitizenReports,
   getAllReportsApproved,
   getReportDetails,
   getReportsByMapArea,

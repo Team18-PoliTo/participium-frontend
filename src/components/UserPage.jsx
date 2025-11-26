@@ -198,6 +198,7 @@ function UserProfile() {
       setMessage({ type: "success", text: "Profile updated successfully!" });
       setIsEditing(false);
       setSelectedFile(null);
+      // todo logout if email changed
     } catch (error) {
       console.error("Error updating profile:", error);
       setMessage({

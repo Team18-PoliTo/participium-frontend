@@ -238,3 +238,34 @@
 .save-profile-btn:active {
     transform: scale(0.98);
 }
+
+.profile-reports-scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 300px;  
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 10px; 
+  border-radius: 20px; 
+}
+
+.profile-reports-scrollable::-webkit-scrollbar {
+  width: 12px;
+}
+
+.profile-reports-scrollable::-webkit-scrollbar-track {
+  background: #98C1D9;
+  border-radius: 20px;
+  margin: 5px 0;
+}
+
+.profile-reports-scrollable::-webkit-scrollbar-thumb {
+  background: #EE6C4D;
+  border-radius: 20px;
+}
+
+.profile-reports-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #d55a36;
+}
+

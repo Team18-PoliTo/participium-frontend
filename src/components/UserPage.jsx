@@ -418,13 +418,13 @@ function UserProfile() {
               You haven't submitted any reports yet.
             </p>
           ) : (
-            <Row>
+            <div className="profile-reports-scrollable">
               {citizenReports.map((report) => (
-                <Col key={report.id} xs={12} sm={6} lg={4} className="mb-3">
+                <div key={report.id} className="profile-report-card-wrapper">
                   <ReportCard report={report} onClick={handleReportClick} />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
           )}
         </Form>
       </Container>

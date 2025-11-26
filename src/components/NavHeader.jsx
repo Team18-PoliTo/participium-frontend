@@ -104,7 +104,7 @@ function NavHeader() {
                   {citizenLoggedIn && location.pathname !== "/user-profile" && (
                     <Link
                       className="mobile-menu-item"
-                      to="/user-profile"
+                      to="/profile"
                       onClick={closeMenu}
                     >
                       Profile

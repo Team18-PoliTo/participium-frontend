@@ -1,4 +1,4 @@
-  const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
+const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
 
 const registerCitizen = async (credentials) => {
   try {
@@ -386,12 +386,12 @@ const judgeReport = async (reportId, status, categoryId, explanation) => {
 const getAllCategories = async () => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
-    
+
     const response = await fetch(`${SERVER_URL}api/categories`, {
       method: "GET",
       headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       credentials: "include"
     });
@@ -401,7 +401,7 @@ const getAllCategories = async () => {
     }
   }catch (error) { 
     throw error;
-   }
+  }
 };
 
 const uploadFile = async (formData) => {
@@ -495,14 +495,14 @@ const getAllReportsIsPending = async () => {
 
 const getReportDetails = async (reportId) => {
   try {
-    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const token = JSON.parse(localStorage.getItem("authToken"));
     const response = await fetch(`${SERVER_URL}api/internal/reports/${reportId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
     });
     if (response.ok) {
       const data = await response.json();
@@ -520,14 +520,14 @@ const getReportDetails = async (reportId) => {
 
 const getCitizenReports = async () => {
   try {
-    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const token = JSON.parse(localStorage.getItem("authToken"));
     const response = await fetch(`${SERVER_URL}api/citizens/reports/myReports`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
     });
     if (response.ok) {
       const data = await response.json();
@@ -535,7 +535,7 @@ const getCitizenReports = async () => {
     } else if (response.status === 401) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Unauthorized");
-    }else if (response.status === 403) {
+    } else if (response.status === 403) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Forbidden");
     } else {
@@ -579,14 +579,14 @@ const getReportsByMapArea = async (bounds) => {
 
 const getReportMapDetails = async (reportId) => {
   try {
-    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const token = JSON.parse(localStorage.getItem("authToken"));
     const response = await fetch(`${SERVER_URL}api/citizens/reports/${reportId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
     });
     if (response.ok) {
       const data = await response.json();
@@ -604,7 +604,7 @@ const getReportMapDetails = async (reportId) => {
 
 const getReportsAssignedToMe = async () => {
   try {
-    const token = JSON.parse(localStorage.getItem("authToken"));  
+    const token = JSON.parse(localStorage.getItem("authToken"));
     const response = await fetch(`${SERVER_URL}api/internal/reports/assigned`, {
       method: "GET",
       headers: {
@@ -633,6 +633,56 @@ const getReportsAssignedToMe = async () => {
   }
 }
 
+const updateCitizenProfile = async (id, profileData) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const formData = new FormData();
+
+    if (profileData.email) formData.append("email", profileData.email);
+    if (profileData.username) formData.append("username", profileData.username);
+    if (profileData.firstName)
+      formData.append("firstName", profileData.firstName);
+    if (profileData.lastName) formData.append("lastName", profileData.lastName);
+    if (profileData.telegramUsername)
+      formData.append("telegramUsername", profileData.telegramUsername);
+    if (typeof profileData.emailNotificationsEnabled !== "undefined")
+      formData.append(
+        "emailNotificationsEnabled",
+        profileData.emailNotificationsEnabled
+      );
+    if (profileData.accountPhoto)
+      formData.append("accountPhoto", profileData.accountPhoto);
+
+    const response = await fetch(`${SERVER_URL}api/citizens/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      credentials: "include",
+      body: formData,
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch internal user assigned reports"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -654,6 +704,7 @@ const API = {
   getReportsByMapArea,
   getReportMapDetails,
   getReportsAssignedToMe,
+  updateCitizenProfile,
 };
 
 export default API;

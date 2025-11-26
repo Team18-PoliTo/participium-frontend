@@ -67,7 +67,7 @@ function ReportMapDescription({ show, onHide, report }) {
             <Col xs={6}>
               <label className="report-map-desc-label fw-bold">Last Name</label>
               <p className="report-map-desc-text-display">
-                {report.citizenSurname || "N/A"}
+                {report.citizenLastName || "N/A"}
               </p>
             </Col>
           </Row>
@@ -137,8 +137,8 @@ function ReportMapDescription({ show, onHide, report }) {
           <div className="mb-3">
             <label className="report-map-desc-label fw-bold">Category</label>
             <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-              {getCategoryIcon(report.category?.name || "", 18)}
-              <span>{report.category?.name || "No category"}</span>
+              {getCategoryIcon(report.category || "", 18)}
+              <span>{report.category || "No category"}</span>
             </div>
           </div>
 

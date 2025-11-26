@@ -84,6 +84,7 @@
 }
 
 .report-card-title {
+  max-width: 200px;
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;

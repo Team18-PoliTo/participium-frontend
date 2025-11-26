@@ -216,8 +216,8 @@ function UserProfile() {
       <Container className="user-profile-container">
         <div className="position-relative mb-4">
           <h1 className="profile-title text-center mb-0">My Profile</h1>
-          <div className="profile-actions">
-            {!isEditing ? (
+          {!isEditing && (
+            <div className="profile-actions-icon">
               <Button
                 variant="link"
                 onClick={handleEdit}
@@ -226,33 +226,8 @@ function UserProfile() {
               >
                 <Edit2 size={24} />
               </Button>
-            ) : (
-              <div className="d-flex gap-2">
-                <Button
-                  variant="outline-light"
-                  onClick={handleCancel}
-                  className="cancel-btn"
-                >
-                  <X size={20} className="me-2" />
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  form="profile-form"
-                  className="save-profile-btn-inline"
-                  disabled={saving}
-                >
-                  {saving ? (
-                    "Saving..."
-                  ) : (
-                    <>
-                      <Save size={20} className="me-2" /> Save
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {message.text && (
@@ -406,6 +381,37 @@ function UserProfile() {
               </Row>
             </Col>
           </Row>
+
+          {isEditing && (
+            <Row className="profile-actions-buttons">
+              <Col xs={6}>
+                <Button
+                  variant="outline-light"
+                  onClick={handleCancel}
+                  className="cancel-btn w-100"
+                >
+                  <X size={20} className="me-2" />
+                  Cancel
+                </Button>
+              </Col>
+              <Col xs={6}>
+                <Button
+                  type="submit"
+                  form="profile-form"
+                  className="save-profile-btn-inline w-100"
+                  disabled={saving}
+                >
+                  {saving ? (
+                    "Saving..."
+                  ) : (
+                    <>
+                      <Save size={20} className="me-2" /> Save
+                    </>
+                  )}
+                </Button>
+              </Col>
+            </Row>
+          )}
 
           <hr className="profile-divider" />
 

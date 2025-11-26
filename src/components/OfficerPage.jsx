@@ -10,65 +10,6 @@ import { getRoleIcon } from "../constants/roleIcons";
 import { UserContext } from "../App";
 import API from "../API/API";
 
-// MOCK DATA
-const mockReports = [
-  {
-    id: 1,
-    title: "Broken streetlight on Via Roma",
-    description: "The streetlight has been out for 3 days.",
-    createdAt: "2025-11-20T10:30:00Z",
-    status: "Assigned",
-    address: "Via Roma, Torino",
-    location: {
-      latitude: 45.0703,
-      longitude: 7.6869,
-    },
-    category: {
-      id: 2,
-      name: "Public Lighting",
-    },
-    photos: [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca"
-    ],
-  },
-  {
-    id: 2,
-    title: "Overflowing trash bin",
-    description: "Trash bin near Piazza Castello is full.",
-    createdAt: "2025-11-22T14:15:00Z",
-    status: "Assigned",
-    address: "Piazza Castello, Torino",
-    location: {
-      latitude: 45.0705,
-      longitude: 7.6867,
-    },
-    category: {
-      id: 4,
-      name: "Waste Management",
-    },
-    photos: [
-      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308"
-    ],
-  },
-  {
-    id: 3,
-    title: "Pothole on Corso Francia",
-    description: "Large pothole causing traffic issues.",
-    createdAt: "2025-11-21T09:00:00Z",
-    status: "Assigned",
-    address: "Corso Francia, Torino",
-    location: {
-      latitude: 45.0720,
-      longitude: 7.6850,
-    },
-    category: {
-      id: 1,
-      name: "Street Maintenance",
-    },
-    photos: [],
-  },
-];
 
 function OfficerPage() {
 

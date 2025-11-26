@@ -137,8 +137,16 @@ function ReportMapDescription({ show, onHide, report }) {
           <div className="mb-3">
             <label className="report-map-desc-label fw-bold">Category</label>
             <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-              {getCategoryIcon(report.category?.name || "", 18)}
-              <span>{report.category?.name || "No category"}</span>
+              {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 18)}
+              <span>{report.category.name ? report.category.name : report.category || "No category"}</span>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="mb-3">
+            <label className="report-map-desc-label fw-bold">Status</label>
+            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
+              <span>{report.status}</span>
             </div>
           </div>
 

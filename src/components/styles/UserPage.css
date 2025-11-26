@@ -31,10 +31,21 @@
     color: white;
 }
 
-.profile-actions {
+.profile-actions-icon {
     position: absolute;
     top: 0;
     right: 0;
+}
+
+.profile-actions-buttons {
+    position: static;
+    margin-top: 1rem;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.profile-actions-buttons .row {
+    width: auto !important;
 }
 
 .section-subtitle {
@@ -190,34 +201,40 @@
 
 .save-profile-btn-inline {
     background-color: #EE6C4D !important;
-    border: none !important;
-    padding: 0.5rem 1.5rem;
+    border: 2px solid #EE6C4D !important;
+    padding: 1rem !important;
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: 12px !important;
+    color: white !important;
     transition: all 0.2s ease;
+    font-size: 1rem !important;
 }
 
 .save-profile-btn-inline:hover {
     background-color: #d55a36 !important;
+    border-color: #d55a36 !important;
 }
 
 .save-profile-btn-inline:disabled {
     background-color: #98C1D9 !important;
+    border-color: #98C1D9 !important;
     opacity: 0.6;
 }
 
 .cancel-btn {
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
     color: white !important;
-    padding: 0.5rem 1.5rem;
+    padding: 1rem !important;
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: 12px !important;
     transition: all 0.2s ease;
+    font-size: 1rem !important;
 }
 
 .cancel-btn:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Bottone Salva (legacy - rimosso) */

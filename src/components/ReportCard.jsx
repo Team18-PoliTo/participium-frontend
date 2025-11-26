@@ -105,10 +105,15 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center gap-3">
           {
-            showPRO && 
+            !showUser ?
             (
               <div className="category-icon-circle">
                 {getCategoryIcon(report.category.name, 32)}
+              </div>
+            ) : 
+            (
+              <div className="category-icon-circle">
+                {getCategoryIcon(report.category, 32)}
               </div>
             )
           }
@@ -127,11 +132,19 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
                 </>
               )}
             </div>
-            {showPRO && (
-              <div className="mt-1">
-                {getCategoryBadge(report.category.name)}
-              </div>
-            )}
+            {!showUser ? 
+              (
+                <div className="mt-1">
+                  {getCategoryBadge(report.category.name)}
+                </div>
+              )
+              :
+              (
+                <div className="mt-1">
+                  {getCategoryBadge(report.category)}
+                </div>
+              )
+            }
           </div>
         </div>
       </Card.Body>

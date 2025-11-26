@@ -181,12 +181,6 @@
   background: #2c4460;
 }
 
-/* Nascondi la sidebar su dispositivi mobili e tablet (< 992px) */
-@media (max-width: 992px) {
-  .reports-sidebar {
-    display: none;
-  }
-}
 
 /* --- CLUSTER MARKER (Cerchio Arancione) --- */
 .cluster-marker {
@@ -428,4 +422,39 @@
 
 .leaflet-popup-close-button {
   display: none !important;
+}
+
+/* --- FAB BUTTON (Floating Action Button) --- */
+.reports-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1002;
+  background: #3D5A80;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reports-fab:hover {
+  background: #d85c3c;
+}
+
+/* --- SIDEBAR MOBILE --- */
+.reports-sidebar.mobile {
+  width: 100vw;
+  max-width: 100vw;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  z-index: 1001;
+  background: #fff;
+  box-shadow: 0 0 16px rgba(0,0,0,0.12);
+  transition: transform 0.3s;
 }

@@ -25,7 +25,6 @@ export const MobileContext = createContext();
 
 function App() {
   const [navbarText, setNavbarText] = useState("PARTICIPIUM");
-  const [loggedIn, setLoggedIn] = useState(false);
   const [citizenLoggedIn, setCitizenLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);

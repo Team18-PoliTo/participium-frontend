@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -25,6 +25,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 import { ChevronLeft } from "lucide-react";
 import GetBoundsLogger from "./GetBoundsLogger";
+import { MobileContext } from "../App";
 
 
 // --- LOGICA GEOJSON ---
@@ -173,6 +174,9 @@ function MapUpdater({ setBounds, setZoom, mapRef }) {
 
 // --- COMPONENTE PRINCIPALE ---
 function MapPage() {
+
+  const {isMobile} = useContext(MobileContext);
+
   // Stati
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null);
@@ -182,7 +186,7 @@ function MapPage() {
   const [zoom, setZoom] = useState(13);
 
   // Sidebar destra per i report
-  const [showReportsSidebar, setShowReportsSidebar] = useState(true);
+  const [showReportsSidebar, setShowReportsSidebar] = useState(!isMobile);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(true);
 
   // Popup per il pin selezionato
@@ -522,103 +526,155 @@ function MapPage() {
           <GetBoundsLogger onReportsFetched={setReports} />
         </MapContainer>
 
-        {/* Sidebar Report a Destra */}
-        <div
-          className={`reports-sidebar ${
-            showReportsSidebar ? "open" : "closed"
-          }`}
-        >
-          <div className="reports-sidebar-content">
-            <div className="reports-sidebar-header-wrapper">
-              <h5 className="reports-sidebar-title">
-                Reports ({reports.length})
-              </h5>
-              <button
-                className="reports-sidebar-toggle"
-                onClick={toggleReportsSidebar}
-                title="Close sidebar"
-                aria-label="Close sidebar"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="reports-list">
-              {reports.length === 0 ? (
-                <p className="text-muted text-center mt-4">
-                  No reports available
-                </p>
-              ) : (
-                reports.map((report) => (
-                  <ReportCard
-                    key={report.id}
-                    report={report}
-                    onClick={handleReportCardClick}
-                    showUser={true}
-                    showPRO={false}
-                  />
-                ))
-              )}
+        {/* Bottone flottante per aprire la sidebar su MOBILE */}
+        {isMobile && !showReportsSidebar && (
+          <button
+            className="reports-fab"
+            onClick={toggleReportsSidebar}
+            aria-label="Open reports"
+          >
+            Reports ({reports.length})
+          </button>
+        )}
+
+        {/* Sidebar Report a Destra - SOLO DESKTOP */}
+        {!isMobile && (
+          <div
+            className={`reports-sidebar ${
+              showReportsSidebar ? "open" : "closed"
+            }`}
+          >
+            <div className="reports-sidebar-content">
+              <div className="reports-sidebar-header-wrapper">
+                <h5 className="reports-sidebar-title">
+                  Reports ({reports.length})
+                </h5>
+                <button
+                  className="reports-sidebar-toggle"
+                  onClick={toggleReportsSidebar}
+                  title="Close sidebar"
+                  aria-label="Close sidebar"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="reports-list">
+                {reports.length === 0 ? (
+                  <p className="text-muted text-center mt-4">
+                    No reports available
+                  </p>
+                ) : (
+                  reports.map((report) => (
+                    <ReportCard
+                      key={report.id}
+                      report={report}
+                      onClick={handleReportCardClick}
+                      showUser={true}
+                      showPRO={false}
+                    />
+                  ))
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Tab laterale per riaprire la sidebar quando è chiusa */}
-        {!showReportsSidebar && (
+        {/* Tab laterale per riaprire la sidebar quando è chiusa - SOLO DESKTOP */}
+        {!isMobile && !showReportsSidebar && (
           <div className="reports-sidebar-tab" onClick={toggleReportsSidebar}>
             <ChevronLeft size={20} className="reports-sidebar-tab-icon" />
             <span className="reports-sidebar-tab-text">Reports</span>
             <span className="reports-sidebar-tab-count">{reports.length}</span>
           </div>
         )}
+
+        {/* Sidebar Report su MOBILE */}
+        {isMobile && showReportsSidebar && (
+          <div className="reports-sidebar mobile open">
+            <div className="reports-sidebar-content">
+              <div className="reports-sidebar-header-wrapper">
+                <h5 className="reports-sidebar-title">
+                  Reports ({reports.length})
+                </h5>
+                <button
+                  className="reports-sidebar-toggle"
+                  onClick={toggleReportsSidebar}
+                  title="Close sidebar"
+                  aria-label="Close sidebar"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="reports-list">
+                {reports.length === 0 ? (
+                  <p className="text-muted text-center mt-4">
+                    No reports available
+                  </p>
+                ) : (
+                  reports.map((report) => (
+                    <ReportCard
+                      key={report.id}
+                      report={report}
+                      onClick={handleReportCardClick}
+                      showUser={true}
+                      showPRO={false}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Offcanvas per il modulo di report */}
+        <Offcanvas
+          show={showForm}
+          onHide={handleFormClose}
+          placement="start"
+          className="report-offcanvas"
+        >
+          <Offcanvas.Header closeButton className="report-offcanvas__header">
+            <Offcanvas.Title className="report-offcanvas__title">
+              Create New Report
+            </Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body className="report-offcanvas__body">
+            {showForm && (
+              <ReportForm
+                position={clickedPosition}
+                onFormSubmit={handleFormClose}
+                onReportResult={handleReportSubmit}
+              />
+            )}
+          </Offcanvas.Body>
+        </Offcanvas>
+
+        <InvalidLocationModal
+          showInvalidModal={showInvalidModal}
+          setShowInvalidModal={setShowInvalidModal}
+        />
+
+        <ReportStatusModal
+          show={showReportModal}
+          onClose={() => setShowReportModal(false)}
+          isSuccess={reportModalIsSuccess}
+          message={reportModalMessage}
+        />
+
+        <ReportMapDescription
+          show={showReportDetails}
+          onHide={() => {
+            setShowReportDetails(false);
+            // Riapri la sidebar se era aperta prima
+            if (wasSidebarOpen) {
+              setTimeout(() => {
+                setShowReportsSidebar(true);
+              }, 300);
+            }
+          }}
+          report={selectedReportForDetails}
+        />
       </div>
-
-      <Offcanvas
-        show={showForm}
-        onHide={handleFormClose}
-        placement="start"
-        className="report-offcanvas"
-      >
-        <Offcanvas.Header closeButton className="report-offcanvas__header">
-          <Offcanvas.Title className="report-offcanvas__title">
-            Create New Report
-          </Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body className="report-offcanvas__body">
-          {showForm && (
-            <ReportForm
-              position={clickedPosition}
-              onFormSubmit={handleFormClose}
-              onReportResult={handleReportSubmit}
-            />
-          )}
-        </Offcanvas.Body>
-      </Offcanvas>
-
-      <InvalidLocationModal
-        showInvalidModal={showInvalidModal}
-        setShowInvalidModal={setShowInvalidModal}
-      />
-
-      <ReportStatusModal
-        show={showReportModal}
-        onClose={() => setShowReportModal(false)}
-        isSuccess={reportModalIsSuccess}
-        message={reportModalMessage}
-      />
-
-      <ReportMapDescription
-        show={showReportDetails}
-        onHide={() => {
-          setShowReportDetails(false);
-          // Riapri la sidebar se era aperta prima
-          if (wasSidebarOpen) {
-            setTimeout(() => {
-              setShowReportsSidebar(true);
-            }, 300);
-          }
-        }}
-        report={selectedReportForDetails}
-      />
     </>
   );
 }

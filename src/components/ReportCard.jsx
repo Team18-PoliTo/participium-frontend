@@ -113,7 +113,7 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
             )
           }
           <div className="d-flex flex-column gap-1">
-            <Card.Title className="mb-0">{report.title}</Card.Title>
+            <Card.Title className="mb-0 report-card-title">{report.title}</Card.Title>
             <div className="d-flex align-items-center gap-1 text-muted small">
               {!showUser && (
                 <>

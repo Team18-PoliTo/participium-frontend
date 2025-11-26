@@ -580,7 +580,7 @@ const getReportsByMapArea = async (bounds) => {
 const getReportMapDetails = async (reportId) => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));  
-    const response = await fetch(`${SERVER_URL}api/citizens/reports/${reportId}`, {
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/getById/${reportId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

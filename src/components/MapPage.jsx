@@ -458,6 +458,19 @@ function MapPage() {
                       }
                     }
 
+                    // Centra la mappa sul pin cliccato
+                    if (mapRef.current) {
+                      try {
+                        mapRef.current.setView(
+                          [report.location.latitude, report.location.longitude],
+                          17,
+                          { animate: true }
+                        );
+                      } catch (err) {
+                        console.warn("Impossibile centrare la mappa:", err);
+                      }
+                    }
+
                     setSelectedPin({ ...report, address });
                   },
                 }}

@@ -52,42 +52,42 @@ function ReportMapDescription({ show, onHide, report }) {
         centered
         fullscreen="md-down"
       >
-        <Modal.Header closeButton className="report-desc-modal-header">
+        <Modal.Header closeButton className="report-map-desc-modal-header">
           <Modal.Title>Report Details</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="report-desc-modal-body">
+        <Modal.Body className="report-map-desc-modal-body">
           {/* Citizen Details */}
           <Row className="mb-3">
             <Col xs={6}>
-              <label className="report-desc-label fw-bold">First Name</label>
-              <p className="report-desc-text-display">
-                {report.citizen?.firstName || "N/A"}
+              <label className="report-map-desc-label fw-bold">First Name</label>
+              <p className="report-map-desc-text-display">
+                {report.citizenName || "N/A"}
               </p>
             </Col>
             <Col xs={6}>
-              <label className="report-desc-label fw-bold">Last Name</label>
-              <p className="report-desc-text-display">
-                {report.citizen?.lastName || "N/A"}
+              <label className="report-map-desc-label fw-bold">Last Name</label>
+              <p className="report-map-desc-text-display">
+                {report.citizenSurname || "N/A"}
               </p>
             </Col>
           </Row>
           
           {/* Title */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Title</label>
-            <p className="report-desc-text-display">{report.title}</p>
+            <label className="report-map-desc-label fw-bold">Title</label>
+            <p className="report-map-desc-text-display">{report.title}</p>
           </div>
 
           {/* Description */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Description</label>
-            <p className="report-desc-text-display">{report.description}</p>
+            <label className="report-map-desc-label fw-bold">Description</label>
+            <p className="report-map-desc-text-display">{report.description}</p>
           </div>
 
           {/* Address */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Address</label>
-            <div className="d-flex align-items-center gap-2 report-desc-text-display">
+            <label className="report-map-desc-label fw-bold">Address</label>
+            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
               <MapPin size={16} color="#3D5A80" />
               <span>
                 {address ||
@@ -103,8 +103,8 @@ function ReportMapDescription({ show, onHide, report }) {
           {/* Location Map */}
           {report.location && (
             <div className="mb-3">
-              <label className="report-desc-label fw-bold">Location</label>
-              <div className="report-desc-map-container">
+              <label className="report-map-desc-label fw-bold">Location</label>
+              <div className="report-map-desc-map-container">
                 <MapContainer
                   center={[report.location.latitude, report.location.longitude]}
                   zoom={16}
@@ -135,8 +135,8 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Category */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Category</label>
-            <div className="d-flex align-items-center gap-2 report-desc-text-display">
+            <label className="report-map-desc-label fw-bold">Category</label>
+            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
               {getCategoryIcon(report.category?.name || "", 18)}
               <span>{report.category?.name || "No category"}</span>
             </div>
@@ -144,8 +144,8 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Creation Date */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Creation Date</label>
-            <p className="report-desc-text-display">
+            <label className="report-map-desc-label fw-bold">Creation Date</label>
+            <p className="report-map-desc-text-display">
               {new Date(report.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -158,8 +158,8 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Photos */}
           <div className="mb-3">
-            <label className="report-desc-label fw-bold">Included Photos</label>
-            <div className="report-desc-photos-container">
+            <label className="report-map-desc-label fw-bold">Included Photos</label>
+            <div className="report-map-desc-photos-container">
               {report.photos && report.photos.length > 0 ? (
                 <Row className="g-3">
                   {report.photos.map((photo, index) => (
@@ -167,7 +167,7 @@ function ReportMapDescription({ show, onHide, report }) {
                       <img
                         src={photo}
                         alt={`Report photo ${index + 1}`}
-                        className="report-desc-photo"
+                        className="report-map-desc-photo"
                         onClick={() => setSelectedPhoto(photo)}
                         style={{ cursor: "pointer" }}
                       />
@@ -180,11 +180,11 @@ function ReportMapDescription({ show, onHide, report }) {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer className="report-desc-modal-footer">
+        <Modal.Footer className="report-map-desc-modal-footer">
           <Button
             variant="primary"
             onClick={handleClose}
-            className="report-desc-btn-cancel"
+            className="report-map-desc-btn-cancel"
           >
             Close
           </Button>
@@ -199,7 +199,7 @@ function ReportMapDescription({ show, onHide, report }) {
         centered
         className="photo-preview-modal"
       >
-        <Modal.Header closeButton className="report-desc-modal-header">
+        <Modal.Header closeButton className="report-map-desc-modal-header">
           <Modal.Title>Photo Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0 bg-dark">

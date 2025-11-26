@@ -87,7 +87,7 @@ function OfficerPage() {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    // Simula caricamento dati mock
+    // Simula caricamento dati mock da sostituire con API reale
     setLoading(true);
     setTimeout(() => {
       setReports(mockReports);

@@ -27,6 +27,22 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
   return (
     <>
+      {/* Citizen Details */}
+          <Row className="mb-3">
+            <Col xs={6}>
+              <label className="report-map-desc-label fw-bold">First Name</label>
+              <p className="report-map-desc-text-display">
+                {report.citizenName || "N/A"}
+              </p>
+            </Col>
+            <Col xs={6}>
+              <label className="report-map-desc-label fw-bold">Last Name</label>
+              <p className="report-map-desc-text-display">
+                {report.citizenSurname || "N/A"}
+              </p>
+            </Col>
+          </Row>
+          
       {/* Title */}
       <div className="mb-3">
         <label className="report-desc-label fw-bold">Title</label>

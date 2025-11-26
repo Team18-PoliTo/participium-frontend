@@ -72,6 +72,10 @@
   background-color: #4CAF50 !important;
 }
 
+.custom-status-badge.status-pendingapproval.badge {
+  background-color: #7e6be0 !important;
+}
+
 .report-status-badge-container {
   position: absolute;
   top: 14px;

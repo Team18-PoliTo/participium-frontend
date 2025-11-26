@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRedirect from "./components/RoleBasedRedirect";
 import OfficerPage from "./components/OfficerPage";
 import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
+import UserPage from "./components/UserPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -91,7 +92,7 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="/register" element={<Registration />} />
               <Route path="/login" element={<Login />} />
-              
+              <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
               {/* Redirect basato sul ruolo */}
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
               

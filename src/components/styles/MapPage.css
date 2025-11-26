@@ -1,7 +1,20 @@
+/* MapPage.css */
+
+/* --- LAYOUT PRINCIPALE --- */
+
+/* Il wrapper diventa un contenitore Flex per affiancare mappa e sidebar */
 .map-page-wrapper {
-  height: calc(100vh - 80px); 
+  height: calc(100vh - 65px); /* Altezza totale meno la navbar */
   width: 100%;
   display: flex;
+  overflow: hidden;
+}
+
+/* La sezione mappa si espande per occupare tutto lo spazio rimanente */
+.map-section {
+  flex: 1;
+  position: relative;
+  height: 100%;
 }
 
 .fullpage-leaflet-container {
@@ -9,8 +22,213 @@
   width: 100%;
 }
 
+/* --- SIDEBAR LATERALE (Visibile solo su Desktop) --- */
+.reports-sidebar {
+  position: fixed;
+  right: 0;
+  width: 450px;
+  height: calc(100vh - 65px); /* Altezza totale meno la navbar */;
+  background-color: #ffffff;
+  border-left: 3px solid #3D5A80;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease-in-out;
+}
+
+.reports-sidebar.open {
+  transform: translateX(0);
+}
+
+.reports-sidebar.closed {
+  transform: translateX(100%);
+}
+
+.reports-sidebar-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: transparent !important;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+  color: white;
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.reports-sidebar-toggle:hover {
+  opacity: 1;
+}
+
+.reports-sidebar-toggle:focus {
+  outline: none;
+  opacity: 1;
+}
+
+.reports-sidebar-toggle span {
+  display: block;
+  margin-top: -2px;
+}
+
+/* Tab laterale per riaprire quando è chiusa */
+.reports-sidebar-tab {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 140px;
+  background-color: #3D5A80;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: -2px 2px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 999;
+  color: white;
+  padding: 0.75rem 0.5rem;
+}
+
+.reports-sidebar-tab:hover {
+  background-color: #2c4460;
+  width: 55px;
+  box-shadow: -3px 3px 15px rgba(0, 0, 0, 0.25);
+}
+
+.reports-sidebar-tab-icon {
+  margin-bottom: 0.25rem;
+}
+
+.reports-sidebar-tab-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.reports-sidebar-tab-count {
+  background-color: #EE6C4D;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.reports-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.reports-sidebar-header-wrapper {
+  position: relative;
+  background-color: #3D5A80;
+  border-bottom: 2px solid #2c4460;
+}
+
+.reports-sidebar-title {
+  padding: 1.5rem;
+  margin: 0;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+
+/* Lista scrollabile dei report */
+.reports-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: #f8f9fa;
+}
+
+/* Scrollbar personalizzata per la sidebar */
+.reports-list::-webkit-scrollbar {
+  width: 8px;
+}
+.reports-list::-webkit-scrollbar-track {
+  background: #e1edf4;
+}
+.reports-list::-webkit-scrollbar-thumb {
+  background: #3D5A80;
+  border-radius: 4px;
+}
+.reports-list::-webkit-scrollbar-thumb:hover {
+  background: #2c4460;
+}
+
+/* Nascondi la sidebar su dispositivi mobili e tablet (< 992px) */
+@media (max-width: 992px) {
+  .reports-sidebar {
+    display: none;
+  }
+}
+
+/* --- CLUSTER MARKER (Cerchio Arancione) --- */
+.cluster-marker {
+  color: #fff;
+  background: #EE6C4D; /* Colore principale (arancione) */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 3px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cluster-marker:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* --- CUSTOM PIN MARKER --- */
+.custom-pin-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-pin-marker {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.custom-pin-marker:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
+}
+
+/* --- OFFCANVAS (Pannello creazione report) --- */
 .report-offcanvas {
-    width: 580px !important;
+    width: 500px !important;
     max-width: 90vw !important;
 }
 
@@ -31,10 +249,10 @@
 }
 
 .report-offcanvas .btn-close {
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1); /* Rende la X bianca */
 }
 
-/* GeoSearch Bar Styles */
+/* --- BARRA DI RICERCA (GeoSearch) --- */
 .leaflet-control-geosearch {
     border: none !important;
     background: transparent !important;
@@ -54,7 +272,7 @@
     display: none !important;
 }
 
-/* Stile solo per l'input */
+/* Input di ricerca */
 .leaflet-control-geosearch input {
     font-family: 'Inter', sans-serif !important;
     font-size: 15px !important;
@@ -81,7 +299,7 @@
     color: #98a2b3 !important;
 }
 
-/* Risultati di ricerca */
+/* Risultati della ricerca */
 .leaflet-control-geosearch .results {
     border-radius: 12px !important;
     border: none !important;
@@ -113,8 +331,101 @@
     padding: 0 !important;
 }
 
-/* Remove any default leaflet control borders */
+/* Rimuovi bordi default di leaflet */
 .leaflet-control-geosearch.leaflet-control {
     border: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --- CUSTOM POPUP --- */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  padding: 0 !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 250px;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.popup-address {
+  background-color: #98C1D9;
+  color: #000;
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #3D5A80;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  font-weight: 300;
+}
+
+.popup-close-btn:hover {
+  color: #EE6C4D;
+}
+
+.popup-content {
+  position: relative;
+}
+
+.popup-add-report-btn {
+  background-color: #EE6C4D;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.popup-add-report-btn:hover {
+  background-color: #d85a3a;
+}
+
+.popup-add-report-btn:active {
+  background-color: #c24e2f;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.leaflet-popup-tip {
+  background-color: #EE6C4D !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-close-button {
+  display: none !important;
 }

@@ -1,7 +1,7 @@
 import "./styles/NavHeader.css";
 import { Container, Navbar } from "react-bootstrap";
 import { Link, useLocation } from "react-router";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { NavbarTextContext, UserContext, MobileContext } from "../App";
 import API from "../API/API";
 import { Menu, X } from "lucide-react";
@@ -37,6 +37,25 @@ function NavHeader() {
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+
+  // chiudi il menu quando si scrolla / touch-move / resize (mobile)
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleCloseOnScroll = () => {
+      setIsMenuOpen(false);
+    };
+
+    window.addEventListener("scroll", handleCloseOnScroll, { passive: true });
+    window.addEventListener("touchmove", handleCloseOnScroll, { passive: true });
+    window.addEventListener("resize", handleCloseOnScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleCloseOnScroll);
+      window.removeEventListener("touchmove", handleCloseOnScroll);
+      window.removeEventListener("resize", handleCloseOnScroll);
+    };
+  }, [isMenuOpen]);
 
   return (
     <>

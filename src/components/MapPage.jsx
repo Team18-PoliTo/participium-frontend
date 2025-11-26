@@ -27,7 +27,6 @@ import { ChevronLeft } from "lucide-react";
 import GetBoundsLogger from "./GetBoundsLogger";
 import { MobileContext } from "../App";
 
-
 // --- LOGICA GEOJSON ---
 let turinFeature = null;
 let turinPolygons = [];
@@ -172,10 +171,19 @@ function MapUpdater({ setBounds, setZoom, mapRef }) {
   return null;
 }
 
+// Componente per chiudere il popup quando l'utente muove manualmente la mappa
+function MapMoveHandler({ onMove }) {
+  useMapEvents({
+    drag: () => {
+      onMove();
+    },
+  });
+  return null;
+}
+
 // --- COMPONENTE PRINCIPALE ---
 function MapPage() {
-
-  const {isMobile} = useContext(MobileContext);
+  const { isMobile } = useContext(MobileContext);
 
   // Stati
   const [showForm, setShowForm] = useState(false);
@@ -203,7 +211,6 @@ function MapPage() {
   const mapRef = useRef();
   const initialPosition = [45.0703, 7.6869];
 
-
   // Preparazione punti per Supercluster
   const points = reports.map((report) => ({
     type: "Feature",
@@ -226,7 +233,7 @@ function MapPage() {
     points,
     bounds,
     zoom,
-    options: { radius: 75, maxZoom: 15 },
+    options: { radius: 60, maxZoom: 17 },
   });
 
   // Gestione Click Mappa
@@ -342,19 +349,19 @@ function MapPage() {
       }
     }
 
-    // Apri il popup del pin (assicurati di avere reportId)
-    setSelectedPin({ ...report, address, reportId: report.id });
-
-    // Centra la mappa sul report selezionato
+    // Centra la mappa sul report selezionato PRIMA
     if (mapRef.current) {
-      setTimeout(() => {
-        mapRef.current.setView(
-          [report.location.latitude, report.location.longitude],
-          17,
-          { animate: true }
-        );
-      }, 300);
+      mapRef.current.flyTo(
+        [report.location.latitude, report.location.longitude],
+        17,
+        { duration: 0.3 }
+      );
     }
+
+    // Apri il popup DOPO l'animazione
+    setTimeout(() => {
+      setSelectedPin({ ...report, address, reportId: report.id });
+    }, 900);
   };
 
   const toggleReportsSidebar = () => {
@@ -398,6 +405,7 @@ function MapPage() {
 
           {/* QUI È LA FIX: Passiamo le funzioni e mapRef come props */}
           <MapUpdater setBounds={setBounds} setZoom={setZoom} mapRef={mapRef} />
+          <MapMoveHandler onMove={() => setSelectedPin(null)} />
 
           {/* Render Clusters */}
           {clusters.map((cluster) => {
@@ -458,20 +466,19 @@ function MapPage() {
                       }
                     }
 
-                    // Centra la mappa sul pin cliccato
+                    // Centra la mappa sul pin cliccato PRIMA
                     if (mapRef.current) {
-                      try {
-                        mapRef.current.setView(
-                          [report.location.latitude, report.location.longitude],
-                          17,
-                          { animate: true }
-                        );
-                      } catch (err) {
-                        console.warn("Impossibile centrare la mappa:", err);
-                      }
+                      mapRef.current.flyTo(
+                        [report.location.latitude, report.location.longitude],
+                        17,
+                        { duration: 0.5 }
+                      );
                     }
 
-                    setSelectedPin({ ...report, address });
+                    // Apri il popup DOPO l'animazione
+                    setTimeout(() => {
+                      setSelectedPin({ ...report, address });
+                    }, 550);
                   },
                 }}
               ></Marker>
@@ -514,7 +521,9 @@ function MapPage() {
 
                     // Chiamata API per dettagli report
                     try {
-                      const details = await API.getReportMapDetails(selectedPin.reportId);
+                      const details = await API.getReportMapDetails(
+                        selectedPin.reportId
+                      );
                       setSelectedReportForDetails(details);
                       setShowReportDetails(true);
                     } catch (error) {

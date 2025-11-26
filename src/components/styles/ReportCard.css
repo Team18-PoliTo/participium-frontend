@@ -82,3 +82,20 @@
   right: 18px;
   z-index: 2;
 }
+
+.report-card-title {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 576px) {
+  .report-card-title {
+    max-width: 180px; 
+    display: block;
+    white-space: normal;    
+    overflow: visible;       
+    text-overflow: clip;     
+    word-break: break-word;  
+  }
+}

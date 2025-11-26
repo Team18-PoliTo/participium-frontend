@@ -38,16 +38,14 @@
 
 .home-button {
   color: white !important;
-  font-size: 1.2rem !important;
+  font-size: 1.25rem !important;
   border: 2px white solid !important;
   background: transparent;
-  padding: 0; 
-  font-family: 'Inter', sans-serif !important;
 }
 
 .home-button:hover {
-  color: #f0f0f0;
-  text-decoration: none;
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-2px);
 }
 
 .nav-auth-buttons {
@@ -67,6 +65,7 @@
 }
 
 .nav-login-button {
+  font-size: 1.25rem !important;
   border: 2px white solid !important;
   background: transparent;
 }
@@ -77,6 +76,7 @@
 }
 
 .nav-register-button {
+  font-size: 1.25rem !important;
   background: white;
   border: 2px white solid !important;
 }

@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router";
 import { useContext, useState, useEffect } from "react";
 import { NavbarTextContext, UserContext, MobileContext } from "../App";
 import API from "../API/API";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Map, User, LogOut, LogIn, UserPlus } from "lucide-react"; // Icone aggiunte: Map, User, LogOut, LogIn, UserPlus
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
@@ -85,9 +85,16 @@ function NavHeader() {
               <>
                 {(citizenLoggedIn || userLoggedIn) && (
                   <div className="nav-auth-buttons">
+                    {
+                      citizenLoggedIn && location.pathname !== "/map" && (
+                        <Link className="btn home-button" to="/map">
+                          <Map size={20} className="me-2" /> Map
+                        </Link>
+                      )
+                    }
                     {citizenLoggedIn && location.pathname !== "/profile" && (
                       <Link className="btn home-button" to="/profile">
-                        Profile
+                        <User size={20} className="me-2" /> Profile
                       </Link>
                     )}
                     <Link
@@ -95,17 +102,17 @@ function NavHeader() {
                       to="/"
                       onClick={handleLogout}
                     >
-                      Logout
+                      <LogOut size={20} className="me-2" /> Logout
                     </Link>
                   </div>
                 )}
                 {!citizenLoggedIn && !userLoggedIn && (
                   <div className="nav-auth-buttons">
                     <Link className="btn nav-login-button" to="/login">
-                      Login
+                      <LogIn size={20} className="me-2" /> Login
                     </Link>
                     <Link className="btn nav-register-button" to="/register">
-                      Sign Up
+                      <UserPlus size={20} className="me-2" /> Sign Up
                     </Link>
                   </div>
                 )}
@@ -126,7 +133,7 @@ function NavHeader() {
                       to="/profile"
                       onClick={closeMenu}
                     >
-                      Profile
+                      <User size={16} className="me-2" /> Profile
                     </Link>
                   )}
                   <Link
@@ -134,7 +141,7 @@ function NavHeader() {
                     to="/"
                     onClick={handleLogout}
                   >
-                    Logout
+                    <LogOut size={16} className="me-2" /> Logout
                   </Link>
                 </>
               ) : (
@@ -144,14 +151,14 @@ function NavHeader() {
                     to="/login"
                     onClick={closeMenu}
                   >
-                    Login
+                    <LogIn size={16} className="me-2" /> Login
                   </Link>
                   <Link
                     className="mobile-menu-item"
                     to="/register"
                     onClick={closeMenu}
                   >
-                    Sign Up
+                    <UserPlus size={16} className="me-2" /> Sign Up
                   </Link>
                 </>
               )}

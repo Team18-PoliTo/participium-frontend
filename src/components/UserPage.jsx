@@ -77,6 +77,32 @@ function UserProfile() {
             photoUrl: userData.profile.photoUrl || null,
           });
         }
+
+        // fetch reports AFTER avere userData disponibile
+        if (userData && userData.profile && userData.profile.id) {
+          setLoadingReports(true);
+          setReportsError("");
+          try {
+            const reportsResult = await API.getCitizenReports();
+
+            // Normalizza la risposta: accetta array diretto o wrapper { data: [], reports: [] }
+            const normalize = (r) => {
+              if (!r) return [];
+              if (Array.isArray(r)) return r;
+              if (Array.isArray(r.data)) return r.data;
+              if (Array.isArray(r.reports)) return r.reports;
+              return [];
+            };
+
+            setCitizenReports(normalize(reportsResult));
+          } catch (error) {
+            console.error("Error fetching reports:", error);
+            setReportsError("Failed to load your reports. Please try again later.");
+            setCitizenReports([]);
+          } finally {
+            setLoadingReports(false);
+          }
+        }
       } catch (error) {
         console.error("Error fetching user info:", error);
         setMessage({ type: "danger", text: "Failed to load profile data." });
@@ -85,22 +111,7 @@ function UserProfile() {
       }
     };
 
-    const fetchReports = async () => {
-      setLoadingReports(true);
-      setReportsError("");
-      try {
-        const reports = await API.getCitizenReports();
-        setCitizenReports(reports || []);
-      } catch (error) {
-        console.error("Error fetching reports:", error);
-        setReportsError("Failed to load your reports. Please try again later.");
-      } finally {
-        setLoadingReports(false);
-      }
-    };
-
     fetchProfileData();
-    fetchReports();
   }, []);
 
   const handleEdit = () => {
@@ -407,13 +418,13 @@ function UserProfile() {
               You haven't submitted any reports yet.
             </p>
           ) : (
-            <Row>
+            <div className="profile-reports-scrollable">
               {citizenReports.map((report) => (
-                <Col key={report.id} xs={12} sm={6} lg={4} className="mb-3">
+                <div key={report.id} className="profile-report-card-wrapper">
                   <ReportCard report={report} onClick={handleReportClick} />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
           )}
         </Form>
       </Container>

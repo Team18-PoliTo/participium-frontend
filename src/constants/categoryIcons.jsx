@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export const CATEGORY_ICONS = {
-  "Water Supply – Drinking Water": Droplets,
+  "Water Supply - Drinking Water": Droplets,
   "Architectural Barriers": Accessibility,
   "Sewer System": Waves,
   "Public Lighting": Lightbulb,

@@ -521,7 +521,7 @@ const getReportDetails = async (reportId) => {
 const getCitizenReports = async () => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));  
-    const response = await fetch(`${SERVER_URL}api/citizens/reports`, {
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/myReports`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -620,7 +620,6 @@ const API = {
   getAllReportsIsPending,
   getReportDetails,
   getCitizenReports,
-  getAllReportsApproved,
   getReportDetails,
   getReportsByMapArea,
   getReportMapDetails,

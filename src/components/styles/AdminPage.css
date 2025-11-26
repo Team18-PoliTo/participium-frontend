@@ -205,6 +205,20 @@
   line-height: 1.2;
 }
 
+.legend-icon {
+  background-color: #E1EDF4;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+
 .divider-line {
   height: 12px;
   background: #3D5A80;

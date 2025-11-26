@@ -5,7 +5,7 @@ import { MapPin, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 
-function ReportCard({ report, onClick, showUser = false }) {
+function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
   const [address, setAddress] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +79,10 @@ function ReportCard({ report, onClick, showUser = false }) {
       4
     )}, ${report.location.longitude.toFixed(4)}`;
 
+  const getCategoryBadge = (category) => {
+    return <Badge className="custom-category-badge">{category}</Badge>;
+  };
+
   const getStatusBadge = (status) => {
     return (
       <Badge className={`custom-status-badge status-${status.replace(/\s/g, '').toLowerCase()}`}>
@@ -100,12 +104,34 @@ function ReportCard({ report, onClick, showUser = false }) {
       </div>
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center gap-3">
+          {
+            showPRO && 
+            (
+              <div className="category-icon-circle">
+                {getCategoryIcon(report.category.name, 32)}
+              </div>
+            )
+          }
           <div className="d-flex flex-column gap-1">
             <Card.Title className="mb-0">{report.title}</Card.Title>
-            <div className="d-flex align-items-center gap-1 text-muted small">              
-              {!showUser && <><MapPin size={14} /> <span>{locationDisplay}</span></>}
-              {showUser &&  <><User size={14} /><span>  {report.citizenName} {report.citizenLastName}</span></>}
+            <div className="d-flex align-items-center gap-1 text-muted small">
+              {!showUser && (
+                <>
+                  <MapPin size={14} /> <span>{locationDisplay}</span>
+                </>
+              )}
+              {showUser && (
+                <>
+                  <User size={14} />
+                  <span>  {report.citizenName} {report.citizenLastName}</span>
+                </>
+              )}
             </div>
+            {showPRO && (
+              <div className="mt-1">
+                {getCategoryBadge(report.category.name)}
+              </div>
+            )}
           </div>
         </div>
       </Card.Body>

@@ -15,6 +15,8 @@ import PublicRelationsOfficer from "./components/PublicRelationsOfficer";
 import LoadingSpinner from "./components/LoadingSpinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRedirect from "./components/RoleBasedRedirect";
+import OfficerPage from "./components/OfficerPage";
+import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/UserPage";
 
 export const NavbarTextContext = createContext();
@@ -128,6 +130,15 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
                     <PublicRelationsOfficer />
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/officer"
+                element={
+                  <ProtectedRoute allowedRoles={allowedOfficerRoles}>
+                    <OfficerPage />
                   </ProtectedRoute>
                 }
               />

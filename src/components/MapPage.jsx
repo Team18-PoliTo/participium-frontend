@@ -199,18 +199,6 @@ function MapPage() {
   const mapRef = useRef();
   const initialPosition = [45.0703, 7.6869];
 
-  // Caricamento dati
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        console.log("Caricamento dati mock...");
-        setReports(mockReports);
-      } catch (error) {
-        console.error("Error fetching reports:", error);
-      }
-    };
-    fetchReports();
-  }, []);
 
   // Preparazione punti per Supercluster
   const points = reports.map((report) => ({
@@ -566,6 +554,7 @@ function MapPage() {
                     report={report}
                     onClick={handleReportCardClick}
                     showUser={true}
+                    showPRO={false}
                   />
                 ))
               )}

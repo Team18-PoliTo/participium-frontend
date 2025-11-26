@@ -177,6 +177,9 @@ function MapMoveHandler({ onMove }) {
     drag: () => {
       onMove();
     },
+    zoom: () => {
+      onMove();
+    },
   });
   return null;
 }

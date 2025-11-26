@@ -164,10 +164,15 @@ function UserProfile() {
 
       // 2. Aggiorna il profilo utente (PT09 - Configurazione)
       // Nota: Questa funzione API.updateCitizenProfile va aggiunta in API.js
-      const updatedProfile = await API.updateCitizenProfile({
-        telegramUsername,
-        emailNotifications,
-        photoUrl: uploadedPhotoPath,
+      const updatedProfile = await API.updateCitizenProfile(user.profile.id, {
+        email: email || null,
+        username: username || null,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        telegramUsername: telegramUsername || null,
+        emailNotificationsEnabled:
+          typeof emailNotifications === "boolean" ? emailNotifications : null,
+        accountPhoto: uploadedPhotoPath || null,
       });
 
       // 3. Aggiorna lo stato globale
@@ -178,6 +183,10 @@ function UserProfile() {
 
       // Aggiorna i valori originali
       setOriginalValues({
+        firstName: updatedProfile.firstName ?? firstName,
+        lastName: updatedProfile.lastName ?? lastName,
+        email: updatedProfile.email ?? email,
+        username: updatedProfile.username ?? username,
         telegramUsername: updatedProfile.telegramUsername || telegramUsername,
         emailNotifications:
           updatedProfile.emailNotifications !== undefined
@@ -189,6 +198,7 @@ function UserProfile() {
       setMessage({ type: "success", text: "Profile updated successfully!" });
       setIsEditing(false);
       setSelectedFile(null);
+      // todo logout if email changed
     } catch (error) {
       console.error("Error updating profile:", error);
       setMessage({

@@ -19,7 +19,7 @@ import defaultAvatar from "../resources/Immagine1.png";
 import { useNavigate } from "react-router";
 
 function UserProfile() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setCitizenLoggedIn } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [loadingReports, setLoadingReports] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -158,15 +158,18 @@ function UserProfile() {
     setMessage({ type: "", text: "" });
 
     try {
-      let photoFileId = user.profile?.accountPhoto || null;
+      let photoTempPath = null;
 
+      // Only upload new file if one is selected
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
 
-        const uploadResult = await API.uploadFile(formData);
+        // Upload as profile type
+        const uploadResult = await API.uploadFile(formData, "profile");
 
-        photoFileId = uploadResult.fileId;
+        // Use tempPath from upload result (backend expects tempPath, not fileId)
+        photoTempPath = uploadResult.tempPath;
       }
 
       const updates = {
@@ -176,8 +179,13 @@ function UserProfile() {
         lastName: lastName || null,
         telegramUsername: telegramUsername || null,
         emailNotificationsEnabled: emailNotifications,
-        accountPhoto: photoFileId,
       };
+
+      // Only include accountPhoto if a new file was uploaded
+      // If no new file, don't send this field to keep existing photo
+      if (photoTempPath !== null) {
+        updates.accountPhoto = photoTempPath;
+      }
 
       const updatedProfile = await API.updateCitizenProfile(updates);
 

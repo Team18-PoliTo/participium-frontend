@@ -403,9 +403,14 @@ const getAllCategories = async () => {
   }
 };
 
-const uploadFile = async (formData) => {
+const uploadFile = async (formData, type = "report") => {
   try {
     const token = JSON.parse(localStorage.getItem("authToken"));
+
+    // Add type parameter to FormData if not already present
+    if (!formData.has("type")) {
+      formData.append("type", type);
+    }
 
     const response = await fetch(`${SERVER_URL}api/files/upload`, {
       method: "POST",

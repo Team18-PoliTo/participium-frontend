@@ -1,18 +1,7 @@
 import React from "react";
 import "./styles/RoleAssignmentModal.css";
 import API from "../API/API";
-
-import unassignedIcon from "../resources/Immagine1.png";
-import proIcon from "../resources/Immagine2.png";
-import adminIcon from "../resources/Immagine3.png";
-import techIcon from "../resources/Immagine4.png";
-
-const iconMap = {
-  0: unassignedIcon,
-  2: proIcon,
-  3: techIcon,
-  4: adminIcon,
-};
+import { getRoleIcon } from "../constants/roleIcons";
 
 function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRoles }) {
   if (!isOpen) return null;
@@ -37,7 +26,9 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
           {availableRoles && availableRoles.filter((role) => role.id > 1).map((role) => (
             <div key={role.id} className="role-option" onClick={() => handleRoleSelect(role.id)} style={{ backgroundColor: "#98C1D9", opacity: 1 }}
             >
-              <img src={iconMap[role.id] || unassignedIcon} alt={role.role} className="role-icon" />
+              <div className="role-icon">
+                {getRoleIcon(role.role, 32)}
+              </div>
               <span className="role-name">{role.role}</span>
             </div>
           ))}

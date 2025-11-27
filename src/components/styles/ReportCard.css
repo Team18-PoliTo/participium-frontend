@@ -1,0 +1,171 @@
+/* Report Card Clickable */
+.report-card-clickable {
+  background-color: #98C1D9 !important;
+  border: 2px solid #3D5A80 !important;
+  border-radius: 15px !important;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+/* Custom Badge */
+.report-card-clickable .custom-category-badge {
+  background-color: #EE6C4D !important;
+  color: white !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+}
+
+.report-card-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background-color: #d0dfe8;
+}
+
+.custom-category-badge {
+  background-color: #98C1D9 !important;
+  color: #293241 !important;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+.custom-status-badge {
+  background-color: #98C1D9 !important;
+  color: #fff !important;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  border: none;
+  background: #888 !important; /* fallback */
+}
+
+
+.category-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #E1EDF4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.custom-status-badge.status-assigned.badge {
+  background-color: #3D5A80 !important;
+}
+.custom-status-badge.status-inprogress.badge {
+  background-color: #E1EDF4 !important;
+  color: #293241 !important;
+}
+.custom-status-badge.status-suspended.badge {
+  background-color: #EE6C4D !important;
+}
+.custom-status-badge.status-rejected.badge {
+  background-color: #D90429 !important;
+}
+.custom-status-badge.status-resolved.badge {
+  background-color: #4CAF50 !important;
+}
+
+.custom-status-badge.status-pendingapproval.badge {
+  background-color: #7e6be0 !important;
+}
+
+.report-status-badge-container {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 2;
+}
+
+.report-card-title {
+  max-width: 200px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 576px) {
+
+  /* 1. Badge di Stato: Più compatto e meno invasivo */
+  .report-status-badge-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 12px 2px 0; /* Ridotto il padding inferiore */
+    margin-bottom: 0; /* Tolto il margine negativo */
+  }
+
+  .custom-status-badge {
+    font-size: 0.7rem !important; /* Font più piccolo */
+    padding: 3px 8px !important; /* Badge più snello */
+    border-radius: 12px !important;
+  }
+
+  /* 2. Corpo della Card: Layout Flex ottimizzato */
+  .report-card-clickable .card-body {
+    padding: 0.5rem 0.85rem 0.85rem 0.85rem !important; /* Padding ridotto */
+    align-items: flex-start !important;
+    gap: 10px !important; /* Distanza tra icona e testo */
+  }
+
+  /* 3. Icona Categoria: Ridimensionata */
+  .category-icon-circle {
+    width: 40px !important;  /* Più piccola (era 48 o 56) */
+    height: 40px !important;
+    min-width: 40px !important;
+    margin-top: 2px; /* Allineamento ottico col titolo */
+  }
+  
+  /* Se l'icona SVG interna è grande, la ridimensioniamo */
+  .category-icon-circle svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* 4. Titolo: Molto più piccolo e controllato */
+  .report-card-title {
+    font-size: 0.95rem !important; /* Dimensione font ridotta drasticamente */
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.25rem !important; /* Meno spazio sotto il titolo */
+    word-break: break-word; /* Spezza parole lunghe come AAAAA... */
+  }
+
+  /* 5. Indirizzo / Testo secondario */
+  .text-muted.small {
+    font-size: 0.75rem !important; /* Testo più piccolo */
+    line-height: 1.2;
+    gap: 4px;
+    margin-bottom: 6px !important;
+  }
+  
+  /* Icone piccole (pin/user) */
+  .text-muted.small svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* 6. Badge Categoria (Arancione): Proporzionato */
+  .custom-category-badge {
+    font-size: 0.65rem !important; /* Testo piccolo */
+    padding: 0.25rem 0.5rem !important;
+    line-height: 1.1;
+    margin-top: 0 !important;
+    display: inline-block;
+    white-space: normal !important;
+  }
+  
+  /* Contenitore colonna testo */
+  .d-flex.flex-column.gap-1 {
+    gap: 2px !important; /* Riduce spazio tra titolo, indirizzo e badge cat */
+  }
+}

@@ -1,18 +1,7 @@
 import { useState } from "react";
 import "./styles/UserCard.css";
 import RoleAssignmentModal from "./RoleAssignmentModal";
-
-import unassignedIcon from "../resources/Immagine1.png";
-import proIcon from "../resources/Immagine2.png";
-import adminIcon from "../resources/Immagine3.png";
-import techIcon from "../resources/Immagine4.png";
-
-const iconMap = {
-  0: unassignedIcon,
-  2: proIcon,
-  3: techIcon,
-  4: adminIcon,
-};
+import { getRoleIcon } from "../constants/roleIcons";
 
 function UserCard({ user, onAssignRole, availableRoles }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +22,9 @@ function UserCard({ user, onAssignRole, availableRoles }) {
   return (
     <>
       <div className="user-card">
-        <img src={iconMap[currentRoleId] || unassignedIcon} alt={user.role} className="user-icon" />
+        <div className="user-icon">
+          {getRoleIcon(user.role, 40)}
+        </div>
         <div className="user-info">
           <p>
             <span className="info-label">name:</span> {user.firstName}

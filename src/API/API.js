@@ -303,18 +303,10 @@ const addNewReport = async (reportData) => {
     const requestBody = {
       title: reportData.title,
       description: reportData.description,
-      citizenId: reportData.citizenId,
-      category: reportData.category,
+      categoryId: reportData.categoryId,
       location: reportData.location,
+      photoIds: reportData.photoIds,
     };
-
-    // Add photos only if they exist
-    if (reportData.binaryPhoto1)
-      requestBody.binaryPhoto1 = reportData.binaryPhoto1;
-    if (reportData.binaryPhoto2)
-      requestBody.binaryPhoto2 = reportData.binaryPhoto2;
-    if (reportData.binaryPhoto3)
-      requestBody.binaryPhoto3 = reportData.binaryPhoto3;
 
     const response = await fetch(`${SERVER_URL}api/citizens/reports`, {
       method: "POST",
@@ -357,6 +349,341 @@ const addNewReport = async (reportData) => {
   }
 };
 
+const judgeReport = async (reportId, status, categoryId, explanation) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/internal/reports/${reportId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          status: status,
+          categoryId: categoryId,
+          explanation: explanation,
+        }),
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to judge report"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllCategories = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/categories`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.slice(0, 8);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const uploadFile = async (formData, type = "report") => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    // Add type parameter to FormData if not already present
+    if (!formData.has("type")) {
+      formData.append("type", type);
+    }
+
+    const response = await fetch(`${SERVER_URL}api/files/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "File validation failed");
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to upload file"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteTempFile = async (fileId) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/files/temp/${fileId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to delete file"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllReportsIsPending = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(`${SERVER_URL}api/internal/reports`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Error retrieving reports");
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getReportDetails = async (reportId) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/internal/reports/${reportId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch report details"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getCitizenReports = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/citizens/reports/myReports`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch citizen reports"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getReportsByMapArea = async (bounds) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(`${SERVER_URL}api/citizens/reports/map`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        corners: bounds,
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch reports by map area"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getReportMapDetails = async (reportId) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(
+      `${SERVER_URL}api/citizens/reports/getById/${reportId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to fetch report details"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getReportsAssignedToMe = async () => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+    const response = await fetch(`${SERVER_URL}api/internal/reports/assigned`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          "Failed to fetch internal user assigned reports"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateCitizenProfile = async (profileData) => {
+  try {
+    const token = JSON.parse(localStorage.getItem("authToken"));
+
+    const response = await fetch(`${SERVER_URL}api/citizens/me`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify(profileData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.profile || data;
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || errorData.message || "Failed to update profile"
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -368,6 +695,17 @@ const API = {
   updateInternalUserRole,
   getAllRoles,
   addNewReport,
+  judgeReport,
+  getAllCategories,
+  uploadFile,
+  deleteTempFile,
+  getAllReportsIsPending,
+  getReportDetails,
+  getCitizenReports,
+  getReportsByMapArea,
+  getReportMapDetails,
+  getReportsAssignedToMe,
+  updateCitizenProfile,
 };
 
 export default API;

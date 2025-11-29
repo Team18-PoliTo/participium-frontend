@@ -124,88 +124,122 @@ function AdminPage() {
   return (
     <div className="admin-board">
       <div className="admin-content-wrapper">
-        {/* Prima Riga: Filtri e Legenda */}
-        <div className="admin-top-row">
-          {/* Colonna Sinistra: Filtri */}
-          <div className="admin-sidebar">
-            <button
-              className="add-user-btn"
-              onClick={() => handleOpenSetUpModal()}
-            >
-              Add a new user
-            </button>
-            
-            <h3 className="filter-title">Search by email:</h3>
-            <Form.Control
-              type="text"
-              placeholder="Enter email..."
-              value={searchEmail}
-              onChange={(e) => setSearchEmail(e.target.value)}
-              className="search-email-input"
-            />
-
-            <h3 className="filter-title">Filter by role:</h3>
-            <Dropdown>
-              <Dropdown.Toggle className="custom-dropdown-toggle" id="dropdown-basic">
-                {selectedFilter !== null 
-                  ? roleMapping[selectedFilter] 
-                  : "All Users"}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu className="custom-dropdown-menu">
-                <Dropdown.Item 
-                  className="custom-dropdown-item"
-                  onClick={() => setSelectedFilter(null)}
-                  active={selectedFilter === null}
-                >
-                  All Users
-                </Dropdown.Item>
-                {visibleRoles.map((role) => (
-                  <Dropdown.Item
-                    key={role.id}
-                    className="custom-dropdown-item"
-                    onClick={() => setSelectedFilter(role.id)}
-                    active={selectedFilter === role.id}
-                  >
-                    {role.role}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+        <header className="admin-headline">
+          <div className="admin-headline-text">
+            <p className="admin-eyebrow">Administration</p>
+            <h1>Internal operators</h1>
+            <p className="admin-subtitle">
+              Quickly locate a colleague and adjust their role. Filters apply instantly and the view adapts to any screen size.
+            </p>
           </div>
+          <button className="add-user-btn desktop-only" onClick={handleOpenSetUpModal}>
+            + Add user
+          </button>
+        </header>
 
-          {/* Colonna Destra: Legenda */}
-          <div className="admin-legend-section">
-            <div className="legend-box">
-              <h3 className="legend-title">Legend for users</h3>
-              <div className="legend-grid">
+        <div className="admin-layout">
+          <aside className="admin-sidebar">
+            <div className="filter-card">
+              <label className="filter-title" htmlFor="admin-search-input">
+                Search by email
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔍</span>
+                <Form.Control
+                  id="admin-search-input"
+                  type="text"
+                  placeholder="name.surname@participium.com"
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)}
+                  className="search-email-input"
+                />
+              </div>
+            </div>
+
+            <div className="filter-card">
+              <label className="filter-title" htmlFor="admin-role-filter">
+                Filter by role
+              </label>
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="admin-role-filter"
+                  className="custom-dropdown-toggle"
+                >
+                  {selectedFilter !== null
+                    ? roleMapping[selectedFilter]
+                    : "All users"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="custom-dropdown-menu">
+                  <Dropdown.Item
+                    className="custom-dropdown-item"
+                    onClick={() => setSelectedFilter(null)}
+                    active={selectedFilter === null}
+                  >
+                    All users
+                  </Dropdown.Item>
+                  {visibleRoles.map((role) => (
+                    <Dropdown.Item
+                      key={role.id}
+                      className="custom-dropdown-item"
+                      onClick={() => setSelectedFilter(role.id)}
+                      active={selectedFilter === role.id}
+                    >
+                      {role.role}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+
+            <button className="add-user-btn mobile-only" onClick={handleOpenSetUpModal}>
+              + Add user
+            </button>
+
+            <div className="legend-card" aria-label="Legend for user roles">
+              <p className="legend-card-title">Roles</p>
+              <div className="legend-chips">
                 {visibleRoles.map((role) => (
-                  <div key={role.id} className="legend-item">
-                    <div className="legend-icon">
-                      {getRoleIcon(role.role, 30)}
-                    </div>
-                    <span>{role.role}</span>
+                  <div key={role.id} className="legend-chip">
+                    <span className="legend-chip-icon">
+                      {getRoleIcon(role.role, 20)}
+                    </span>
+                    {role.role}
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
+          </aside>
 
-        <div className="divider-line" />
+          <section className="admin-main">
+            <div className="admin-users-card">
+              <div className="admin-users-header">
+                <div>
+                  <h2>Team directory</h2>
+                  <p>
+                    Showing {filteredUsers.length} user
+                    {filteredUsers.length === 1 ? "" : "s"} for the selected filters.
+                  </p>
+                </div>
+              </div>
 
-        {/* Seconda Riga: Lista Utenti con Scroll */}
-        <div className="admin-users-row">
-          <div className="user-list">
-            {filteredUsers.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                onAssignRole={handleAssignRole}
-                availableRoles={visibleRoles}
-              />
-            ))}
-          </div>
+              {filteredUsers.length === 0 ? (
+                <div className="admin-empty-state">
+                  No users match this filter. Try another email or role.
+                </div>
+              ) : (
+                <div className="user-list">
+                  {filteredUsers.map((user) => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      onAssignRole={handleAssignRole}
+                      availableRoles={visibleRoles}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
         </div>
       </div>
       <SetUpUserModal

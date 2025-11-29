@@ -23,18 +23,22 @@ function UserCard({ user, onAssignRole, availableRoles }) {
     <>
       <div className="user-card">
         <div className="user-icon">
-          {getRoleIcon(user.role, 40)}
+          {getRoleIcon(user.role, 28)}
         </div>
         <div className="user-info">
-          <p>
-            <span className="info-label">name:</span> {user.firstName}
-          </p>
-          <p>
-            <span className="info-label">surname:</span> {user.lastName}
-          </p>
-          <p>
-            <span className="info-label">email:</span> {user.email}
-          </p>
+          <div className="user-info-main">
+            <span className="user-full-name">
+              {user.firstName} {user.lastName}
+            </span>
+            <span
+              className={`user-role-pill ${
+                !user.role || isUnassigned ? "unassigned" : ""
+              }`}
+            >
+              {user.role || "Unassigned"}
+            </span>
+          </div>
+          <p className="user-email">{user.email}</p>
         </div>
         {isUnassigned && (
           <button className="user-add-btn" onClick={handleOpenModal}>

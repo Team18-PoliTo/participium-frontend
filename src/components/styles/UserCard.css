@@ -1,27 +1,22 @@
-.user-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
 .user-card {
-  height: 5rem;
-  background: #98C1D9;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 20px;
-  padding: 1rem 1.5rem;
+  background: #fdfefe;
+  border-radius: 12px;
+  border: 1px solid rgba(37, 56, 84, 0.12);
+  padding: 0.65rem 0.85rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
+  min-height: 68px;
+  box-shadow: 0 6px 14px rgba(32, 45, 64, 0.04);
 }
 
 .user-icon {
-  background-color: #E1EDF4;
-  border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  min-width: 64px;
-  min-height: 64px;
+  background-color: #e6eff7;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,32 +25,57 @@
 
 .user-info {
   flex-grow: 1;
-  padding: 0 0.5rem;
-  color: black;
-  font-family: 'Inter', sans-serif;
-  font-size: 18px; 
-  font-weight: 400;
-  line-height: 1.2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  color: #1b2432;
+  font-family: 'Inter', sans-serif;
 }
 
-.user-info p {
-  margin: 0;
+.user-info-main {
   display: flex;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
-.info-label {
-  font-weight: 700;
-  min-width: 85px;
-  text-align: left;
+.user-full-name {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role-pill {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(61, 90, 128, 0.1);
+  color: #284366;
+  white-space: nowrap;
+}
+
+.user-role-pill.unassigned {
+  background: rgba(238, 108, 77, 0.15);
+  color: #bb3f26;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 13px;
+  color: #516070;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-add-btn {
-  width: 50px;
-  height: 48px;
+  width: 44px;
+  height: 42px;
   background: #EE6C4D;
   border-radius: 9999px;
   border: none;
@@ -82,40 +102,29 @@
 
 /* Media Queries per Mobile */
 @media (max-width: 768px) {
-  .user-list {
-    grid-template-columns: 1fr;
-  }
-
   .user-card {
     height: auto;
-    min-height: 5rem;
-    padding: 0.75rem 1rem;
+    min-height: 64px;
+    padding: 0.65rem 0.85rem;
   }
 
   .user-icon {
-    width: 50px;
-    height: 48px;
-    margin-right: 0.75rem;
+    width: 44px;
+    height: 44px;
   }
 
   .user-info {
-    font-size: 14px;
-    padding: 0 0.25rem;
-  }
-
-  .info-label {
-    min-width: 70px;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .user-add-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
   .plus-icon::before,
   .plus-icon::after {
-    width: 20px;
+    width: 18px;
     height: 4px;
   }
 }
@@ -123,21 +132,15 @@
 @media (max-width: 480px) {
   .user-card {
     padding: 0.5rem 0.75rem;
-    min-height: 4.5rem;
+    min-height: 60px;
   }
 
   .user-icon {
-    width: 45px;
-    height: 43px;
-    margin-right: 0.5rem;
+    width: 40px;
+    height: 40px;
   }
 
   .user-info {
-    font-size: 12px;
-  }
-
-  .info-label {
-    min-width: 60px;
     font-size: 12px;
   }
 

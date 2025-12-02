@@ -429,11 +429,25 @@
   }
 
   .admin-sidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .add-user-btn.mobile-only {
+    order: 1;
+  }
+
+  .filter-card {
     order: 2;
   }
 
+  .legend-card {
+    order: 3;
+  }
+
   .admin-main {
-    order: 1;
+    order: 4;
   }
 }
 

@@ -43,7 +43,6 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
       <div
         className="setup-user-modal-content"
         onClick={(e) => e.stopPropagation()}
-        style={{ backgroundColor: "#E1EDF4", opacity: 1 }}
       >
         <button
           className="setup-user-modal-close"

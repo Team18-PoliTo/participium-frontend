@@ -7,7 +7,7 @@ import {
   GeoJSON, 
   LayersControl, 
   ZoomControl,
-  useMapEvents // Assicuriamoci che questo sia importato
+  useMapEvents 
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster"; 
 import API from "../API/API";
@@ -15,7 +15,6 @@ import { Offcanvas } from "react-bootstrap";
 import { ChevronLeft } from "lucide-react";
 import pointInPolygon from "point-in-polygon";
 
-// Componenti
 import ReportForm from "./ReportForm";
 import ReportCard from "./ReportCard";
 import ReportMapDescription from "./ReportMapDescription";
@@ -24,7 +23,6 @@ import ReportStatusModal from "./ReportStatusModal";
 import GetBoundsLogger from "./GetBoundsLogger";
 import { MapClickHandler, SearchBar, MapResizer } from "./MapLogic";
 
-// Utils & Styles
 import { getAddressFromCoordinates } from "../utils/geocoding";
 import { MobileContext } from "../App";
 import turinGeoJSON from "../data/turin-boundaries.json";
@@ -41,7 +39,7 @@ import "./styles/MapPage.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-// --- LOGICA GEOJSON ---
+// Inizializzazione dati geografici (statici)
 let turinFeature = null;
 let turinPolygons = [];
 let inverseMask = null;
@@ -61,30 +59,24 @@ try {
   }
 } catch (e) { console.error("Error GeoJSON:", e); }
 
-// --- NUOVO COMPONENTE: Gestore Interazioni ---
-// Questo componente ascolta quando l'utente muove la mappa e chiude il popup
 function MapInteractionHandler({ closePopup }) {
   useMapEvents({
-    dragstart: () => closePopup(), // Chiude appena inizi a trascinare
-    zoomstart: () => closePopup(), // Chiude appena inizi a zoomare
+    dragstart: () => closePopup(),
+    zoomstart: () => closePopup(),
   });
   return null;
 }
 
-// --- COMPONENTE PRINCIPALE ---
 function MapPage() {
   const { isMobile } = useContext(MobileContext);
 
-  // Stati
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null);
   const [showInvalidModal, setShowInvalidModal] = useState(false);
   
-  // STATI REPORT
   const [reports, setReports] = useState([]); 
   const [visibleReports, setVisibleReports] = useState([]); 
   
-  // Sidebar e Modali
   const [showReportsSidebar, setShowReportsSidebar] = useState(!isMobile);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(true);
   const [selectedPin, setSelectedPin] = useState(null);
@@ -97,7 +89,7 @@ function MapPage() {
   const mapRef = useRef();
   const initialPosition = [45.0703, 7.6869];
 
-  // Caching Logica
+  // Callback per gestire i report recuperati dalla viewport
   const handleReportsFetched = useCallback((newReports) => {
     setVisibleReports(newReports || []);
     setReports((prevReports) => {
@@ -108,9 +100,19 @@ function MapPage() {
     });
   }, []);
 
-  // Handlers
-  const handleMapClick = async (latlng, mapInstance) => {
+  // Gestione apertura Sidebar/Form
+  const openFormAndCloseSidebar = useCallback(() => {
+
+    setWasSidebarOpen(showReportsSidebar);
+    if (showReportsSidebar) setShowReportsSidebar(false);
+    setShowForm(true);
+  }, [showReportsSidebar]);
+
+  // Gestione Click Mappa 
+  const handleMapClick = useCallback(async (latlng, mapInstance) => {
     const activeMap = mapInstance || mapRef.current;
+    
+    // Se non ci sono poligoni caricati, procedi senza controlli
     if (!turinPolygons || turinPolygons.length === 0) {
       setClickedPosition(latlng);
       openFormAndCloseSidebar();
@@ -121,42 +123,53 @@ function MapPage() {
     const isInside = turinPolygons.some((polygon) => pointInPolygon([lng, lat], polygon));
 
     if (isInside) {
+      // Recupera indirizzo in background
       let address = null;
       try { address = await getAddressFromCoordinates(lat, lng); } catch (e) { console.error(e); }
+      
       setClickedPosition({ ...latlng, address });
       openFormAndCloseSidebar();
       
       if (activeMap) {
-        activeMap.flyTo(latlng, 17, { animate: true, duration: 1.0 });
-        setTimeout(() => activeMap.panBy([-200, 0], { duration: 0.5 }), 500);
+        // --- LOGICA ANIMAZIONE  ---
+        const targetZoom = 17;
+        
+        const xOffsetPixels = isMobile ? 0 : 280; 
+        const yOffsetPixels = isMobile ? -150 : 0; 
+
+        const currentPoint = activeMap.project([lat, lng], targetZoom);
+        
+        const targetPoint = currentPoint.subtract([xOffsetPixels, yOffsetPixels]);
+        
+        const targetLatLng = activeMap.unproject(targetPoint, targetZoom);
+
+        activeMap.flyTo(targetLatLng, targetZoom, { 
+          animate: true, 
+          duration: 1.2, 
+          easeLinearity: 0.25
+        });
       }
     } else {
       setShowInvalidModal(true);
     }
-  };
+  }, [isMobile, openFormAndCloseSidebar]); // Dipendenze stabili
 
-  const openFormAndCloseSidebar = () => {
-    setWasSidebarOpen(showReportsSidebar);
-    if (showReportsSidebar) setShowReportsSidebar(false);
-    setShowForm(true);
-  };
-
-  const handleFormClose = () => {
+  const handleFormClose = useCallback(() => {
     setShowForm(false);
     setClickedPosition(null);
     if (wasSidebarOpen) setTimeout(() => setShowReportsSidebar(true), 300);
-  };
+  }, [wasSidebarOpen]);
 
-  const handleReportSubmit = (isSuccess, message) => {
+  const handleReportSubmit = useCallback((isSuccess, message) => {
     handleFormClose();
     setTimeout(() => {
       setReportModalIsSuccess(isSuccess);
       setReportModalMessage(message);
       setShowReportModal(true);
     }, 300);
-  };
+  }, [handleFormClose]);
 
-  const handleReportSelection = async (report) => {
+  const handleReportSelection = useCallback(async (report) => {
     let address = report.address;
     if (!address) {
       try { address = await getAddressFromCoordinates(report.location.latitude, report.location.longitude); } catch (e) {}
@@ -165,9 +178,11 @@ function MapPage() {
       mapRef.current.flyTo([report.location.latitude, report.location.longitude], 17, { duration: 1.2 });
     }
     setSelectedPin({ ...report, address, reportId: report.id });
-  };
+  }, []);
 
-  const toggleReportsSidebar = () => setShowReportsSidebar(!showReportsSidebar);
+  const toggleReportsSidebar = useCallback(() => {
+    setShowReportsSidebar(prev => !prev);
+  }, []);
 
   return (
     <div className="map-page-wrapper">
@@ -177,32 +192,46 @@ function MapPage() {
         zoom={13}
         className="fullpage-leaflet-container"
         zoomControl={false}
+        preferCanvas={true}
       >
-        <LayersControl position="bottomleft">
-          <LayersControl.BaseLayer checked name="Mappa Stradale">
-            <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <LayersControl position="topleft">
+          <LayersControl.BaseLayer checked name="Mappa Stradale (Standard)">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
           </LayersControl.BaseLayer>
+
+          <LayersControl.BaseLayer name="Mappa Chiara (Voyager)">
+            <TileLayer
+              attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            />
+          </LayersControl.BaseLayer>
+
           <LayersControl.BaseLayer name="Satellite">
-            <TileLayer attribution='Tiles &copy; Esri' url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+            <TileLayer
+              attribution='Tiles &copy; Esri'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            />
           </LayersControl.BaseLayer>
         </LayersControl>
 
         <ZoomControl position="bottomleft" />
 
         <MapResizer isSidebarOpen={showReportsSidebar} />
-        
-        {/* Gestore per chiudere il popup al movimento */}
         <MapInteractionHandler closePopup={() => setSelectedPin(null)} />
 
         <SearchBar onLocationSelected={(latlng, map) => handleMapClick(latlng, map)} />
         <MapClickHandler onMapClick={(latlng) => handleMapClick(latlng)} />
 
         <MarkerClusterGroup
-          chunkedLoading
+          chunkedLoading={true}
           iconCreateFunction={createClusterCustomIcon}
           spiderfyOnMaxZoom={true}
           showCoverageOnHover={false}
           maxClusterRadius={60}
+          animate={false} // Animazione disabilitata per evitare scatti dei cluster
         >
           {reports.map((report) => (
             <Marker
@@ -222,12 +251,11 @@ function MapPage() {
         {selectedPin && (
           <Popup
             position={[selectedPin.location.latitude, selectedPin.location.longitude]}
-            offset={[0, -35]}
+            offset={[0, -40]}
             onClose={() => setSelectedPin(null)}
             className="custom-popup"
             closeButton={false}
-            autoPan={true} // Abilita il movimento automatico se il popup è fuori schermo
-            autoPanPadding={[50, 50]} // Padding di sicurezza dai bordi (RISOLVE IL PROBLEMA FUORI SCHERMO)
+            autoPan={false}
           >
             <div className="popup-content">
               <button className="popup-close-btn" onClick={(e) => { e.stopPropagation(); setSelectedPin(null); }}>×</button>
@@ -264,20 +292,27 @@ function MapPage() {
         <GetBoundsLogger onReportsFetched={handleReportsFetched} />
       </MapContainer>
 
-      {/* UI Elements */}
       {isMobile && !showReportsSidebar && (
-        <button className="reports-fab" onClick={toggleReportsSidebar}>Reports ({visibleReports.length})</button>
+        <button className="reports-fab" onClick={toggleReportsSidebar}>
+          <ChevronLeft size={20} className="me-1" style={{transform: "rotate(90deg)"}} /> Reports ({visibleReports.length})
+        </button>
       )}
 
       <div className={`reports-sidebar ${showReportsSidebar ? "open" : "closed"} ${isMobile ? "mobile" : ""}`}>
           <div className="reports-sidebar-content">
             <div className="reports-sidebar-header-wrapper">
-              <h5 className="reports-sidebar-title">Reports ({visibleReports.length})</h5>
+              <h5 className="reports-sidebar-title">
+                Reports found: {visibleReports.length}
+              </h5>
               <button className="reports-sidebar-toggle" onClick={toggleReportsSidebar}><span>×</span></button>
             </div>
+            
             <div className="reports-list">
               {visibleReports.length === 0 ? (
-                <p className="text-muted text-center mt-4">No reports visible</p>
+                <div className="empty-state">
+                  <p className="text-muted">No reports in this area</p>
+                  <small>Move the map to find more</small>
+                </div>
               ) : (
                 visibleReports.map((report) => (
                   <ReportCard

@@ -13,8 +13,7 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
 
   return (
     <div className="role-modal-overlay" onClick={onClose}>
-      <div className="role-modal-content" onClick={(e) => e.stopPropagation()} style={{ backgroundColor: "#E1EDF4", opacity: 1 }}
-      >
+      <div className="role-modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="role-modal-close" onClick={onClose}>
           ×
         </button>
@@ -24,10 +23,9 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
         </p>
         <div className="role-options">
           {availableRoles && availableRoles.filter((role) => role.id > 1).map((role) => (
-            <div key={role.id} className="role-option" onClick={() => handleRoleSelect(role.id)} style={{ backgroundColor: "#98C1D9", opacity: 1 }}
-            >
+            <div key={role.id} className="role-option" onClick={() => handleRoleSelect(role.id)}>
               <div className="role-icon">
-                {getRoleIcon(role.role, 32)}
+                {getRoleIcon(role.role, 28)}
               </div>
               <span className="role-name">{role.role}</span>
             </div>

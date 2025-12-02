@@ -1,67 +1,126 @@
-.user-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+.user-card {
+  background: #fdfefe;
+  border-radius: 14px;
+  border: 1px solid rgba(37, 56, 84, 0.1);
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: auto;
+  height: auto;
+  box-shadow: 0 4px 16px rgba(32, 45, 64, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.user-card {
-  height: 5rem;
-  background: #98C1D9;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 20px;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.user-card[data-modal-open="true"] {
+  pointer-events: none;
+}
+
+.user-card:hover {
+  box-shadow: 0 8px 24px rgba(32, 45, 64, 0.1);
+  border-color: rgba(37, 56, 84, 0.2);
 }
 
 .user-icon {
-  background-color: #E1EDF4;
-  border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  min-width: 64px;
-  min-height: 64px;
+  background: linear-gradient(135deg, #e6eff7, #dce8f4);
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .user-info {
   flex-grow: 1;
-  padding: 0 0.5rem;
-  color: black;
-  font-family: 'Inter', sans-serif;
-  font-size: 18px; 
-  font-weight: 400;
-  line-height: 1.2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  color: #1b2432;
+  font-family: 'Inter', sans-serif;
 }
 
-.user-info p {
-  margin: 0;
+.user-info-main {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
 }
 
-.info-label {
+.user-full-name {
+  font-size: 15px;
   font-weight: 700;
-  min-width: 85px;
-  text-align: left;
+  color: #1a2332;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+  width: 100%;
+}
+
+.user-role-pill {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(61, 90, 128, 0.12), rgba(61, 90, 128, 0.08));
+  color: #284366;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+  line-height: 1.3;
+}
+
+.user-role-pill.unassigned {
+  background: linear-gradient(135deg, rgba(238, 108, 77, 0.18), rgba(238, 108, 77, 0.12));
+  color: #bb3f26;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 13px;
+  color: #5d6c82;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+  width: 100%;
 }
 
 .user-add-btn {
-  width: 50px;
-  height: 48px;
-  background: #EE6C4D;
-  border-radius: 9999px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  background: linear-gradient(135deg, #EE6C4D, #f6906f);
+  border-radius: 50%;
   border: none;
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(238, 108, 77, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  align-self: center;
+}
+
+.user-add-btn:hover {
+  background: linear-gradient(135deg, #f6906f, #EE6C4D);
+  box-shadow: 0 6px 16px rgba(238, 108, 77, 0.35);
+  transform: scale(1.05);
+}
+
+.user-add-btn:active {
+  transform: scale(0.98);
 }
 
 .plus-icon::before,
@@ -70,9 +129,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 30px;
-  height: 5px;
+  width: 18px;
+  height: 3px;
   background: white;
+  border-radius: 2px;
   transform: translate(-50%, -50%);
 }
 
@@ -80,75 +140,76 @@
   transform: translate(-50%, -50%) rotate(90deg);
 }
 
-/* Media Queries per Mobile */
+/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
-  .user-list {
-    grid-template-columns: 1fr;
-  }
-
   .user-card {
-    height: auto;
-    min-height: 5rem;
-    padding: 0.75rem 1rem;
+    padding: 12px 14px;
   }
 
   .user-icon {
-    width: 50px;
-    height: 48px;
-    margin-right: 0.75rem;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
 
-  .user-info {
+  .user-full-name {
     font-size: 14px;
-    padding: 0 0.25rem;
   }
 
-  .info-label {
-    min-width: 70px;
-    font-size: 14px;
+  .user-email {
+    font-size: 12px;
   }
 
   .user-add-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
   }
 
   .plus-icon::before,
   .plus-icon::after {
-    width: 20px;
-    height: 4px;
+    width: 16px;
+    height: 3px;
   }
 }
 
 @media (max-width: 480px) {
   .user-card {
-    padding: 0.5rem 0.75rem;
-    min-height: 4.5rem;
+    padding: 10px 12px;
   }
 
   .user-icon {
-    width: 45px;
-    height: 43px;
-    margin-right: 0.5rem;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
   }
 
-  .user-info {
-    font-size: 12px;
+  .user-full-name {
+    font-size: 13px;
   }
 
-  .info-label {
-    min-width: 60px;
-    font-size: 12px;
+  .user-email {
+    font-size: 11px;
+  }
+
+  .user-role-pill {
+    font-size: 10px;
+    padding: 4px 10px;
   }
 
   .user-add-btn {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
   }
 
   .plus-icon::before,
   .plus-icon::after {
-    width: 18px;
-    height: 3px;
+    width: 14px;
+    height: 2.5px;
   }
 }

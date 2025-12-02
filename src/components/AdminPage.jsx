@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, Form } from "react-bootstrap";
+import { Form, Card, Container, Button, Badge, InputGroup } from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
+import RoleAssignmentModal from "./RoleAssignmentModal";
 import API from "../API/API";
 import { getRoleIcon } from "../constants/roleIcons";
 
 function AdminPage() {
-  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState(new Set());
   const [users, setUsers] = useState([]);
   const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
   const [roles, setRoles] = useState([]);
   const [visibleRoles, setVisibleRoles] = useState([]);
   const [roleMapping, setRoleMapping] = useState({});
   const [searchEmail, setSearchEmail] = useState("");
+  const [selectedUserForRole, setSelectedUserForRole] = useState(null);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -71,12 +74,25 @@ function AdminPage() {
     setUsers((prevUsers) => [...prevUsers, createdUser]);
   };
 
+  const handleOpenRoleModal = (user) => {
+    setSelectedUserForRole(user);
+    setIsRoleModalOpen(true);
+  };
+
+  const handleCloseRoleModal = () => {
+    setIsRoleModalOpen(false);
+    setSelectedUserForRole(null);
+  };
+
   const filteredUsers = users.filter((user) => {
-    // Filtra per ruolo
+    // Filtra per ruolo (multi-select)
+    const userRoleId = Object.keys(roleMapping).find(
+      (id) => roleMapping[id] === user.role
+    );
     const roleMatch =
-      selectedFilter !== null
-        ? user.role === roleMapping[selectedFilter]
-        : true;
+      selectedFilter.size === 0
+        ? true
+        : selectedFilter.has(Number(userRoleId));
 
     // Filtra per email
     const emailMatch = user.email
@@ -87,7 +103,15 @@ function AdminPage() {
   });
 
   const handleFilterClick = (roleId) => {
-    setSelectedFilter(selectedFilter === roleId ? null : roleId);
+    setSelectedFilter((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(roleId)) {
+        newSelected.delete(roleId);
+      } else {
+        newSelected.add(roleId);
+      }
+      return newSelected;
+    });
   };
 
   const handleAssignRole = async (userId, newRoleId) => {
@@ -123,96 +147,126 @@ function AdminPage() {
 
   return (
     <div className="admin-board">
-      <div className="admin-content-wrapper">
-        {/* Prima Riga: Filtri e Legenda */}
-        <div className="admin-top-row">
-          {/* Colonna Sinistra: Filtri */}
-          <div className="admin-sidebar">
-            <button
-              className="add-user-btn"
-              onClick={() => handleOpenSetUpModal()}
+      <Container fluid className="admin-content-wrapper">
+        <header className="admin-headline">
+          <div className="admin-headline-text">
+            <h1 className="admin-title">Administration</h1>
+          </div>
+          <Button
+            variant="primary"
+            className="add-user-btn desktop-only"
+            onClick={handleOpenSetUpModal}
+          >
+            <i className="bi bi-plus-lg me-2"></i>
+            Add user
+          </Button>
+        </header>
+
+        <div className="admin-layout">
+          <aside className="admin-sidebar">
+            <Card className="filter-card">
+              <Card.Body>
+                <label className="filter-title" htmlFor="admin-search-input">
+                  Search by email
+                </label>
+                <InputGroup className="search-input-group">
+                  <InputGroup.Text className="search-icon">
+                    <i className="bi bi-search"></i>
+                  </InputGroup.Text>
+                  <Form.Control
+                    id="admin-search-input"
+                    type="text"
+                    placeholder="name.surname@participium.com"
+                    value={searchEmail}
+                    onChange={(e) => setSearchEmail(e.target.value)}
+                    className="search-email-input"
+                  />
+                </InputGroup>
+              </Card.Body>
+            </Card>
+
+            <Button
+              variant="primary"
+              className="add-user-btn mobile-only w-100"
+              onClick={handleOpenSetUpModal}
             >
-              Add a new user
-            </button>
-            
-            <h3 className="filter-title">Search by email:</h3>
-            <Form.Control
-              type="text"
-              placeholder="Enter email..."
-              value={searchEmail}
-              onChange={(e) => setSearchEmail(e.target.value)}
-              className="search-email-input"
-            />
+              <i className="bi bi-plus-lg me-2"></i>
+              Add user
+            </Button>
 
-            <h3 className="filter-title">Filter by role:</h3>
-            <Dropdown>
-              <Dropdown.Toggle className="custom-dropdown-toggle" id="dropdown-basic">
-                {selectedFilter !== null 
-                  ? roleMapping[selectedFilter] 
-                  : "All Users"}
-              </Dropdown.Toggle>
+            <Card className="legend-card">
+              <Card.Body>
+                <p className="legend-card-title">Filter by roles</p>
+                <div className="legend-chips">
+                  {visibleRoles.map((role) => (
+                    <Badge
+                      key={role.id}
+                      bg="light"
+                      className={`legend-chip ${selectedFilter.has(role.id) ? 'legend-chip-active' : ''}`}
+                      onClick={() => handleFilterClick(role.id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <span className="legend-chip-icon">
+                        {getRoleIcon(role.role, 20)}
+                      </span>
+                      <span className="legend-chip-text">{role.role}</span>
+                    </Badge>
+                  ))}
+                </div>
+              </Card.Body>
+            </Card>
+          </aside>
 
-              <Dropdown.Menu className="custom-dropdown-menu">
-                <Dropdown.Item 
-                  className="custom-dropdown-item"
-                  onClick={() => setSelectedFilter(null)}
-                  active={selectedFilter === null}
-                >
-                  All Users
-                </Dropdown.Item>
-                {visibleRoles.map((role) => (
-                  <Dropdown.Item
-                    key={role.id}
-                    className="custom-dropdown-item"
-                    onClick={() => setSelectedFilter(role.id)}
-                    active={selectedFilter === role.id}
-                  >
-                    {role.role}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          {/* Colonna Destra: Legenda */}
-          <div className="admin-legend-section">
-            <div className="legend-box">
-              <h3 className="legend-title">Legend for users</h3>
-              <div className="legend-grid">
-                {visibleRoles.map((role) => (
-                  <div key={role.id} className="legend-item">
-                    <div className="legend-icon">
-                      {getRoleIcon(role.role, 30)}
-                    </div>
-                    <span>{role.role}</span>
+          <section className="admin-main">
+            <Card className="admin-users-card">
+              <Card.Body>
+                <div className="admin-users-header">
+                  <div>
+                    <h2 className="users-title">Team directory</h2>
+                    <p className="users-count">
+                      Showing <Badge bg="secondary" className="count-badge">{filteredUsers.length}</Badge> user
+                      {filteredUsers.length === 1 ? "" : "s"} for the selected filters.
+                    </p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+                </div>
 
-        <div className="divider-line" />
-
-        {/* Seconda Riga: Lista Utenti con Scroll */}
-        <div className="admin-users-row">
-          <div className="user-list">
-            {filteredUsers.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                onAssignRole={handleAssignRole}
-                availableRoles={visibleRoles}
-              />
-            ))}
-          </div>
+                {filteredUsers.length === 0 ? (
+                  <div className="admin-empty-state">
+                    <i className="bi bi-inbox empty-icon"></i>
+                    <p className="empty-message">No users match this filter.</p>
+                    <p className="empty-hint">Try another email or role.</p>
+                  </div>
+                ) : (
+                  <div className="user-list">
+                    {filteredUsers.map((user) => (
+                      <UserCard
+                        key={user.id}
+                        user={user}
+                        availableRoles={visibleRoles}
+                        onOpenRoleModal={handleOpenRoleModal}
+                      />
+                    ))}
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </section>
         </div>
-      </div>
+      </Container>
       <SetUpUserModal
         isOpen={isSetUpModalOpen}
         onClose={handleCloseSetUpModal}
         onCreateUser={handleCreateUser}
       />
+      {selectedUserForRole && (
+        <RoleAssignmentModal
+          user={selectedUserForRole}
+          isOpen={isRoleModalOpen}
+          onClose={handleCloseRoleModal}
+          onAssignRole={handleAssignRole}
+          availableRoles={visibleRoles}
+        />
+      )}
     </div>
   );
 }

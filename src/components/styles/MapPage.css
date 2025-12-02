@@ -460,3 +460,111 @@
   box-shadow: 0 0 16px rgba(0,0,0,0.12);
   transition: transform 0.3s;
 }
+
+
+.custom-cluster-icon-marker {
+  width: 35px;
+  height: 35px;
+  background-color: #EE6C4D;
+  color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Stile per il badge di stato nel popup (era inline nel JSX) */
+.popup-status-badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+/* Stile per il Marker SVG (era inline nel template string) */
+.pin-svg {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: transform 0.2s;
+}
+
+.leaflet-touch .leaflet-control-zoom,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-control-zoom,
+.leaflet-control-layers {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  background-color: white;
+  margin-bottom: 20px !important; /* Spazio dal bordo inferiore */
+  margin-left: 20px !important; /* Spazio dal bordo sinistro */
+}
+
+/* Stile pulsanti zoom (+ e -) */
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background-color: #3D5A80 !important; /* Colore tema blu scuro */
+  color: white !important;
+  font-weight: 300 !important;
+  font-size: 22px !important;
+  line-height: 30px !important;
+  width: 36px !important;
+  height: 36px !important;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Hover sui pulsanti zoom */
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background-color: #EE6C4D !important; /* Arancione al passaggio del mouse */
+  color: white !important;
+}
+
+/* Rimuove il bordo inferiore dall'ultimo pulsante */
+.leaflet-control-zoom-out {
+  border-bottom: none !important;
+}
+
+/* Pulsante Layers (Icona fogli) */
+.leaflet-control-layers-toggle {
+  width: 44px !important;
+  height: 44px !important;
+  background-color: #3D5A80 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='24px' height='24px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z'/%3E%3C/svg%3E") !important;
+  background-size: 24px 24px !important;
+  transition: background-color 0.2s ease;
+}
+
+.leaflet-control-layers-toggle:hover {
+  background-color: #EE6C4D !important;
+}
+
+/* Pannello Layers quando aperto */
+.leaflet-control-layers-expanded {
+  background-color: white !important;
+  color: #3D5A80;
+  font-family: 'Inter', sans-serif;
+  padding: 10px 15px !important;
+  border-radius: 12px !important;
+}
+
+/* Radio button e testo dentro il pannello layers */
+.leaflet-control-layers-base label {
+  margin-bottom: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.leaflet-control-layers-base input {
+  margin-right: 8px;
+  accent-color: #EE6C4D; /* Colore del radio button */
+}

@@ -105,10 +105,6 @@
   z-index: 1;
 }
 
-.legend-card {
-  max-height: 55vh;
-}
-
 /* Only legend and users card have hover transform - not filter cards to avoid dropdown bugs */
 .legend-card:hover,
 .admin-users-card:hover {
@@ -213,7 +209,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 340px;
+  max-height: calc(55vh - 120px);
   overflow-y: auto;
   padding-right: 4px;
 }

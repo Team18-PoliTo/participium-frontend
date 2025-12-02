@@ -38,6 +38,9 @@ import {
 import "leaflet-geosearch/dist/geosearch.css";
 import "./styles/MapPage.css";
 
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
 // --- LOGICA GEOJSON ---
 let turinFeature = null;
 let turinPolygons = [];

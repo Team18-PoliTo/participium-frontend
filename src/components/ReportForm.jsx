@@ -5,16 +5,7 @@ import API from "../API/API";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import { MapPin, Type, AlignLeft, Camera, Image, X, Send, AlertTriangle, Wrench } from "lucide-react";
 
-/**
- * ReportForm Component
- *
- * A form component for creating new reports with location, title, description,
- * category, and photo uploads.
- *
- * @param {Object} position - The geographic position selected on the map {lat, lng}
- * @param {Function} onFormSubmit - Callback function to close the form
- * @param {Function} onReportResult - Callback function to handle report submission result (isSuccess, message)
- */
+
 function ReportForm({ position, onFormSubmit, onReportResult }) {
   // Form state management
   const [title, setTitle] = useState("");
@@ -295,7 +286,6 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       <Form.Group className="report-form__group" controlId="formCategory">
         <Form.Label className="report-form__label">
           <span className="report-form__category-icon-wrapper me-2">
-             {/* Mostra l'icona della categoria se selezionata, altrimenti l'icona generica Wrench */}
              {categoryId 
                 ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18, "#3D5A80") 
                 : <Wrench size={18} className="text-primary-blue" />}

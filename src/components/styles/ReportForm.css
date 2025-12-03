@@ -1,19 +1,16 @@
 .report-form {
     font-family: 'Inter', sans-serif;
-    /* Rimuovo il background scuro/pesante. 
-       Il form vive nell'offcanvas che è già colorato o bianco. 
-       Lo rendiamo pulito. */
     background-color: transparent; 
-    padding: 0.5rem; /* Padding ridotto perché l'offcanvas ha già padding */
+    padding: 0.5rem; 
     width: 100%;
     margin: 0 auto;
     color: #293241;
-    border: none; /* Rimosso il bordo pesante */
+    border: none; 
 }
 
 .report-form__error {
     font-family: 'Inter', sans-serif;
-    border-radius: 16px; /* Più tondeggiante */
+    border-radius: 16px; 
     font-size: 0.95rem;
     border: none;
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
@@ -48,15 +45,15 @@
     margin-left: 4px;
 }
 
-/* --- INPUT FIELDS (Stile Tondeggiante) --- */
+/* --- INPUT FIELDS --- */
 .report-form__input,
 .report-form__textarea,
 .report-form__select {
-    border-radius: 20px !important; /* Molto arrotondato */
+    border-radius: 20px !important; 
     font-family: 'Inter', sans-serif;
     border: 1px solid #dae1e7 !important; 
     background-color: #ffffff !important;
-    padding: 0.85rem 1.25rem !important; /* Più padding interno */
+    padding: 0.85rem 1.25rem !important;
     font-size: 0.95rem !important;
     transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
     color: #293241 !important;
@@ -67,7 +64,7 @@
 .report-form__textarea:focus,
 .report-form__select:focus {
     background-color: #ffffff !important;
-    border-color: #EE6C4D !important; /* Focus Arancione */
+    border-color: #EE6C4D !important; 
     box-shadow: 0 4px 12px rgba(238, 108, 77, 0.15) !important;
     outline: none;
     transform: translateY(-1px);
@@ -81,14 +78,14 @@
 .report-form__textarea {
     resize: vertical;
     min-height: 120px;
-    border-radius: 20px !important; /* Coerenza anche per textarea */
+    border-radius: 20px !important; 
 }
 
 /* --- LOCATION CARD --- */
 .report-form__location-card {
-    background-color: #f0f7fc; /* Sfondo leggermente azzurro */
+    background-color: #f0f7fc; 
     border: 1px solid #e1edf4;
-    border-radius: 20px; /* Arrotondato */
+    border-radius: 20px; 
     padding: 1.25rem;
     font-size: 0.9rem;
     position: relative;
@@ -121,7 +118,7 @@
 }
 
 .report-form__coords {
-    font-family: 'Monaco', monospace; /* Font monospazio per numeri */
+    font-family: 'Monaco', monospace; 
     color: #5d6c82;
     background: rgba(255,255,255,0.6);
     padding: 4px 8px;
@@ -144,7 +141,7 @@
 }
 
 .report-form__category-menu {
-    border-radius: 16px; /* Menu arrotondato */
+    border-radius: 16px; 
     border: none;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     overflow: hidden;
@@ -175,7 +172,7 @@
 }
 
 .report-form__category-item {
-    border-radius: 10px; /* Item interni arrotondati */
+    border-radius: 10px; 
     padding: 10px 12px;
     margin-bottom: 2px;
     transition: all 0.1s ease;
@@ -211,16 +208,16 @@
 
 .report-form__upload-btn {
     background-color: #ffffff;
-    border: 2px dashed #98C1D9; /* Bordo tratteggiato più leggero */
+    border: 2px dashed #98C1D9; 
     color: #3D5A80;
     font-weight: 600;
     padding: 1rem;
-    border-radius: 20px; /* Molto arrotondato */
+    border-radius: 20px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     transition: all 0.3s ease;
     display: flex;
-    flex-direction: column; /* Icona sopra testo */
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
     gap: 8px;
@@ -255,7 +252,7 @@
 
 .report-form__photo-card {
     position: relative;
-    border-radius: 16px; /* Foto arrotondate */
+    border-radius: 16px; 
     overflow: hidden;
     aspect-ratio: 1;
     border: 3px solid #ffffff;
@@ -288,7 +285,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ef4444; /* Rosso vibrante */
+    color: #ef4444; 
     cursor: pointer;
     transition: all 0.2s;
     padding: 0;
@@ -308,12 +305,12 @@
     color: white !important;
     font-weight: 700 !important;
     padding: 14px 0;
-    border-radius: 50px !important; /* PILLOLA */
+    border-radius: 50px !important; 
     font-size: 1.1rem;
     margin-top: 1.5rem;
     font-family: 'Inter', sans-serif;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 20px rgba(238, 108, 77, 0.25); /* Ombra colorata */
+    box-shadow: 0 8px 20px rgba(238, 108, 77, 0.25); 
     letter-spacing: 0.5px;
 }
 

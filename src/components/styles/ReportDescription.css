@@ -1,6 +1,6 @@
 /* --- MODAL CONTAINER --- */
 .report-desc-modal-content {
-  border-radius: 24px !important; /* Molto arrotondato */
+  border-radius: 24px !important; 
   border: none !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   overflow: hidden;
@@ -25,7 +25,7 @@
 }
 
 .report-desc-modal-body {
-  background-color: #E1EDF4; /* Sfondo pagina chiaro */
+  background-color: #E1EDF4;
   padding: 2rem;
 }
 
@@ -48,16 +48,16 @@
   margin-left: 4px;
 }
 
-/* --- INFO CARDS (Stile Pillola/Box) --- */
+/* --- INFO CARDS --- */
 .report-desc-text-display {
   background-color: white;
   padding: 1rem 1.25rem;
-  border-radius: 16px; /* Box arrotondati */
-  border: 1px solid white; /* Bordo sottile */
+  border-radius: 16px; 
+  border: 1px solid white; 
   margin-bottom: 0;
   font-family: 'Inter', sans-serif;
   color: #293241;
-  box-shadow: 0 2px 8px rgba(61, 90, 128, 0.05); /* Ombra leggera */
+  box-shadow: 0 2px 8px rgba(61, 90, 128, 0.05); 
   white-space: pre-wrap;
   word-wrap: break-word;
 }

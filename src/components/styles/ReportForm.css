@@ -1,84 +1,208 @@
 .report-form {
     font-family: 'Inter', sans-serif;
-    background-color: #3D5A80;
-    padding: 1.5rem;
-    border-radius: 16px;
+    /* Rimuovo il background scuro/pesante. 
+       Il form vive nell'offcanvas che è già colorato o bianco. 
+       Lo rendiamo pulito. */
+    background-color: transparent; 
+    padding: 0.5rem; /* Padding ridotto perché l'offcanvas ha già padding */
     width: 100%;
-    max-width: 550px;
     margin: 0 auto;
+    color: #293241;
+    border: none; /* Rimosso il bordo pesante */
 }
 
 .report-form__error {
     font-family: 'Inter', sans-serif;
-    border-radius: 8px;
+    border-radius: 16px; /* Più tondeggiante */
+    font-size: 0.95rem;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
 }
 
 .report-form__group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .report-form__label {
-    color: #fff;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    color: #3D5A80;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
     font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
 }
 
+.text-primary-blue {
+    color: #3D5A80;
+}
+
+.text-dark-blue {
+    color: #1a2332;
+}
+
+.report-form__required {
+    color: #EE6C4D;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* --- INPUT FIELDS (Stile Tondeggiante) --- */
 .report-form__input,
 .report-form__textarea,
-.report-form__select,
-.report-form__file-input {
-    border-radius: 8px;
+.report-form__select {
+    border-radius: 20px !important; /* Molto arrotondato */
     font-family: 'Inter', sans-serif;
+    border: 1px solid #dae1e7 !important; 
+    background-color: #ffffff !important;
+    padding: 0.85rem 1.25rem !important; /* Più padding interno */
+    font-size: 0.95rem !important;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color: #293241 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
 }
 
-.report-form__input--readonly {
-    background-color: #e9ecef;
-    cursor: not-allowed;
+.report-form__input:focus,
+.report-form__textarea:focus,
+.report-form__select:focus {
+    background-color: #ffffff !important;
+    border-color: #EE6C4D !important; /* Focus Arancione */
+    box-shadow: 0 4px 12px rgba(238, 108, 77, 0.15) !important;
+    outline: none;
+    transform: translateY(-1px);
 }
 
-.report-form__input--error {
-    border-color: #dc3545;
+.report-form__input::placeholder,
+.report-form__textarea::placeholder {
+    color: #9ca3af;
 }
 
 .report-form__textarea {
     resize: vertical;
+    min-height: 120px;
+    border-radius: 20px !important; /* Coerenza anche per textarea */
 }
 
-.report-form__submit-btn {
-    width: 100%;
-    background-color: #EE6C4D !important;
-    color: #fff !important;
-    font-weight: bold !important;
-    border: none !important;
-    padding: 12px 0;
+/* --- LOCATION CARD --- */
+.report-form__location-card {
+    background-color: #f0f7fc; /* Sfondo leggermente azzurro */
+    border: 1px solid #e1edf4;
+    border-radius: 20px; /* Arrotondato */
+    padding: 1.25rem;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.report-form__location-card:hover {
+    border-color: #3D5A80;
+    box-shadow: 0 4px 12px rgba(61, 90, 128, 0.1);
+}
+
+/* Linea decorativa laterale */
+.report-form__location-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: #3D5A80;
+}
+
+.report-form__address {
+    font-weight: 700;
+    color: #3D5A80;
+    line-height: 1.4;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.report-form__coords {
+    font-family: 'Monaco', monospace; /* Font monospazio per numeri */
+    color: #5d6c82;
+    background: rgba(255,255,255,0.6);
+    padding: 4px 8px;
     border-radius: 8px;
-    font-size: 1.15rem;
-    margin-top: 0.5rem;
-    font-family: 'Inter', sans-serif;
+    display: inline-block;
+    font-size: 0.85rem;
 }
 
-.report-form__submit-btn:hover {
-    background-color: #d55a36 !important;
-    color: white;
+/* --- DROPDOWN --- */
+.report-form__select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
 }
 
-.report-form__submit-btn:active {
-    background-color: #d55a36 !important;
-    color: white;
+.report-form__select::after {
+    margin-left: auto;
+    opacity: 0.6;
 }
 
-.report-form__submit-btn:disabled {
-    background-color: #d55a36 !important;
-    opacity: 0.65;
-    cursor: not-allowed;
+.report-form__category-menu {
+    border-radius: 16px; /* Menu arrotondato */
+    border: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px;
+    margin-top: 8px !important;
 }
 
-.report-form__photo-upload {
+/* Scrollbar personalizzata per il menu categorie */
+.report-form__category-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin: 4px 0;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.report-form__category-menu::-webkit-scrollbar-thumb:hover {
+    background: #3D5A80;
+}
+
+.report-form__category-item {
+    border-radius: 10px; /* Item interni arrotondati */
+    padding: 10px 12px;
+    margin-bottom: 2px;
+    transition: all 0.1s ease;
+}
+
+.report-form__category-item:hover {
+    background-color: #f0f7fc;
+    color: #3D5A80;
+    transform: translateX(4px);
+}
+
+.report-form__category-item.active {
+    background-color: #3D5A80 !important;
+    color: white !important;
+}
+
+.report-form__category-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- UPLOAD AREA --- */
+.report-form__photo-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
 }
 
 .report-form__file-input-hidden {
@@ -86,160 +210,128 @@
 }
 
 .report-form__upload-btn {
-    background-color: #EE6C4D;
-    color: #fff;
+    background-color: #ffffff;
+    border: 2px dashed #98C1D9; /* Bordo tratteggiato più leggero */
+    color: #3D5A80;
     font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 1rem;
+    border-radius: 20px; /* Molto arrotondato */
     cursor: pointer;
     font-family: 'Inter', sans-serif;
-    transition: background-color 0.2s;
-    display: inline-block;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Icona sopra testo */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 100px;
 }
 
 .report-form__upload-btn:hover {
-    background-color: #d55a36;
+    background-color: #f8fbff;
+    border-color: #EE6C4D;
+    color: #EE6C4D;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(61, 90, 128, 0.1);
 }
 
-.report-form__upload-btn--disabled {
-    background-color: #6c757d;
+.report-form__upload-btn.disabled {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #adb5bd;
     cursor: not-allowed;
-    opacity: 0.65;
+    transform: none;
+    box-shadow: none;
 }
 
-.report-form__photo-count {
-    color: #fff;
-    font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
+/* --- PHOTO GRID --- */
+.report-form__photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
 }
 
-.report-form__photo-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+.report-form__photo-card {
+    position: relative;
+    border-radius: 16px; /* Foto arrotondate */
+    overflow: hidden;
+    aspect-ratio: 1;
+    border: 3px solid #ffffff;
+    background: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.report-form__photo-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 0.75rem;
-    border-radius: 8px;
+.report-form__photo-card:hover {
+    transform: scale(1.05);
+    border-color: #EE6C4D;
+    z-index: 5;
 }
 
 .report-form__photo-preview {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
-}
-
-.report-form__photo-info {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.report-form__photo-name {
-    color: #fff;
-    font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 200px;
 }
 
 .report-form__remove-photo-btn {
-    background-color: #dc3545 !important;
-    border: none !important;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    padding: 4px 12px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444; /* Rosso vibrante */
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 
 .report-form__remove-photo-btn:hover {
-    background-color: #c82333 !important;
+    background-color: #ef4444;
+    color: white;
+    transform: scale(1.1);
 }
 
-/* Category Dropdown Styles */
-.report-form__category-toggle {
-    overflow: hidden;
+/* --- SUBMIT BUTTON (PILL STYLE) --- */
+.report-form__submit-btn {
+    background: linear-gradient(135deg, #EE6C4D, #f08a70) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 14px 0;
+    border-radius: 50px !important; /* PILLOLA */
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(238, 108, 77, 0.25); /* Ombra colorata */
+    letter-spacing: 0.5px;
 }
 
-.report-form__category-selected {
-    min-width: 0;
-    flex: 1;
+.report-form__submit-btn:hover {
+    background: linear-gradient(135deg, #e65c3c, #EE6C4D) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(238, 108, 77, 0.35);
 }
 
-.report-form__category-icon {
-    flex-shrink: 0;
+.report-form__submit-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(238, 108, 77, 0.2);
 }
 
-.report-form__category-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.report-form__category-menu {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-/* Stile per la scrollbar */
-.report-form__category-menu::-webkit-scrollbar {
-    width: 8px;
-}
-
-.report-form__category-menu::-webkit-scrollbar-track {
-    background: #d0dfe8;
-    border-radius: 10px;
-    margin: 0.5rem 0;
-}
-
-.report-form__category-menu::-webkit-scrollbar-thumb {
-    background: #3D5A80;
-    border-radius: 10px;
-}
-
-.report-form__category-menu::-webkit-scrollbar-thumb:hover {
-    background: #293241;
-}
-
-.report-form__category-menu .dropdown-item.active {
-  background: #3D5A80 !important;
-  color: white !important;
-}
-
-.report-form__category-menu .dropdown-item.active svg {
-  color: white !important;
-  stroke: white !important;
-}
-
-.report-form__category-menu .dropdown-item:active {
-  background: #3D5A80 !important;
-  color: white !important;
-}
-
-.report-form__category-menu .dropdown-item:active svg {
-  color: white !important;
-  stroke: white !important;
-}
-
-.report-form__category-item {
-    overflow: hidden;
-}
-
-.report-form__category-item-content {
-    min-width: 0;
-}
-
-.report-form__category-item-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
+.report-form__submit-btn:disabled {
+    background: #cbd5e1 !important;
+    box-shadow: none;
+    opacity: 0.8;
+    cursor: not-allowed;
+    transform: none;
 }

@@ -114,6 +114,11 @@
   color: white !important;
 }
 
+.report-desc-category-dropdown .dropdown-item.active svg {
+  color: white !important;
+  stroke: white !important;
+}
+
 /* --- TEXTAREA --- */
 .report-desc-textarea {
   background-color: white !important;

@@ -28,51 +28,54 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
   return (
     <>
       {/* Citizen Details */}
-          <Row className="mb-3">
-            <Col xs={6}>
-              <label className="report-map-desc-label fw-bold">First Name</label>
-              <p className="report-map-desc-text-display">
-                {report.citizenName || "N/A"}
-              </p>
-            </Col>
-            <Col xs={6}>
-              <label className="report-map-desc-label fw-bold">Last Name</label>
-              <p className="report-map-desc-text-display">
-                {report.citizenSurname || "N/A"}
-              </p>
-            </Col>
-          </Row>
+      <div className="mb-4">
+        <label className="report-desc-label">Reported By</label>
+        <div className="report-desc-text-display d-flex gap-3">
+            <div className="flex-fill">
+                <small className="text-muted d-block text-uppercase" style={{fontSize:'0.7rem', fontWeight:'700'}}>First Name</small>
+                <span className="fw-bold">{report.citizenName || "N/A"}</span>
+            </div>
+            <div className="border-start mx-2"></div>
+            <div className="flex-fill">
+                <small className="text-muted d-block text-uppercase" style={{fontSize:'0.7rem', fontWeight:'700'}}>Last Name</small>
+                <span className="fw-bold">{report.citizenSurname || "N/A"}</span>
+            </div>
+        </div>
+      </div>
           
       {/* Title */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Title</label>
-        <p className="report-desc-text-display">{report.title}</p>
+      <div className="mb-4">
+        <label className="report-desc-label">Title</label>
+        <div className="report-desc-text-display fs-5 fw-bold text-dark">
+            {report.title}
+        </div>
       </div>
 
       {/* Description */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Description</label>
-        <p className="report-desc-text-display">{report.description}</p>
+      <div className="mb-4">
+        <label className="report-desc-label">Description</label>
+        <div className="report-desc-text-display" style={{minHeight: '80px'}}>
+            {report.description}
+        </div>
       </div>
 
       {/* Address */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Address</label>
-        <div className="d-flex align-items-center gap-2 report-desc-text-display">
-          <MapPin size={16} color="#3D5A80" />
-          <span>{report.address || "Address not available"}</span>
+      <div className="mb-4">
+        <label className="report-desc-label">Address</label>
+        <div className="report-desc-text-display d-flex align-items-center gap-2">
+          <MapPin size={20} color="#EE6C4D" />
+          <span className="fw-medium">{report.address || "Address not available"}</span>
         </div>
       </div>
 
       {/* Location Map */}
       {report.location && (
-        <div className="mb-3">
-          <label className="report-desc-label fw-bold">Location</label>
+        <div className="mb-4">
           <div className="report-desc-map-container">
             <MapContainer
               center={[report.location.latitude, report.location.longitude]}
               zoom={16}
-              style={{ height: "250px", width: "100%", borderRadius: "8px" }}
+              style={{ height: "200px", width: "100%" }}
               scrollWheelZoom={false}
               dragging={false}
               zoomControl={false}
@@ -80,7 +83,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='&copy; OpenStreetMap'
               />
               <Marker
                 position={[
@@ -94,17 +97,17 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       )}
 
       {/* Category */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Category</label>
+      <div className="mb-4">
+        <label className="report-desc-label">Category</label>
         {canEditCategory ? (
           <Dropdown className="report-desc-category-dropdown">
             <Dropdown.Toggle id="report-category-dropdown">
               <div className="d-flex align-items-center gap-2">
                 {getCategoryIcon(
                   categories.find((c) => c.id === selectedCategory)?.name || "",
-                  18
+                  20
                 )}
-                <span>
+                <span className="fw-medium">
                   {categories.find((c) => c.id === selectedCategory)?.name ||
                     "Select a category"}
                 </span>
@@ -118,7 +121,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                   active={selectedCategory === category.id}
                 >
                   <div className="d-flex align-items-center gap-2">
-                    {getCategoryIcon(category.name, 16)}
+                    {getCategoryIcon(category.name, 18)}
                     <span>{category.name}</span>
                   </div>
                 </Dropdown.Item>
@@ -126,55 +129,35 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-            <div className="d-flex align-items-center gap-2 report-desc-text-display">
-              {getCategoryIcon(report.category?.name || "", 18)}
-              <span>{report.category?.name || "No category"}</span>
+            <div className="report-desc-text-display d-flex align-items-center gap-2">
+              {getCategoryIcon(report.category?.name || "", 20)}
+              <span className="fw-medium">{report.category?.name || "No category"}</span>
             </div>
         )}
       </div>
 
-      {/* Status */}
-      <div className="mb-3">
-        <label className="report-map-desc-label fw-bold">Status</label>
-        <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-          <span>{report.status}</span>
-        </div>
-      </div>
-
-      {/* Creation Date */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Creation Date</label>
-        <p className="report-desc-text-display">
-          {new Date(report.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </p>
-      </div>
-
       {/* Photos */}
-      <div className="mb-3">
-        <label className="report-desc-label fw-bold">Included Photos</label>
+      <div className="mb-4">
+        <label className="report-desc-label">Photos</label>
         <div className="report-desc-photos-container">
           {report.photos && report.photos.length > 0 ? (
             <Row className="g-3">
               {report.photos.map((photo, index) => (
-                <Col key={index} xs={12} md={4}>
+                <Col key={index} xs={4}>
                   <img
                     src={photo}
                     alt={`Report photo ${index + 1}`}
                     className="report-desc-photo"
-                    style={{ cursor: 'pointer' }}
                     onClick={() => setSelectedPhoto(photo)}
                   />
                 </Col>
               ))}
             </Row>
           ) : (
-            <p className="text-muted">No photos included</p>
+            <div className="text-center text-muted py-3">
+                <i className="bi bi-image" style={{fontSize: '2rem', opacity: 0.5}}></i>
+                <p className="mb-0 mt-2 small">No photos attached</p>
+            </div>
           )}
         </div>
       </div>
@@ -187,14 +170,14 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         centered
         className="photo-preview-modal"
       >
-        <Modal.Header closeButton className="report-desc-modal-header">
+        <Modal.Header closeButton>
           <Modal.Title>Photo Preview</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-0 bg-dark">
+        <Modal.Body className="p-0 bg-dark d-flex justify-content-center">
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }}
           />
         </Modal.Body>
       </Modal>

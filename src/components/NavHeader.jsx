@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router";
 import { useContext, useState, useEffect } from "react";
 import { NavbarTextContext, UserContext, MobileContext } from "../App";
 import API from "../API/API";
-import { Menu, X, Map, User, LogOut, LogIn, UserPlus } from "lucide-react"; // Icone aggiunte: Map, User, LogOut, LogIn, UserPlus
+import { Menu, X, Map, User, LogOut, LogIn, UserPlus } from "lucide-react";
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
@@ -15,6 +15,7 @@ function NavHeader() {
     userLoggedIn,
     setUserLoggedIn,
     setUserRole,
+    user, // Recuperiamo l'oggetto user dal context
   } = useContext(UserContext);
   const { isMobile } = useContext(MobileContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,6 +58,10 @@ function NavHeader() {
     };
   }, [isMenuOpen]);
 
+  // Helper per ottenere nome e avatar
+  const displayName = user?.profile?.firstName || "Profile";
+  const userAvatar = user?.profile?.accountPhoto;
+
   return (
     <>
       {/* Overlay per chiudere il menu */}
@@ -87,32 +92,41 @@ function NavHeader() {
                   <div className="nav-auth-buttons">
                     {
                       citizenLoggedIn && location.pathname !== "/map" && (
-                        <Link className="btn home-button" to="/map">
-                          <Map size={20} className="me-2" /> Map
+                        <Link className="nav-action-btn" to="/map">
+                          <Map size={20} /> <span>Map</span>
                         </Link>
                       )
                     }
                     {citizenLoggedIn && location.pathname !== "/profile" && (
-                      <Link className="btn home-button" to="/profile">
-                        <User size={20} className="me-2" /> Profile
+                      <Link className="nav-action-btn" to="/profile">
+                        {userAvatar ? (
+                          <img 
+                            src={userAvatar} 
+                            alt="User" 
+                            className="nav-user-avatar" 
+                          />
+                        ) : (
+                          <User size={20} />
+                        )}
+                        <span>{displayName}</span>
                       </Link>
                     )}
                     <Link
-                      className="btn home-button"
+                      className="nav-action-btn"
                       to="/"
                       onClick={handleLogout}
                     >
-                      <LogOut size={20} className="me-2" /> Logout
+                      <LogOut size={20} /> <span>Logout</span>
                     </Link>
                   </div>
                 )}
                 {!citizenLoggedIn && !userLoggedIn && (
                   <div className="nav-auth-buttons">
-                    <Link className="btn nav-login-button" to="/login">
-                      <LogIn size={20} className="me-2" /> Login
+                    <Link className="nav-action-btn" to="/login">
+                      <LogIn size={20} /> <span>Login</span>
                     </Link>
-                    <Link className="btn nav-register-button" to="/register">
-                      <UserPlus size={20} className="me-2" /> Sign Up
+                    <Link className="nav-action-btn filled" to="/register">
+                      <UserPlus size={20} /> <span>Sign Up</span>
                     </Link>
                   </div>
                 )}
@@ -142,7 +156,17 @@ function NavHeader() {
                       to="/profile"
                       onClick={closeMenu}
                     >
-                      <User size={20} className="me-2" /> Profile
+                      {userAvatar ? (
+                          <img 
+                            src={userAvatar} 
+                            alt="User" 
+                            className="nav-user-avatar me-2" 
+                            style={{width: '20px', height: '20px', display: 'inline-block'}}
+                          />
+                        ) : (
+                          <User size={20} className="me-2" />
+                        )}
+                      {displayName}
                     </Link>
                   )}
                   <Link

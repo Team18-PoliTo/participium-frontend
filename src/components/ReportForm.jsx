@@ -287,7 +287,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         <Form.Label className="report-form__label">
           <span className="report-form__category-icon-wrapper me-2">
              {categoryId 
-                ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18, "#3D5A80") 
+                ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18) 
                 : <Wrench size={18} className="text-primary-blue" />}
           </span>
           Category <span className="report-form__required">*</span>

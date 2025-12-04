@@ -189,6 +189,23 @@
     color: white !important;
 }
 
+.report-form__category-item.active svg {
+    color: white !important;
+    stroke: white !important;
+}
+
+.report-form__category-item:active {
+    background-color: #3D5A80 !important;
+    color: white !important;
+    transform: translateX(4px);
+}
+
+.report-form__category-item:active svg {
+    color: white !important;
+    stroke: white !important;
+}
+
+
 .report-form__category-icon-wrapper {
     display: inline-flex;
     align-items: center;

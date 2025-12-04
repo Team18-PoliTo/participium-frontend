@@ -152,7 +152,7 @@ function AdminPage() {
           <div className="admin-headline-text">
             <Badge className="admin-eyebrow">Administrator</Badge>
             <h1 className="admin-title">Administration</h1>
-            <p className="admin-subtitle">Manage team members and assign roles</p>
+            <p className="admin-subtitle">Manage internal municipality users and assign roles</p>
           </div>
           <Button
             variant="primary"
@@ -226,7 +226,7 @@ function AdminPage() {
                   <div>
                     <h2 className="users-title">Team directory</h2>
                     <p className="users-count">
-                      Showing <Badge bg="secondary" className="count-badge">{filteredUsers.length}</Badge> user
+                      Showing <Badge bg="secondary" className="count-badge">{filteredUsers.length}</Badge> municipality user
                       {filteredUsers.length === 1 ? "" : "s"} for the selected filters.
                     </p>
                   </div>

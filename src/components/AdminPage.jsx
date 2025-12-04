@@ -150,7 +150,9 @@ function AdminPage() {
       <Container fluid className="admin-content-wrapper">
         <header className="admin-headline">
           <div className="admin-headline-text">
+            <Badge className="admin-eyebrow">Administrator</Badge>
             <h1 className="admin-title">Administration</h1>
+            <p className="admin-subtitle">Manage team members and assign roles</p>
           </div>
           <Button
             variant="primary"

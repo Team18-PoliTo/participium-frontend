@@ -74,13 +74,14 @@
   display: grid;
   grid-template-columns: 340px 1fr;
   gap: 28px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .admin-sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-height: calc(100vh - 280px);
 }
 
 .admin-main {
@@ -196,6 +197,20 @@
    LEGEND SECTION
    ================================== */
 
+.legend-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.legend-card .card-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
 .legend-card-title {
   font-size: 14px;
   color: #5d6c82;
@@ -203,15 +218,18 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  flex-shrink: 0;
 }
 
 .legend-chips {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(55vh - 120px);
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 4px;
+  flex: 1;
+  min-height: 0;
 }
 
 .legend-chips::-webkit-scrollbar {
@@ -333,10 +351,23 @@
    USERS CARD
    ================================== */
 
+.admin-users-card {
+  max-height: calc(100vh - 280px);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-users-card .card-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .admin-users-header {
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 2px solid #f0f4f8;
+  flex-shrink: 0;
 }
 
 .users-title {
@@ -399,9 +430,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 16px;
-  max-height: 55vh;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 8px;
+  flex: 1;
+  min-height: 0;
 }
 
 .user-list::-webkit-scrollbar {

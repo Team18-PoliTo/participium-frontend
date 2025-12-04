@@ -86,7 +86,9 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <label className="report-desc-label">Address</label>
         <div className="report-desc-text-display d-flex align-items-center gap-2">
           <MapPin size={20} color="#EE6C4D" />
-          <span className="fw-medium">{address || "Address not available"}</span>
+          <span className="fw-medium">
+            {address || (report.location ? "Loading address..." : "Address not available")}
+          </span>
         </div>
       </div>
 
@@ -118,44 +120,66 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         </div>
       )}
 
-      {/* Category */}
-      <div className="mb-4">
-        <label className="report-desc-label">Category</label>
-        {canEditCategory ? (
-          <Dropdown className="report-desc-category-dropdown">
-            <Dropdown.Toggle id="report-category-dropdown">
-              <div className="d-flex align-items-center gap-2">
-                {getCategoryIcon(
-                  categories.find((c) => c.id === selectedCategory)?.name || "",
-                  20
-                )}
-                <span className="fw-medium">
-                  {categories.find((c) => c.id === selectedCategory)?.name ||
-                    "Select a category"}
-                </span>
-              </div>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {categories.map((category) => (
-                <Dropdown.Item
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  active={selectedCategory === category.id}
-                >
-                  <div className="d-flex align-items-center gap-2">
-                    {getCategoryIcon(category.name, 18)}
-                    <span>{category.name}</span>
-                  </div>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        ) : (
+      {/* Info Grid (Category, Status) */}
+      <Row className="g-3 mb-4">
+        <Col md={6}>
+          <label className="report-desc-label">Category</label>
+          {canEditCategory ? (
+            <Dropdown className="report-desc-category-dropdown">
+              <Dropdown.Toggle id="report-category-dropdown">
+                <div className="d-flex align-items-center gap-2">
+                  {getCategoryIcon(
+                    categories.find((c) => c.id === selectedCategory)?.name || "",
+                    20
+                  )}
+                  <span className="fw-medium">
+                    {categories.find((c) => c.id === selectedCategory)?.name ||
+                      "Select a category"}
+                  </span>
+                </div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {categories.map((category) => (
+                  <Dropdown.Item
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    active={selectedCategory === category.id}
+                  >
+                    <div className="d-flex align-items-center gap-2">
+                      {getCategoryIcon(category.name, 18)}
+                      <span>{category.name}</span>
+                    </div>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : (
             <div className="report-desc-text-display d-flex align-items-center gap-2">
               {getCategoryIcon(report.category?.name || "", 20)}
               <span className="fw-medium">{report.category?.name || "No category"}</span>
             </div>
-        )}
+          )}
+        </Col>
+        <Col md={6}>
+          <label className="report-desc-label">Status</label>
+          <div className="report-desc-text-display">
+            <span className="fw-bold text-uppercase" style={{color: '#3D5A80', letterSpacing:'0.5px'}}>{report.status}</span>
+          </div>
+        </Col>
+      </Row>
+
+      {/* Submitted On */}
+      <div className="mb-4">
+        <label className="report-desc-label">Submitted On</label>
+        <div className="report-desc-text-display text-muted small">
+          {new Date(report.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </div>
       </div>
 
       {/* Photos */}

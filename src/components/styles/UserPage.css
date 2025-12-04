@@ -100,18 +100,18 @@
 }
 
 .profile-input {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Sfondo più chiaro per modalità edit */
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px !important;
     padding: 1rem !important;
     font-size: 1rem !important;
     color: #E1EDF4 !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     cursor: text;
 }
 
 .profile-input:focus {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
     border-color: #EE6C4D !important;
     color: #E1EDF4 !important;
     box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.15) !important;
@@ -119,6 +119,8 @@
 }
 
 .profile-input.read-only {
+    background-color: rgba(255, 255, 255, 0.05) !important; /* Sfondo originale per read-only */
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
     cursor: not-allowed !important;
     pointer-events: none !important;
 }
@@ -140,12 +142,12 @@
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.telegram-input.profile-input {
+.telegram-input .profile-input {
     border: none;
     border-radius: 0;
     flex-grow: 1;
     background-color: transparent;
-    color: white;
+    color: white !important;
     padding: 1rem;
 }
 
@@ -156,7 +158,7 @@
     outline: none;
 }
 
-.telegram-input.profile-input:disabled {
+.telegram-input .profile-input:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
@@ -169,13 +171,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.custom-switch.form-check-input {
+.custom-switch .form-check-input {
     width: 3rem;
-    height: 1.5rem;
+    height: 1.2rem;
     cursor: pointer;
 }
 
-.custom-switch.form-check-input:checked {
+.custom-switch .form-check-input:checked {
     background-color: #EE6C4D;
     border-color: #EE6C4D;
 }
@@ -235,6 +237,12 @@
 .cancel-btn:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
     border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.no-reports-message {
+    color: #E1EDF4;
+    font-style: italic;
+    margin-top: 1rem;
 }
 
 /* Bottone Salva (legacy - rimosso) */

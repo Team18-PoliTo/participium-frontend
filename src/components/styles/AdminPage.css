@@ -241,6 +241,7 @@
   font-weight: 500 !important;
   transition: all 0.2s ease;
   cursor: pointer;
+  
 }
 
 .legend-chip:hover {
@@ -281,6 +282,8 @@
 .legend-chip-text {
   flex: 1;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ===================================

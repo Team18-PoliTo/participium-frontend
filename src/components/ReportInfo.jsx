@@ -6,10 +6,12 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
+import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCategory }) {
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -22,6 +24,26 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
     };
     fetchCategories();
   }, []);
+
+   useEffect(() => {
+    if (report) {
+      setAddress(null);
+      if (report.location && !report.address) {
+        getAddressFromCoordinates(
+          report.location.latitude,
+          report.location.longitude
+        )
+          .then((addr) => setAddress(addr))
+          .catch((error) => {
+            setAddress(
+              `${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`
+            );
+          });
+      } else if (report.address) {
+        setAddress(report.address);
+      }
+    }
+  }, [report]);
 
   if (!report) return null;
 
@@ -64,7 +86,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <label className="report-desc-label">Address</label>
         <div className="report-desc-text-display d-flex align-items-center gap-2">
           <MapPin size={20} color="#EE6C4D" />
-          <span className="fw-medium">{report.address || "Address not available"}</span>
+          <span className="fw-medium">{address || "Address not available"}</span>
         </div>
       </div>
 

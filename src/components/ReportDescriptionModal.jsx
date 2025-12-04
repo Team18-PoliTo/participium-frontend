@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
@@ -90,7 +90,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
-        {!isOfficerView && (
+        {!isOfficerView ? (
           <ReportActions
             isRejecting={isRejecting}
             setIsRejecting={setIsRejecting}
@@ -100,7 +100,16 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
             onConfirm={handleConfirm}
             onCancel={handleClose}
           />
-        )}
+        ) : 
+         <Modal.Footer className="report-map-desc-modal-footer">
+          <Button
+            className="report-map-desc-btn-cancel"
+            onClick={handleClose}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+        }
       </Modal.Body>
     </Modal>
   );

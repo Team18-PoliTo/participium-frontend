@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {Modal} from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
@@ -72,18 +72,25 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
   if (!report) return null;
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg" centered fullscreen="md-down">
+    <Modal 
+        show={show} 
+        onHide={handleClose} 
+        size="lg" 
+        centered 
+        fullscreen="md-down"
+        contentClassName="report-desc-modal-content" /* Classe aggiunta per styling */
+    >
       <Modal.Header closeButton className="report-desc-modal-header">
         <Modal.Title>Report Details</Modal.Title>
       </Modal.Header>
       <Modal.Body className="report-desc-modal-body">
         <ReportInfo
           report={report}
-          canEditCategory={!isOfficerView} // o false, a seconda del contesto
+          canEditCategory={!isOfficerView}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
-        {!isOfficerView && (
+        {!isOfficerView ? (
           <ReportActions
             isRejecting={isRejecting}
             setIsRejecting={setIsRejecting}
@@ -93,7 +100,16 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
             onConfirm={handleConfirm}
             onCancel={handleClose}
           />
-        )}
+        ) : 
+         <Modal.Footer className="report-map-desc-modal-footer">
+          <Button
+            className="report-map-desc-btn-cancel"
+            onClick={handleClose}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+        }
       </Modal.Body>
     </Modal>
   );

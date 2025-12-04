@@ -24,6 +24,7 @@
   -webkit-text-stroke: 1px transparent;
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   letter-spacing: 1px;
+  font-weight: 700;
 }
 
 .nav-auth-buttons {
@@ -81,8 +82,8 @@
 
 /* Avatar Immagine Profilo */
 .nav-user-avatar {
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;

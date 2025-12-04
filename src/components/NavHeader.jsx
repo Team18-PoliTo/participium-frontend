@@ -5,6 +5,7 @@ import { useContext, useState, useEffect } from "react";
 import { NavbarTextContext, UserContext, MobileContext } from "../App";
 import API from "../API/API";
 import { Menu, X, Map, User, LogOut, LogIn, UserPlus } from "lucide-react";
+import { getRoleIcon } from "../constants/roleIcons";
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
@@ -15,7 +16,7 @@ function NavHeader() {
     userLoggedIn,
     setUserLoggedIn,
     setUserRole,
-    user, // Recuperiamo l'oggetto user dal context
+    user, 
   } = useContext(UserContext);
   const { isMobile } = useContext(MobileContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,7 +40,7 @@ function NavHeader() {
     setIsMenuOpen(false);
   };
 
-  // chiudi il menu quando si scrolla / touch-move / resize (mobile)
+  // Menu close on scroll, touchmove, or resize
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -58,13 +59,14 @@ function NavHeader() {
     };
   }, [isMenuOpen]);
 
-  // Helper per ottenere nome e avatar
+  // Helper to get user display name and avatar
   const displayName = user?.profile?.firstName || "Profile";
+  const displayLastName = user?.profile?.lastName || "";
   const userAvatar = user?.profile?.accountPhoto;
 
   return (
     <>
-      {/* Overlay per chiudere il menu */}
+      {/* Overlay to close the menu */}
       {isMobile && isMenuOpen && (
         <div className="menu-overlay" onClick={closeMenu}></div>
       )}
@@ -110,6 +112,20 @@ function NavHeader() {
                         )}
                         <span>{displayName}</span>
                       </Link>
+                    )}
+                    { userLoggedIn && (
+                      <div className="nav-action-btn">
+                        {userAvatar ? (
+                          <img 
+                            src={userAvatar} 
+                            alt="User" 
+                            className="nav-user-avatar" 
+                          />
+                        ) : (
+                          getRoleIcon(user.profile.role, 20)
+                        )}
+                        <span>{displayName}  {displayLastName}</span>
+                        </div>
                     )}
                     <Link
                       className="nav-action-btn"

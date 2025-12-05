@@ -14,6 +14,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [successData, setSuccessData] = useState(null); // New state for success response
 
   useEffect(() => {
     if (report) {
@@ -21,6 +22,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
       setError(null);
       setIsRejecting(false);
       setExplanation("");
+      setSuccessData(null); // Reset success data when report changes
     }
   }, [report]);
 
@@ -42,21 +44,25 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
       setError(null);
       const status = isRejecting ? "Rejected" : "Assigned";
       const explanationText = isRejecting ? explanation : "No explanation required";
-      const updatedReport = await API.judgeReport(
+
+      const categoryId = selectedCategory.id;
+
+      const response = await API.judgeReport(
         report.id,
         status,
-        selectedCategory,
+        categoryId,
         explanationText
       );
-      
+
+      setSuccessData(response);
+
       if (onReportUpdated) {
         onReportUpdated(report.id);
       }
-      
-      handleClose();
     } catch (error) {
       setError(
-        error.message || `Failed to ${isRejecting ? 'reject' : 'approve'} the report. Please try again.`
+        (error.message && typeof error.message === 'string' ? error.message : "An error occurred") ||
+        `Failed to ${isRejecting ? 'reject' : 'approve'} the report. Please try again.`
       );
     }
   };
@@ -66,50 +72,85 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
     setSelectedCategory(report?.category?.id || "");
     setError(null);
     setIsRejecting(false);
+    setSuccessData(null);
     onHide();
+  };
+
+  const renderSafeValue = (val) => {
+    if (typeof val === 'object' && val !== null) {
+      return val.name || val.description || JSON.stringify(val);
+    }
+    return val;
   };
 
   if (!report) return null;
 
   return (
-    <Modal 
-        show={show} 
-        onHide={handleClose} 
-        size="lg" 
-        centered 
-        fullscreen="md-down"
-        contentClassName="report-desc-modal-content" /* Classe aggiunta per styling */
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size={successData ? undefined : "lg"}
+      centered
+      fullscreen={successData ? undefined : "md-down"}
+      contentClassName="report-desc-modal-content"
     >
       <Modal.Header closeButton className="report-desc-modal-header">
-        <Modal.Title>Report Details</Modal.Title>
+        <Modal.Title>{successData ? "Report Processed" : "Report Details"}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="report-desc-modal-body">
-        <ReportInfo
-          report={report}
-          canEditCategory={!isOfficerView}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-        {!isOfficerView ? (
-          <ReportActions
-            isRejecting={isRejecting}
-            setIsRejecting={setIsRejecting}
-            explanation={explanation}
-            setExplanation={setExplanation}
-            error={error}
-            onConfirm={handleConfirm}
-            onCancel={handleClose}
-          />
-        ) : 
-         <Modal.Footer className="report-map-desc-modal-footer">
-          <Button
-            className="report-map-desc-btn-cancel"
-            onClick={handleClose}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-        }
+        {successData ? (
+          <div className="d-flex flex-column align-items-center justify-content-center p-4">
+            <div className="text-success mb-3" style={{ fontSize: '3rem' }}>
+              <i className="bi bi-check-circle-fill"></i>
+            </div>
+            <h4 className="text-center mb-3">Operation Successful!</h4>
+            {successData.status && (
+              <p className="text-center mb-1"><strong>Status:</strong> {renderSafeValue(successData.status)}</p>
+            )}
+            {successData.message && (
+              <p className="text-center mb-1"><strong>Message:</strong> {renderSafeValue(successData.message)}</p>
+            )}
+            {successData.assignedTo && (
+              <p className="text-center"><strong>Assigned To:</strong> {renderSafeValue(successData.assignedTo)}</p>
+            )}
+            <Button
+              variant="success"
+              className="mt-4"
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+          </div>
+        ) : (
+          <>
+            <ReportInfo
+              report={report}
+              canEditCategory={!isOfficerView}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            {!isOfficerView ? (
+              <ReportActions
+                isRejecting={isRejecting}
+                setIsRejecting={setIsRejecting}
+                explanation={explanation}
+                setExplanation={setExplanation}
+                error={error}
+                onConfirm={handleConfirm}
+                onCancel={handleClose}
+              />
+            ) :
+              <Modal.Footer className="report-map-desc-modal-footer">
+                <Button
+                  className="report-map-desc-btn-cancel"
+                  onClick={handleClose}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            }
+          </>
+        )}
       </Modal.Body>
     </Modal>
   );

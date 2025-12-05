@@ -63,28 +63,28 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
     >
       <Card.Body>
         <div className="category-icon-circle">
-          {getCategoryIcon(showUser ? report.category : report.category.name, 20)}
+          {getCategoryIcon(report.category.name, 20)}
         </div>
 
         <div className="report-content-wrapper">
           <div className="report-card-title" title={report.title}>
             {report.title}
           </div>
-          
+
           <div className="report-card-subtitle">
             {!showUser && <MapPin size={12} />}
             {showUser && <User size={12} />}
-            
+
             <span className="text-truncate">
-              {showUser 
-                ? `${report.citizenName} ${report.citizenLastName}` 
+              {showUser
+                ? `${report.citizenName} ${report.citizenLastName}`
                 : locationDisplay
               }
             </span>
           </div>
-          
+
           <div className="report-card-category">
-             {!showUser ? report.category.name : report.category}
+            {typeof report.category === 'object' ? report.category.name : report.category}
           </div>
         </div>
 

@@ -180,8 +180,8 @@ const getAllInternalUsers = async () => {
       const errorData = await response.json();
       throw new Error(
         errorData.error ||
-          errorData.message ||
-          "Failed to retrieve internal users"
+        errorData.message ||
+        "Failed to retrieve internal users"
       );
     }
   } catch (error) {
@@ -308,7 +308,7 @@ const addNewReport = async (reportData) => {
       photoIds: reportData.photoIds,
     };
 
-    const response = await fetch(`${SERVER_URL}api/citizens/reports`, {
+    const response = await fetch(`${SERVER_URL}api/citizens/report`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -550,8 +550,8 @@ const getCitizenReports = async () => {
       const errorData = await response.json();
       throw new Error(
         errorData.error ||
-          errorData.message ||
-          "Failed to fetch citizen reports"
+        errorData.message ||
+        "Failed to fetch citizen reports"
       );
     }
   } catch (error) {
@@ -580,8 +580,8 @@ const getReportsByMapArea = async (bounds) => {
       const errorData = await response.json();
       throw new Error(
         errorData.error ||
-          errorData.message ||
-          "Failed to fetch reports by map area"
+        errorData.message ||
+        "Failed to fetch reports by map area"
       );
     }
   } catch (error) {
@@ -641,8 +641,8 @@ const getReportsAssignedToMe = async () => {
       const errorData = await response.json();
       throw new Error(
         errorData.error ||
-          errorData.message ||
-          "Failed to fetch internal user assigned reports"
+        errorData.message ||
+        "Failed to fetch internal user assigned reports"
       );
     }
   } catch (error) {

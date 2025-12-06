@@ -44,7 +44,7 @@ export const ROLE_ICONS = {
   "Noise and Air Quality Technician": Wind
 };
 
-export const getRoleIcon = (role, size, color = "#3D5A80") => {
+export const getRoleIcon = (role, size, color) => {
   const IconComponent = ROLE_ICONS[role] || UserX;
   return <IconComponent size={size} color={color} />;
 };

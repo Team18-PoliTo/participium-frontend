@@ -1,20 +1,15 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Card, Badge } from "react-bootstrap";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
 import { MapPin, User } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
-  const [address, setAddress] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const cardRef = useRef(null);
 
-  // Intersection Observer per rilevare quando la card è visibile
   useEffect(() => {
     const currentCard = cardRef.current;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -23,65 +18,12 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
           }
         });
       },
-      {
-        rootMargin: "100px", // Inizia a caricare 100px prima che sia visibile
-        threshold: 0.1,
-      }
+      { rootMargin: "100px", threshold: 0.1 }
     );
 
-    if (currentCard) {
-      observer.observe(currentCard);
-    }
-
-    return () => {
-      if (currentCard) {
-        observer.unobserve(currentCard);
-      }
-    };
+    if (currentCard) observer.observe(currentCard);
+    return () => { if (currentCard) observer.unobserve(currentCard); };
   }, [isVisible]);
-
-  // Carica l'indirizzo solo quando la card diventa visibile
-  useEffect(() => {
-    if (isVisible && !address && !isLoading && !showUser) {
-      setIsLoading(true);
-
-      const loadAddress = async () => {
-        try {
-          const addr = await getAddressFromCoordinates(
-            report.location.latitude,
-            report.location.longitude
-          );
-          setAddress(addr);
-        } catch (error) {
-          console.error("Error loading address:", error);
-          setAddress(
-            `${report.location.latitude.toFixed(
-              4
-            )}, ${report.location.longitude.toFixed(4)}`
-          );
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadAddress();
-    }
-  }, [
-    isVisible,
-    address,
-    isLoading,
-    report.location.latitude,
-    report.location.longitude,
-  ]);
-
-  const locationDisplay =
-    address ||
-    `${report.location.latitude.toFixed(
-      4
-    )}, ${report.location.longitude.toFixed(4)}`;
-
-  const getCategoryBadge = (category) => {
-    return <Badge className="custom-category-badge">{category}</Badge>;
-  };
 
   const getStatusBadge = (status) => {
     return (
@@ -94,62 +36,42 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
   return (
     <Card
       ref={cardRef}
-      className="shadow-sm report-card-clickable position-relative"
+      className="report-card-clickable"
       onClick={() => onClick(report)}
-      style={{ cursor: "pointer" }}
     >
-      {/* Badge in alto a destra */}
-      <div className="report-status-badge-container">
-        {getStatusBadge(report.status)}
-      </div>
-      <Card.Body className="d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center gap-3">
-          {
-            !showUser ?
-            (
-              <div className="category-icon-circle">
-                {getCategoryIcon(report.category.name, 32)}
-              </div>
-            ) : 
-            (
-              <div className="category-icon-circle">
-                {getCategoryIcon(report.category, 32)}
-              </div>
-            )
-          }
-          <div className="d-flex flex-column gap-1">
-            <Card.Title className="mb-0 report-card-title">{report.title}</Card.Title>
-            <div className="d-flex align-items-center gap-1 text-muted small">
-              {!showUser && (
-                <>
-                  <MapPin size={14} /> <span>{locationDisplay}</span>
-                </>
-              )}
-              {showUser && (
-                <>
-                  <User size={14} />
-                  <span>  {report.citizenName} {report.citizenLastName}</span>
-                </>
-              )}
-            </div>
-            {!showUser ? 
-              (
-                <div className="mt-1">
-                  {getCategoryBadge(report.category.name)}
-                </div>
-              )
-              :
-              (
-                <div className="mt-1">
-                  {getCategoryBadge(report.category)}
-                </div>
-              )
-            }
+      <Card.Body>
+        <div className="category-icon-circle">
+          {getCategoryIcon(report.category.name, 20)}
+        </div>
+
+        <div className="report-content-wrapper">
+          <div className="report-card-title" title={report.title}>
+            {report.title}
           </div>
+
+          <div className="report-card-subtitle">
+            {!showUser && <MapPin size={12} />}
+            {showUser && <User size={12} />}
+
+            <span className="text-truncate">
+              {showUser
+                ? `${report.citizenName} ${report.citizenLastName}`
+                : report.address
+              }
+            </span>
+          </div>
+
+          <div className="report-card-category">
+            {report.category.name}
+          </div>
+        </div>
+
+        <div className="report-status-badge-container">
+          {getStatusBadge(report.status)}
         </div>
       </Card.Body>
     </Card>
   );
 }
 
-export default ReportCard;
+export default React.memo(ReportCard);

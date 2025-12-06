@@ -457,7 +457,7 @@ function UserProfile() {
           {loadingReports ? (
             <LoadingSpinner />
           ) : citizenReports.length === 0 ? (
-            <p className="text-center text-muted">
+            <p className="text-center no-reports-message">
               You haven't submitted any reports yet.
             </p>
           ) : (

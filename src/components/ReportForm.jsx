@@ -3,16 +3,9 @@ import { Form, Button, Alert, Dropdown } from "react-bootstrap";
 import "./styles/ReportForm.css";
 import API from "../API/API";
 import { getCategoryIcon } from "../constants/categoryIcons";
-/**
- * ReportForm Component
- *
- * A form component for creating new reports with location, title, description,
- * category, and photo uploads. Validates user input and handles photo management.
- *
- * @param {Object} position - The geographic position selected on the map {lat, lng}
- * @param {Function} onFormSubmit - Callback function to close the form
- * @param {Function} onReportResult - Callback function to handle report submission result (isSuccess, message)
- */
+import { MapPin, Type, AlignLeft, Camera, Image, X, Send, AlertTriangle, Wrench } from "lucide-react";
+
+
 function ReportForm({ position, onFormSubmit, onReportResult }) {
   // Form state management
   const [title, setTitle] = useState("");
@@ -33,7 +26,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
   }, [uploadedPhotos]);
 
   useEffect(() => {
-    // Load categories (could be fetched from API if needed)
+    // Load categories
     const loadCategories = async () => {
       try {
         const fetchedCategories = await API.getAllCategories();
@@ -58,18 +51,9 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
     fetchUserInfo();
   }, []);
 
+  // Cleanup effect for object URLs
   useEffect(() => {
     return () => {
-      // Cleanup: Delete any uploaded temp files when form closes
-      uploadedPhotosRef.current.forEach(async (photo) => {
-        try {
-          await API.deleteTempFile(photo.fileId);
-        } catch (error) {
-          console.error("Failed to cleanup temp file:", photo.fileId);
-        }
-      });
-
-      // Cleanup: Revoke object URLs for previews
       uploadedPhotosRef.current.forEach((photo) => {
         if (photo.preview) {
           URL.revokeObjectURL(photo.preview);
@@ -79,12 +63,11 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
   }, []);
 
   /**
-   * Handle photo file upload - Upload immediately to temporary storage
-   * Validates that total photos don't exceed 3 and uploads new photos
+   * Handle photo file upload
    */
   const handlePhotoUpload = async (event) => {
     const files = Array.from(event.target.files);
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
     // Check if adding new files would exceed the 3 photo limit
     if (uploadedPhotos.length + files.length > 3) {
@@ -134,8 +117,6 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
 
   /**
    * Remove a photo from the upload list and delete from temp storage
-   * @param {number} indexToRemove - Index of the photo to remove
-   * @param {string} fileId - The file ID to delete from backend
    */
   const handleRemovePhoto = async (indexToRemove, fileId) => {
     try {
@@ -168,7 +149,6 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
 
   /**
    * Handle form submission
-   * Validates all required fields and creates FormData for API submission
    */
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -207,7 +187,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       };
 
       // Call API to create report
-      const createdReport = await API.addNewReport(reportData);
+      await API.addNewReport(reportData);
 
       uploadedPhotos.forEach((photo) => {
         if (photo.preview) {
@@ -236,58 +216,48 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
 
   return (
     <Form onSubmit={handleSubmit} className="report-form">
+      
       {/* Error alert display */}
       {error && (
-        <Alert variant="danger" className="report-form__error">
-          {error}
+        <Alert variant="danger" className="report-form__error d-flex align-items-center gap-2">
+          <AlertTriangle size={18} />
+          <span>{error}</span>
         </Alert>
       )}
 
       {/* Selected position display (read-only) */}
-      <Form.Group className="mb-3 report-form__group">
+      <div className="report-form__section mb-4">
         <Form.Label className="report-form__label">
-          <strong>Selected Position</strong>
+          <MapPin size={18} className="text-primary-blue me-2" />
+          Location
         </Form.Label>
-        {position ? (
-          <>
-            {position.address && (
-              <Form.Control
-                type="text"
-                value={position.address}
-                readOnly
-                disabled
-                className="report-form__input report-form__input--readonly mb-2"
-              />
-            )}
-            <Form.Label className="report-form__label mt-2">
-              Coordinates
-            </Form.Label>
-            <Form.Control
-              type="text"
-              value={`Lat: ${position.lat.toFixed(
-                4
-              )}, Lng: ${position.lng.toFixed(4)}`}
-              readOnly
-              disabled
-              className="report-form__input report-form__input--readonly"
-            />
-          </>
-        ) : (
-          <Form.Control
-            type="text"
-            value="Error: Position not found"
-            readOnly
-            disabled
-            className="report-form__input report-form__input--readonly report-form__input--error"
-          />
-        )}
-      </Form.Group>
+        <div className="report-form__location-card">
+          {position ? (
+            <>
+              {position.address && (
+                <div className="report-form__address mb-1">
+                  {position.address}
+                </div>
+              )}
+              <div className="report-form__coords">
+                {`Lat: ${position.lat.toFixed(4)}, Lng: ${position.lng.toFixed(4)}`}
+              </div>
+            </>
+          ) : (
+            <span className="text-danger">Error: Position not found</span>
+          )}
+        </div>
+      </div>
 
       {/* Title input field */}
-      <Form.Group className="mb-3 report-form__group" controlId="formTitle">
-        <Form.Label className="report-form__label">Title (Required)</Form.Label>
+      <Form.Group className="report-form__group" controlId="formTitle">
+        <Form.Label className="report-form__label">
+          <Type size={18} className="text-primary-blue me-2" />
+          Title <span className="report-form__required">*</span>
+        </Form.Label>
         <Form.Control
           type="text"
+          placeholder="Brief title of the issue"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -296,16 +266,15 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       </Form.Group>
 
       {/* Description textarea */}
-      <Form.Group
-        className="mb-3 report-form__group"
-        controlId="formDescription"
-      >
+      <Form.Group className="report-form__group" controlId="formDescription">
         <Form.Label className="report-form__label">
-          Description (Required)
+          <AlignLeft size={18} className="text-primary-blue me-2" />
+          Description <span className="report-form__required">*</span>
         </Form.Label>
         <Form.Control
           as="textarea"
           rows={3}
+          placeholder="Describe the issue in detail..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -314,33 +283,34 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       </Form.Group>
 
       {/* Category selection dropdown */}
-      <Form.Group className="mb-3 report-form__group" controlId="formCategory">
+      <Form.Group className="report-form__group" controlId="formCategory">
         <Form.Label className="report-form__label">
-          Category (Required)
+          <span className="report-form__category-icon-wrapper me-2">
+             {categoryId 
+                ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18) 
+                : <Wrench size={18} className="text-primary-blue" />}
+          </span>
+          Category <span className="report-form__required">*</span>
         </Form.Label>
         <Dropdown className="w-100">
           <Dropdown.Toggle
             variant="light"
             id="category-dropdown"
-            className="w-100 text-start d-flex align-items-center justify-content-between report-form__select report-form__category-toggle"
+            className="w-100 text-start d-flex align-items-center justify-content-between report-form__select"
           >
             {categoryId ? (
-              <div className="d-flex align-items-center gap-2 report-form__category-selected">
-                <span className="report-form__category-icon">
-                  {getCategoryIcon(
-                    categories.find((c) => c.id === categoryId)?.name || "",
-                    18
-                  )}
-                </span>
-                <span className="report-form__category-text">
-                  {categories.find((c) => c.id === categoryId)?.name || ""}
+              <div className="d-flex align-items-center gap-2 text-dark-blue">
+                <span className="fw-medium">
+                  {categories.find((c) => c.id === categoryId)?.name}
                 </span>
               </div>
             ) : (
-              <span className="text-muted">Choose a category...</span>
+              <div className="d-flex align-items-center gap-2 text-muted">
+                <span>Select a category...</span>
+              </div>
             )}
           </Dropdown.Toggle>
-          <Dropdown.Menu className="w-100 report-form__category-menu">
+          <Dropdown.Menu className="w-100 report-form__category-menu shadow-sm">
             {categories.map((categorie) => (
               <Dropdown.Item
                 key={categorie.id}
@@ -348,13 +318,9 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
                 active={categoryId === categorie.id}
                 className="report-form__category-item"
               >
-                <div className="d-flex align-items-center gap-2 report-form__category-item-content">
-                  <span className="report-form__category-icon">
-                    {getCategoryIcon(categorie.name, 16)}
-                  </span>
-                  <span className="report-form__category-item-text">
-                    {categorie.name}
-                  </span>
+                <div className="d-flex align-items-center gap-2">
+                  {getCategoryIcon(categorie.name, 18)}
+                  <span>{categorie.name}</span>
                 </div>
               </Dropdown.Item>
             ))}
@@ -363,13 +329,14 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       </Form.Group>
 
       {/* Photo upload section */}
-      <Form.Group className="mb-3 report-form__group">
-        <Form.Label className="report-form__label">
-          Photos (Required, min 1, max 3)
+      <Form.Group className="report-form__group">
+        <Form.Label className="report-form__label mb-2">
+          <Camera size={18} className="text-primary-blue me-2" />
+          Photos <span className="report-form__required text-muted fw-normal ms-auto" style={{fontSize: '0.85rem'}}>(1 to 3 required)</span>
         </Form.Label>
 
         {/* Upload button and photo counter */}
-        <div className="report-form__photo-upload">
+        <div className="report-form__photo-actions">
           <input
             type="file"
             accept="image/*"
@@ -379,45 +346,41 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
             className="report-form__file-input-hidden"
             disabled={uploadedPhotos.length >= 3 || uploadingPhotos}
           />
-          <label
-            htmlFor="photo-upload-input"
-            className={`report-form__upload-btn ${
-              uploadedPhotos.length >= 3 || uploadingPhotos
-                ? "report-form__upload-btn--disabled"
-                : ""
-            }`}
-          >
-            <i className="bi bi-camera-fill"></i>{" "}
-            {uploadingPhotos ? "Uploading..." : "Upload Photo"}{" "}
-          </label>
-          <span className="report-form__photo-count">
-            {uploadedPhotos.length}/3 photos uploaded
-          </span>
+          {uploadedPhotos.length < 3 && (
+            <label
+              htmlFor="photo-upload-input"
+              className={`report-form__upload-btn ${uploadedPhotos.length >= 3 || uploadingPhotos ? "disabled" : ""}`}
+            >
+              {uploadingPhotos ? (
+                <>Uploading...</>
+              ) : (
+                <>
+                  <Image size={24} /> 
+                  <span>Click to Upload Photos</span>
+                </>
+              )}
+            </label>
+          )}
         </div>
 
         {/* List of uploaded photos with preview and remove option */}
         {uploadedPhotos.length > 0 && (
-          <div className="report-form__photo-list">
+          <div className="report-form__photo-grid">
             {uploadedPhotos.map((photo, index) => (
-              <div key={photo.fileId} className="report-form__photo-item">
+              <div key={photo.fileId} className="report-form__photo-card">
                 <img
                   src={photo.preview}
                   alt={`Preview ${index + 1}`}
                   className="report-form__photo-preview"
                 />
-                <div className="report-form__photo-info">
-                  <span className="report-form__photo-name">
-                    {photo.filename}
-                  </span>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleRemovePhoto(index, photo.fileId)}
-                    className="report-form__remove-photo-btn"
-                  >
-                    <i className="bi bi-x-lg"></i>
-                  </Button>
-                </div>
+                <button
+                  type="button"
+                  className="report-form__remove-photo-btn"
+                  onClick={() => handleRemovePhoto(index, photo.fileId)}
+                  title="Remove photo"
+                >
+                  <X size={14} />
+                </button>
               </div>
             ))}
           </div>
@@ -428,14 +391,16 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       <Button
         variant="primary"
         type="submit"
-        className="w-100 report-form__submit-btn"
+        className="w-100 report-form__submit-btn d-flex align-items-center justify-content-center gap-2"
         disabled={loading || uploadingPhotos}
       >
-        {loading
-          ? "Submitting..."
-          : uploadingPhotos
-          ? "Uploading Photos..."
-          : "Submit Report"}
+        {loading ? (
+          "Submitting..."
+        ) : (
+          <>
+            <Send size={18} /> Submit Report
+          </>
+        )}
       </Button>
     </Form>
   );

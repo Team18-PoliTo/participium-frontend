@@ -8,34 +8,7 @@ import "./styles/ReportMapDescription.css";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportMapDescription({ show, onHide, report }) {
-  const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [address, setAddress] = useState(null);
-
-  useEffect(() => {
-    if (report) {
-      setAddress(null);
-
-      // Carica l'indirizzo se non è già presente
-      if (report.location && !report.address) {
-        getAddressFromCoordinates(
-          report.location.latitude,
-          report.location.longitude
-        )
-          .then((addr) => setAddress(addr))
-          .catch((error) => {
-            console.error("Error loading address:", error);
-            setAddress(
-              `${report.location.latitude.toFixed(
-                4
-              )}, ${report.location.longitude.toFixed(4)}`
-            );
-          });
-      } else if (report.address) {
-        setAddress(report.address);
-      }
-    }
-  }, [report]);
 
   const handleClose = () => {
     onHide();
@@ -50,69 +23,48 @@ function ReportMapDescription({ show, onHide, report }) {
         onHide={handleClose}
         size="lg"
         centered
-        fullscreen="md-down"
+        contentClassName="report-map-desc-modal-content"
       >
         <Modal.Header closeButton className="report-map-desc-modal-header">
           <Modal.Title>Report Details</Modal.Title>
         </Modal.Header>
         <Modal.Body className="report-map-desc-modal-body">
-          {/* Citizen Details */}
-          <Row className="mb-3">
-            <Col xs={6}>
-              <label className="report-map-desc-label fw-bold">First Name</label>
-              <p className="report-map-desc-text-display">
-                {report.citizenName || "N/A"}
-              </p>
-            </Col>
-            <Col xs={6}>
-              <label className="report-map-desc-label fw-bold">Last Name</label>
-              <p className="report-map-desc-text-display">
-                {report.citizenSurname || "N/A"}
-              </p>
-            </Col>
-          </Row>
           
           {/* Title */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Title</label>
-            <p className="report-map-desc-text-display">{report.title}</p>
+          <div className="mb-4">
+            <label className="report-map-desc-label">Title</label>
+            <div className="report-map-desc-text-display fs-5 fw-bold text-dark">
+                {report.title}
+            </div>
           </div>
 
           {/* Description */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Description</label>
-            <p className="report-map-desc-text-display">{report.description}</p>
+          <div className="mb-4">
+            <label className="report-map-desc-label">Description</label>
+            <div className="report-map-desc-text-display" style={{minHeight: '80px'}}>
+                {report.description}
+            </div>
           </div>
 
           {/* Address */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Address</label>
-            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-              <MapPin size={16} color="#3D5A80" />
-              <span>
-                {address ||
-                  (report.location
-                    ? `${report.location.latitude.toFixed(
-                        4
-                      )}, ${report.location.longitude.toFixed(4)}`
-                    : "Address not available")}
+          <div className="mb-4">
+            <label className="report-map-desc-label">Address</label>
+            <div className="report-map-desc-text-display d-flex align-items-center gap-2">
+              <MapPin size={20} color="#EE6C4D" />
+              <span className="fw-medium">
+                { report.address }
               </span>
             </div>
           </div>
 
           {/* Location Map */}
           {report.location && (
-            <div className="mb-3">
-              <label className="report-map-desc-label fw-bold">Location</label>
+            <div className="mb-4">
               <div className="report-map-desc-map-container">
                 <MapContainer
                   center={[report.location.latitude, report.location.longitude]}
                   zoom={16}
-                  style={{
-                    height: "250px",
-                    width: "100%",
-                    borderRadius: "8px",
-                  }}
+                  style={{ height: "200px", width: "100%" }}
                   scrollWheelZoom={false}
                   dragging={false}
                   zoomControl={false}
@@ -120,7 +72,7 @@ function ReportMapDescription({ show, onHide, report }) {
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution='&copy; OpenStreetMap'
                   />
                   <Marker
                     position={[
@@ -133,45 +85,44 @@ function ReportMapDescription({ show, onHide, report }) {
             </div>
           )}
 
-          {/* Category */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Category</label>
-            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-              {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 18)}
-              <span>{report.category.name ? report.category.name : report.category || "No category"}</span>
-            </div>
-          </div>
+          {/* Info Grid (Category, Status, Date) */}
+          <Row className="g-3 mb-4">
+             <Col md={6}>
+                <label className="report-map-desc-label">Category</label>
+                <div className="report-map-desc-text-display d-flex align-items-center gap-2">
+                  {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 20)}
+                  <span className="fw-medium">{report.category.name}</span>
+                </div>
+             </Col>
+             <Col md={6}>
+                <label className="report-map-desc-label">Status</label>
+                <div className="report-map-desc-text-display">
+                  <span className="fw-bold text-uppercase" style={{color: '#3D5A80', letterSpacing:'0.5px'}}>{report.status}</span>
+                </div>
+             </Col>
+          </Row>
 
-          {/* Status */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Status</label>
-            <div className="d-flex align-items-center gap-2 report-map-desc-text-display">
-              <span>{report.status}</span>
-            </div>
-          </div>
-
-          {/* Creation Date */}
-          <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Creation Date</label>
-            <p className="report-map-desc-text-display">
-              {new Date(report.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
+          <div className="mb-4">
+             <label className="report-map-desc-label">Submitted On</label>
+             <div className="report-map-desc-text-display text-muted small">
+                {new Date(report.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}
+             </div>
           </div>
 
           {/* Photos */}
           <div className="mb-3">
-            <label className="report-map-desc-label fw-bold">Included Photos</label>
+            <label className="report-map-desc-label">Photos</label>
             <div className="report-map-desc-photos-container">
               {report.photos && report.photos.length > 0 ? (
                 <Row className="g-3">
                   {report.photos.map((photo, index) => (
-                    <Col key={index} xs={12} md={4}>
+                    <Col key={index} xs={4}>
                       <img
                         src={photo}
                         alt={`Report photo ${index + 1}`}
@@ -183,23 +134,25 @@ function ReportMapDescription({ show, onHide, report }) {
                   ))}
                 </Row>
               ) : (
-                <p className="text-muted">No photos included</p>
+                <div className="text-center text-muted py-3">
+                    <i className="bi bi-image" style={{fontSize: '2rem', opacity: 0.5}}></i>
+                    <p className="mb-0 mt-2 small">No photos attached</p>
+                </div>
               )}
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer className="report-map-desc-modal-footer">
           <Button
-            variant="primary"
-            onClick={handleClose}
             className="report-map-desc-btn-cancel"
+            onClick={handleClose}
           >
             Close
           </Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Photo Viewer Modal */}
+      {/* Photo Preview Modal */}
       <Modal
         show={!!selectedPhoto}
         onHide={() => setSelectedPhoto(null)}
@@ -207,14 +160,14 @@ function ReportMapDescription({ show, onHide, report }) {
         centered
         className="photo-preview-modal"
       >
-        <Modal.Header closeButton className="report-map-desc-modal-header">
+        <Modal.Header closeButton>
           <Modal.Title>Photo Preview</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-0 bg-dark">
+        <Modal.Body className="p-0 bg-dark d-flex justify-content-center">
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ width: "100%", height: "auto", display: "block" }}
+            style={{ maxWidth: "100%", maxHeight: "80vh", objectFit: 'contain' }}
           />
         </Modal.Body>
       </Modal>

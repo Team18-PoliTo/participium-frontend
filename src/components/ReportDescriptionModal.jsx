@@ -7,7 +7,7 @@ import ReportInfo from "./ReportInfo";
 import ReportActions from "./ReportActions";
 
 function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOfficerView = false }) {
-  const [selectedCategory, setSelectedCategory] = useState(report?.category?.id || "");
+  const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
   const [explanation, setExplanation] = useState("");
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -16,7 +16,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
 
   useEffect(() => {
     if (report) {
-      setSelectedCategory(report.category?.id || "");
+      setSelectedCategory(report.category || "");
       setError(null);
       setIsRejecting(false);
       setExplanation("");
@@ -67,7 +67,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
 
   const handleClose = () => {
     setExplanation("");
-    setSelectedCategory(report?.category?.id || "");
+    setSelectedCategory(report.category || "");
     setError(null);
     setIsRejecting(false);
     setSuccessData(null);

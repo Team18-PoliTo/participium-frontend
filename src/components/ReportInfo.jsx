@@ -109,11 +109,11 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
               <Dropdown.Toggle id="report-category-dropdown">
                 <div className="d-flex align-items-center gap-2">
                   {getCategoryIcon(
-                    categories.find((c) => c.id === selectedCategory)?.name || "",
+                    categories.find((c) => c.id === selectedCategory?.id)?.name || "",
                     20
                   )}
                   <span className="fw-medium">
-                    {categories.find((c) => c.id === selectedCategory)?.name ||
+                    {categories.find((c) => c.id === selectedCategory?.id)?.name ||
                       "Select a category"}
                   </span>
                 </div>
@@ -123,7 +123,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                   <Dropdown.Item
                     key={category.id}
                     onClick={() => setSelectedCategory(category)}
-                    active={selectedCategory === category.id}
+                    active={selectedCategory?.id === category.id}
                   >
                     <div className="d-flex align-items-center gap-2">
                       {getCategoryIcon(category.name, 18)}

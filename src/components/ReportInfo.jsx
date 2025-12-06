@@ -25,26 +25,6 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
     fetchCategories();
   }, []);
 
-   useEffect(() => {
-    if (report) {
-      setAddress(null);
-      if (report.location && !report.address) {
-        getAddressFromCoordinates(
-          report.location.latitude,
-          report.location.longitude
-        )
-          .then((addr) => setAddress(addr))
-          .catch((error) => {
-            setAddress(
-              `${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`
-            );
-          });
-      } else if (report.address) {
-        setAddress(report.address);
-      }
-    }
-  }, [report]);
-
   if (!report) return null;
 
   return (
@@ -53,31 +33,31 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       <div className="mb-4">
         <label className="report-desc-label">Reported By</label>
         <div className="report-desc-text-display d-flex gap-3">
-            <div className="flex-fill">
-                <small className="text-muted d-block text-uppercase" style={{fontSize:'0.7rem', fontWeight:'700'}}>First Name</small>
-                <span className="fw-bold">{report.citizenName || "N/A"}</span>
-            </div>
-            <div className="border-start mx-2"></div>
-            <div className="flex-fill">
-                <small className="text-muted d-block text-uppercase" style={{fontSize:'0.7rem', fontWeight:'700'}}>Last Name</small>
-                <span className="fw-bold">{report.citizenSurname || "N/A"}</span>
-            </div>
+          <div className="flex-fill">
+            <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>First Name</small>
+            <span className="fw-bold">{report.citizenName || "N/A"}</span>
+          </div>
+          <div className="border-start mx-2"></div>
+          <div className="flex-fill">
+            <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>Last Name</small>
+            <span className="fw-bold">{report.citizenLastName || "N/A"}</span>
+          </div>
         </div>
       </div>
-          
+
       {/* Title */}
       <div className="mb-4">
         <label className="report-desc-label">Title</label>
         <div className="report-desc-text-display fs-5 fw-bold text-dark">
-            {report.title}
+          {report.title}
         </div>
       </div>
 
       {/* Description */}
       <div className="mb-4">
         <label className="report-desc-label">Description</label>
-        <div className="report-desc-text-display" style={{minHeight: '80px'}}>
-            {report.description}
+        <div className="report-desc-text-display" style={{ minHeight: '80px' }}>
+          {report.description}
         </div>
       </div>
 
@@ -87,7 +67,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <div className="report-desc-text-display d-flex align-items-center gap-2">
           <MapPin size={20} color="#EE6C4D" />
           <span className="fw-medium">
-            {address || (report.location ? "Loading address..." : "Address not available")}
+            {report.address}
           </span>
         </div>
       </div>
@@ -129,11 +109,11 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
               <Dropdown.Toggle id="report-category-dropdown">
                 <div className="d-flex align-items-center gap-2">
                   {getCategoryIcon(
-                    categories.find((c) => c.id === selectedCategory)?.name || "",
+                    categories.find((c) => c.id === selectedCategory?.id)?.name || "",
                     20
                   )}
                   <span className="fw-medium">
-                    {categories.find((c) => c.id === selectedCategory)?.name ||
+                    {categories.find((c) => c.id === selectedCategory?.id)?.name ||
                       "Select a category"}
                   </span>
                 </div>
@@ -142,8 +122,8 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                 {categories.map((category) => (
                   <Dropdown.Item
                     key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    active={selectedCategory === category.id}
+                    onClick={() => setSelectedCategory(category)}
+                    active={selectedCategory?.id === category.id}
                   >
                     <div className="d-flex align-items-center gap-2">
                       {getCategoryIcon(category.name, 18)}
@@ -163,7 +143,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <Col md={6}>
           <label className="report-desc-label">Status</label>
           <div className="report-desc-text-display">
-            <span className="fw-bold text-uppercase" style={{color: '#3D5A80', letterSpacing:'0.5px'}}>{report.status}</span>
+            <span className="fw-bold text-uppercase" style={{ color: '#3D5A80', letterSpacing: '0.5px' }}>{report.status}</span>
           </div>
         </Col>
       </Row>
@@ -201,8 +181,8 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             </Row>
           ) : (
             <div className="text-center text-muted py-3">
-                <i className="bi bi-image" style={{fontSize: '2rem', opacity: 0.5}}></i>
-                <p className="mb-0 mt-2 small">No photos attached</p>
+              <i className="bi bi-image" style={{ fontSize: '2rem', opacity: 0.5 }}></i>
+              <p className="mb-0 mt-2 small">No photos attached</p>
             </div>
           )}
         </div>

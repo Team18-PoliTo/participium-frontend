@@ -1,14 +1,5 @@
 import { useState, useRef, useContext, useCallback } from "react";
-import { 
-  MapContainer, 
-  TileLayer, 
-  Marker, 
-  Popup, 
-  GeoJSON, 
-  LayersControl, 
-  ZoomControl,
-  useMapEvents 
-} from "react-leaflet";
+import {   MapContainer,   TileLayer,   Marker,   Popup,   GeoJSON,   LayersControl,   ZoomControl,  useMapEvents } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster"; 
 import API from "../API/API";
 import { Offcanvas } from "react-bootstrap";
@@ -26,13 +17,7 @@ import { MapClickHandler, SearchBar, MapResizer } from "./MapLogic";
 import { getAddressFromCoordinates } from "../utils/geocoding";
 import { MobileContext } from "../App";
 import turinGeoJSON from "../data/turin-boundaries.json";
-import { 
-  turinStyle, 
-  inverseMaskStyle, 
-  createPinIcon, 
-  createClusterCustomIcon, 
-  getStatusColor 
-} from "../utils/mapUtils";
+import {  turinStyle,  inverseMaskStyle,  createPinIcon,  createClusterCustomIcon,  getStatusColor } from "../utils/mapUtils";
 import "leaflet-geosearch/dist/geosearch.css";
 import "./styles/MapPage.css";
 
@@ -145,8 +130,9 @@ function MapPage() {
 
         activeMap.flyTo(targetLatLng, targetZoom, { 
           animate: true, 
-          duration: 1.2, 
-          easeLinearity: 0.25
+          duration: 1.5, 
+          easeLinearity: 1,
+          noMoveStart: true 
         });
       }
     } else {
@@ -170,14 +156,10 @@ function MapPage() {
   }, [handleFormClose]);
 
   const handleReportSelection = useCallback(async (report) => {
-    let address = report.address;
-    if (!address) {
-      try { address = await getAddressFromCoordinates(report.location.latitude, report.location.longitude); } catch (e) {}
-    }
     if (mapRef.current) {
       mapRef.current.flyTo([report.location.latitude, report.location.longitude], 17, { duration: 1.2 });
     }
-    setSelectedPin({ ...report, address, reportId: report.id });
+    setSelectedPin({ ...report });
   }, []);
 
   const toggleReportsSidebar = useCallback(() => {
@@ -199,6 +181,9 @@ function MapPage() {
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              keepBuffer={40}
+              updateWhenZooming={false}
+              updateWhenIdle = {false}
             />
           </LayersControl.BaseLayer>
 
@@ -206,6 +191,9 @@ function MapPage() {
             <TileLayer
               attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              keepBuffer={40}
+              updateWhenZooming={false}
+              updateWhenIdle = {false}
             />
           </LayersControl.BaseLayer>
 
@@ -213,6 +201,9 @@ function MapPage() {
             <TileLayer
               attribution='Tiles &copy; Esri'
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              keepBuffer={40}
+              updateWhenZooming={false}
+              updateWhenIdle = {false}
             />
           </LayersControl.BaseLayer>
         </LayersControl>
@@ -231,7 +222,7 @@ function MapPage() {
           spiderfyOnMaxZoom={true}
           showCoverageOnHover={false}
           maxClusterRadius={60}
-          animate={false} // Animazione disabilitata per evitare scatti dei cluster
+          animate={true} 
         >
           {reports.map((report) => (
             <Marker
@@ -269,7 +260,7 @@ function MapPage() {
                   e.stopPropagation();
                   if (showReportsSidebar) setShowReportsSidebar(false);
                   try {
-                    const details = await API.getReportMapDetails(selectedPin.reportId);
+                    const details = await API.getReportMapDetails(selectedPin.id);
                     setSelectedReportForDetails(details);
                     setShowReportDetails(true);
                   } catch (error) {

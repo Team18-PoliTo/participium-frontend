@@ -67,7 +67,7 @@ function OfficerPage() {
 
     // Filtro per data inizio
     if (startDate) {
-      filtered = filtered.filter(report => 
+      filtered = filtered.filter(report =>
         new Date(report.createdAt) >= startDate
       );
     }
@@ -76,7 +76,7 @@ function OfficerPage() {
     if (endDate) {
       const endDateCopy = new Date(endDate);
       endDateCopy.setHours(23, 59, 59, 999);
-      filtered = filtered.filter(report => 
+      filtered = filtered.filter(report =>
         new Date(report.createdAt) <= endDateCopy
       );
     }
@@ -105,7 +105,7 @@ function OfficerPage() {
 
   const handleReportUpdated = (reportId) => {
     setReports(prevReports => prevReports.filter(r => r.id !== reportId));
-    setShowModal(false);
+    // setShowModal(false); // Removed to allow modal to show success message
   };
 
   if (loading) {

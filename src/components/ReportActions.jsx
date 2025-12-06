@@ -47,7 +47,6 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
           variant="danger"
           dismissible
           onClose={() => {}}
-          className="mb-0"
         >
           {error}
         </Alert>

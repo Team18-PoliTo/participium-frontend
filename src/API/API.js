@@ -455,6 +455,12 @@ const deleteTempFile = async (fileId) => {
 
     if (response.ok) {
       return true;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "File ID missing or invalid");
+    }else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
     } else {
       const errorData = await response.json();
       throw new Error(
@@ -489,34 +495,6 @@ const getAllReportsIsPending = async () => {
     } else {
       const errorData = await response.json();
       throw new Error(errorData.error || errorData.message);
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
-const getReportDetails = async (reportId) => {
-  try {
-    const token = JSON.parse(localStorage.getItem("authToken"));
-    const response = await fetch(
-      `${SERVER_URL}api/internal/reports/${reportId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.error || errorData.message || "Failed to fetch report details"
-      );
     }
   } catch (error) {
     throw error;
@@ -576,6 +554,15 @@ const getReportsByMapArea = async (bounds) => {
     if (response.ok) {
       const data = await response.json();
       return data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Validation error");
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
     } else {
       const errorData = await response.json();
       throw new Error(
@@ -606,10 +593,24 @@ const getReportMapDetails = async (reportId) => {
     if (response.ok) {
       const data = await response.json();
       return data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Invalid report ID");
+    } else if (response.status === 401) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Unauthorized");
+    } else if (response.status === 403) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Forbidden");
+    } else if (response.status === 404) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Report not found");
     } else {
       const errorData = await response.json();
       throw new Error(
-        errorData.error || errorData.message || "Failed to fetch report details"
+        errorData.error ||
+        errorData.message ||
+        "Failed to fetch report details"
       );
     }
   } catch (error) {
@@ -667,12 +668,15 @@ const updateCitizenProfile = async (profileData) => {
     if (response.ok) {
       const data = await response.json();
       return data.profile || data;
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Validation error");
     } else if (response.status === 401) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Unauthorized");
-    } else if (response.status === 403) {
+      throw new Error(errorData.error || "Unauthorized"); 
+    }else if (response.status === 404) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Forbidden");
+      throw new Error(errorData.error || "Citizen profile not found");
     } else {
       const errorData = await response.json();
       throw new Error(
@@ -700,7 +704,6 @@ const API = {
   uploadFile,
   deleteTempFile,
   getAllReportsIsPending,
-  getReportDetails,
   getCitizenReports,
   getReportsByMapArea,
   getReportMapDetails,

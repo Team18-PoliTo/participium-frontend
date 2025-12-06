@@ -9,27 +9,6 @@ import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportMapDescription({ show, onHide, report }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [address, setAddress] = useState(null);
-
-  useEffect(() => {
-    if (report) {
-      setAddress(null);
-      if (report.location && !report.address) {
-        getAddressFromCoordinates(
-          report.location.latitude,
-          report.location.longitude
-        )
-          .then((addr) => setAddress(addr))
-          .catch((error) => {
-            setAddress(
-              `${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`
-            );
-          });
-      } else if (report.address) {
-        setAddress(report.address);
-      }
-    }
-  }, [report]);
 
   const handleClose = () => {
     onHide();
@@ -73,7 +52,7 @@ function ReportMapDescription({ show, onHide, report }) {
             <div className="report-map-desc-text-display d-flex align-items-center gap-2">
               <MapPin size={20} color="#EE6C4D" />
               <span className="fw-medium">
-                {address || (report.location ? "Loading address..." : "Address not available")}
+                { report.address }
               </span>
             </div>
           </div>
@@ -112,7 +91,7 @@ function ReportMapDescription({ show, onHide, report }) {
                 <label className="report-map-desc-label">Category</label>
                 <div className="report-map-desc-text-display d-flex align-items-center gap-2">
                   {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 20)}
-                  <span className="fw-medium">{report.category.name ? report.category.name : report.category || "No category"}</span>
+                  <span className="fw-medium">{report.category.name}</span>
                 </div>
              </Col>
              <Col md={6}>

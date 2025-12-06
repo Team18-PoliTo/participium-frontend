@@ -25,26 +25,6 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    if (report) {
-      setAddress(null);
-      if (report.location && !report.address) {
-        getAddressFromCoordinates(
-          report.location.latitude,
-          report.location.longitude
-        )
-          .then((addr) => setAddress(addr))
-          .catch((error) => {
-            setAddress(
-              `${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`
-            );
-          });
-      } else if (report.address) {
-        setAddress(report.address);
-      }
-    }
-  }, [report]);
-
   if (!report) return null;
 
   return (
@@ -60,7 +40,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
           <div className="border-start mx-2"></div>
           <div className="flex-fill">
             <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>Last Name</small>
-            <span className="fw-bold">{report.citizenSurname || "N/A"}</span>
+            <span className="fw-bold">{report.citizenLastName || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -87,7 +67,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <div className="report-desc-text-display d-flex align-items-center gap-2">
           <MapPin size={20} color="#EE6C4D" />
           <span className="fw-medium">
-            {address || (report.location ? "Loading address..." : "Address not available")}
+            {report.address}
           </span>
         </div>
       </div>

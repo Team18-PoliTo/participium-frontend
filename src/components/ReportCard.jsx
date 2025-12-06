@@ -3,12 +3,9 @@ import { Card, Badge } from "react-bootstrap";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
 import { MapPin, User } from "lucide-react";
-import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
-  const [address, setAddress] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const cardRef = useRef(null);
 
   useEffect(() => {
@@ -27,25 +24,6 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
     if (currentCard) observer.observe(currentCard);
     return () => { if (currentCard) observer.unobserve(currentCard); };
   }, [isVisible]);
-
-  useEffect(() => {
-    if (isVisible && !address && !isLoading && !showUser) {
-      setIsLoading(true);
-      const loadAddress = async () => {
-        try {
-          const addr = await getAddressFromCoordinates(report.location.latitude, report.location.longitude);
-          setAddress(addr);
-        } catch (error) {
-          setAddress(`${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadAddress();
-    }
-  }, [isVisible, address, isLoading, report, showUser]);
-
-  const locationDisplay = address || `${report.location.latitude.toFixed(4)}, ${report.location.longitude.toFixed(4)}`;
 
   const getStatusBadge = (status) => {
     return (
@@ -78,13 +56,13 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
             <span className="text-truncate">
               {showUser
                 ? `${report.citizenName} ${report.citizenLastName}`
-                : locationDisplay
+                : report.address
               }
             </span>
           </div>
 
           <div className="report-card-category">
-            {typeof report.category === 'object' ? report.category.name : report.category}
+            {report.category.name}
           </div>
         </div>
 

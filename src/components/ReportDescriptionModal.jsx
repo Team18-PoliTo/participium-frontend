@@ -7,9 +7,7 @@ import ReportInfo from "./ReportInfo";
 import ReportActions from "./ReportActions";
 
 function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOfficerView = false }) {
-  const [selectedCategory, setSelectedCategory] = useState(
-    report?.category?.id || ""
-  );
+  const [selectedCategory, setSelectedCategory] = useState(report?.category?.id || "");
   const [explanation, setExplanation] = useState("");
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);

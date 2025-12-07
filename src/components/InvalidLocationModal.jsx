@@ -1,6 +1,6 @@
 import { Modal } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import './styles/InvalidLocationModal.css';
-
 
 function InvalidLocationModal({ showInvalidModal, setShowInvalidModal }) {
     return (
@@ -19,5 +19,10 @@ function InvalidLocationModal({ showInvalidModal, setShowInvalidModal }) {
         </Modal>
     )
 }
+
+InvalidLocationModal.propTypes = {
+    showInvalidModal: PropTypes.bool.isRequired,
+    setShowInvalidModal: PropTypes.func.isRequired,
+};
 
 export default InvalidLocationModal;

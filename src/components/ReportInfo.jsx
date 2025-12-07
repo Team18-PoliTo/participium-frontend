@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Row, Col, Dropdown, Modal } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { MapPin } from "lucide-react";
@@ -30,7 +31,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
     <>
       {/* Citizen Details */}
       <div className="mb-4">
-        <label className="report-desc-label">Reported By</label>
+        <div className="report-desc-label">Reported By</div>
         <div className="report-desc-text-display d-flex gap-3">
           <div className="flex-fill">
             <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>First Name</small>
@@ -46,7 +47,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
       {/* Title */}
       <div className="mb-4">
-        <label className="report-desc-label">Title</label>
+        <div className="report-desc-label">Title</div>
         <div className="report-desc-text-display fs-5 fw-bold text-dark">
           {report.title}
         </div>
@@ -54,7 +55,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
       {/* Description */}
       <div className="mb-4">
-        <label className="report-desc-label">Description</label>
+        <div className="report-desc-label">Description</div>
         <div className="report-desc-text-display" style={{ minHeight: '80px' }}>
           {report.description}
         </div>
@@ -62,7 +63,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
       {/* Address */}
       <div className="mb-4">
-        <label className="report-desc-label">Address</label>
+        <div className="report-desc-label">Address</div>
         <div className="report-desc-text-display d-flex align-items-center gap-2">
           <MapPin size={20} color="#EE6C4D" />
           <span className="fw-medium">
@@ -102,7 +103,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       {/* Info Grid (Category, Status) */}
       <Row className="g-3 mb-4">
         <Col md={6}>
-          <label className="report-desc-label">Category</label>
+          <div className="report-desc-label">Category</div>
           {canEditCategory ? (
             <Dropdown className="report-desc-category-dropdown">
               <Dropdown.Toggle id="report-category-dropdown">
@@ -140,7 +141,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
           )}
         </Col>
         <Col md={6}>
-          <label className="report-desc-label">Status</label>
+          <div className="report-desc-label">Status</div>
           <div className="report-desc-text-display">
             <span className="fw-bold text-uppercase" style={{ color: '#3D5A80', letterSpacing: '0.5px' }}>{report.status}</span>
           </div>
@@ -215,5 +216,31 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
     </>
   );
 }
+
+ReportInfo.propTypes = {
+  report: PropTypes.shape({
+    citizenName: PropTypes.string,
+    citizenLastName: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    address: PropTypes.string,
+    location: PropTypes.shape({
+      latitude: PropTypes.number,
+      longitude: PropTypes.number,
+    }),
+    category: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    status: PropTypes.string,
+    createdAt: PropTypes.string,
+    photos: PropTypes.arrayOf(PropTypes.string),
+  }),
+  canEditCategory: PropTypes.bool,
+  selectedCategory: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+  }),
+  setSelectedCategory: PropTypes.func,
+};
 
 export default ReportInfo;

@@ -157,7 +157,7 @@ function AdminPage() {
             className="add-user-btn desktop-only"
             onClick={handleOpenSetUpModal}
           >
-            <i className="bi bi-plus-lg me-2"></i>
+            <i className="bi bi-plus-lg me-2" />
             Add user
           </Button>
         </header>
@@ -190,7 +190,7 @@ function AdminPage() {
               className="add-user-btn mobile-only w-100"
               onClick={handleOpenSetUpModal}
             >
-              <i className="bi bi-plus-lg me-2"></i>
+              <i className="bi bi-plus-lg me-2" />
               Add user
             </Button>
 

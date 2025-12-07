@@ -6,7 +6,6 @@ import ReportCard from "./ReportCard";
 import ReportDescriptionModal from "./ReportDescriptionModal";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/OfficerPage.css";
-import { getRoleIcon } from "../constants/roleIcons";
 import { UserContext } from "../App";
 import API from "../API/API";
 

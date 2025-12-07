@@ -27,7 +27,7 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
         Select a role for {user.firstName} {user.lastName}
       </p>
       <div className="role-options">
-        {availableRoles && availableRoles.filter((role) => role.id > 1).map((role) => (
+        {availableRoles?.filter((role) => role.id > 1)?.map((role) => (
           <button
             key={role.id}
             type="button"

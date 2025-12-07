@@ -1,12 +1,13 @@
 import { Button, Form, Alert } from "react-bootstrap";
 import { X, Check } from "lucide-react";
+import PropTypes from "prop-types";
 
 function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanation, error, onConfirm, onCancel }) {
   return (
     <>
       {/* Action Toggle */}
       <div className="mb-3">
-        <label className="report-desc-label fw-bold">Action</label>
+        <div className="report-desc-label fw-bold">Action</div>
         <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
           <Button
             className={`report-desc-toggle-btn ${isRejecting ? '' : 'active'}`}
@@ -27,7 +28,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
 
       {/* Explanation */}
       <div className="mb-3">
-        <label className="report-desc-label fw-bold">Explanation</label>
+        <div className="report-desc-label fw-bold">Explanation</div>
         <Form.Control
           as="textarea"
           rows={4}
@@ -72,5 +73,15 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
     </>
   );
 }
+
+ReportActions.propTypes = {
+  isRejecting: PropTypes.bool.isRequired,
+  setIsRejecting: PropTypes.func.isRequired,
+  explanation: PropTypes.string.isRequired,
+  setExplanation: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
 
 export default ReportActions;

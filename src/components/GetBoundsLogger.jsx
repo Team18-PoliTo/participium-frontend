@@ -1,14 +1,15 @@
 import { useMap } from "react-leaflet";
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import API from "../API/API";
 
 function GetBoundsLogger({ onReportsFetched }) {
   const map = useMap();
-  // Usiamo useRef per mantenere il riferimento al timer tra i vari render
+  // Use useRef to maintain timer reference across renders
   const debounceTimerRef = useRef(null);
 
   useEffect(() => {
-    // Funzione che esegue effettivamente la chiamata API
+    // Function that performs the API call
     const fetchReports = async () => {
       const bounds = map.getBounds();
       const corners = [
@@ -28,33 +29,33 @@ function GetBoundsLogger({ onReportsFetched }) {
           onReportsFetched(reports);
         }
       } catch (error) {
-        console.error("Errore nel fetch dei report:", error);
+        console.error("Error fetching reports:", error);
       }
     };
 
-    // Handler per l'evento di movimento
+    // Handler for map movement events
     const handleMoveEnd = () => {
-      // Se c'è un timer attivo (l'utente si è appena mosso), cancellalo
+      // If there's an active timer, cancel it
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
 
-      // Imposta un nuovo timer: esegui fetchReports solo dopo 600ms di inattività
+      // Set a new timer: execute fetchReports only after 600ms of inactivity
       debounceTimerRef.current = setTimeout(() => {
         fetchReports();
       }, 600); 
     };
 
-    // Caricamento iniziale (senza ritardo)
+    // Initial load (without delay)
     fetchReports();
 
-    // Aggiungi listener
+    // Add event listeners
     map.on("moveend", handleMoveEnd);
     
-    // Aggiungi anche zoomend per sicurezza, anche se spesso moveend copre entrambi
+    // Add zoomend listener as well for completeness
     map.on("zoomend", handleMoveEnd);
 
-    // Cleanup quando il componente viene smontato
+    // Cleanup when component unmounts
     return () => {
       map.off("moveend", handleMoveEnd);
       map.off("zoomend", handleMoveEnd);
@@ -66,5 +67,9 @@ function GetBoundsLogger({ onReportsFetched }) {
 
   return null;
 }
+
+GetBoundsLogger.propTypes = {
+  onReportsFetched: PropTypes.func.isRequired,
+};
 
 export default GetBoundsLogger;

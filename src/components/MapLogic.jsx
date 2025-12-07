@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import PropTypes from "prop-types";
 import { useMap, useMapEvents } from "react-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
@@ -10,6 +11,10 @@ export function MapClickHandler({ onMapClick }) {
   });
   return null;
 }
+
+MapClickHandler.propTypes = {
+  onMapClick: PropTypes.func.isRequired,
+};
 
 export const SearchBar = ({ onLocationSelected }) => {
   const map = useMap();
@@ -39,6 +44,10 @@ export const SearchBar = ({ onLocationSelected }) => {
   return null;
 };
 
+SearchBar.propTypes = {
+  onLocationSelected: PropTypes.func.isRequired,
+};
+
 export function MapResizer({ isSidebarOpen }) {
   const map = useMap();
   useEffect(() => {
@@ -49,3 +58,7 @@ export function MapResizer({ isSidebarOpen }) {
   }, [isSidebarOpen, map]);
   return null;
 }
+
+MapResizer.propTypes = {
+  isSidebarOpen: PropTypes.bool.isRequired,
+};

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
@@ -19,7 +20,7 @@ function ReportDescriptionModal({
   const [explanation, setExplanation] = useState("");
   const [error, setError] = useState(null);
   const [isRejecting, setIsRejecting] = useState(false);
-  const [successData, setSuccessData] = useState(null); // New state for success response
+  const [successData, setSuccessData] = useState(null);
 
   useEffect(() => {
     if (report) {
@@ -27,7 +28,7 @@ function ReportDescriptionModal({
       setError(null);
       setIsRejecting(false);
       setExplanation("");
-      setSuccessData(null); // Reset success data when report changes
+      setSuccessData(null);
     }
   }, [report]);
 
@@ -159,4 +160,19 @@ function ReportDescriptionModal({
   );
 }
 
+<<<<<<< HEAD
 export default ReportDescriptionModal;
+=======
+ReportDescriptionModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  report: PropTypes.shape({
+    id: PropTypes.number,
+    category: PropTypes.object,
+  }),
+  onReportUpdated: PropTypes.func,
+  isOfficerView: PropTypes.bool,
+};
+
+export default ReportDescriptionModal;
+>>>>>>> 46fb8eb24eb42d1c505fc73a20b1a57e0a310448

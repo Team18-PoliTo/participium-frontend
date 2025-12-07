@@ -23,9 +23,9 @@ function AdminPage() {
         const fetchedRoles = await API.getAllRoles();
 
         const mapping = {};
-        fetchedRoles.forEach((role) => {
+        for (const role of fetchedRoles) {
           mapping[role.id] = role.role;
-        });
+        }
         setRoleMapping(mapping);
 
         const filtered = fetchedRoles.filter((role) => role.id !== 1);
@@ -171,7 +171,7 @@ function AdminPage() {
                 </label>
                 <InputGroup className="search-input-group">
                   <InputGroup.Text className="search-icon">
-                    <i className="bi bi-search"></i>
+                    <i className="bi bi-search" />
                   </InputGroup.Text>
                   <Form.Control
                     id="admin-search-input"
@@ -236,10 +236,9 @@ function AdminPage() {
                     </p>
                   </div>
                 </div>
-
                 {filteredUsers.length === 0 ? (
                   <div className="admin-empty-state">
-                    <i className="bi bi-inbox empty-icon"></i>
+                    <i className="bi bi-inbox empty-icon" />
                     <p className="empty-message">No users match this filter.</p>
                     <p className="empty-hint">Try another email or role.</p>
                   </div>

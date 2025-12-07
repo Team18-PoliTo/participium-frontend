@@ -45,7 +45,7 @@ function HowItWorks() {
 
                 <div className="steps-container">
                     {steps.map((step, index) => (
-                        <div key={index} className="step-item">
+                        <div key={step.title} className="step-item">
                             <div className="step-icon-wrapper">
                                 <div className="step-icon">{step.icon}</div>
                                 <div className="step-number-badge">{step.number}</div>

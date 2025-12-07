@@ -1,4 +1,5 @@
 import { useState, useRef, useContext, useCallback } from "react";
+import PropTypes from "prop-types";  // Aggiungi questo import
 import {   MapContainer,   TileLayer,   Marker,   Popup,   GeoJSON,   LayersControl,   ZoomControl,  useMapEvents } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster"; 
 import API from "../API/API";
@@ -34,12 +35,19 @@ try {
   if (turinFeature) {
     const geometry = turinFeature.geometry;
     if (geometry.type === "Polygon") turinPolygons.push(geometry.coordinates[0]);
-    else if (geometry.type === "MultiPolygon") geometry.coordinates.forEach(p => turinPolygons.push(p[0]));
+    else if (geometry.type === "MultiPolygon") {
+      for (const p of geometry.coordinates) {
+        turinPolygons.push(p[0]);
+      }
+    }
     
     const worldBounds = [[90, -180],[90, 180],[-90, 180],[-90, -180],[90, -180]];
     let holes = geometry.type === "Polygon" ? geometry.coordinates : [];
-    if (geometry.type === "MultiPolygon") geometry.coordinates.forEach(p => holes.push(...p));
-    
+    if (geometry.type === "MultiPolygon") {
+      for (const p of geometry.coordinates) {
+      holes.push(...p);
+      }
+   }
     inverseMask = { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [worldBounds, ...holes] } };
   }
 } catch (e) { console.error("Error GeoJSON:", e); }
@@ -51,6 +59,10 @@ function MapInteractionHandler({ closePopup }) {
   });
   return null;
 }
+
+MapInteractionHandler.propTypes = {
+  closePopup: PropTypes.func.isRequired,
+};
 
 function MapPage() {
   const { isMobile } = useContext(MobileContext);
@@ -80,7 +92,9 @@ function MapPage() {
     setReports((prevReports) => {
       if (!newReports || newReports.length === 0) return prevReports;
       const reportsMap = new Map(prevReports.map(r => [r.id, r]));
-      newReports.forEach(report => reportsMap.set(report.id, report));
+      for (const report of newReports) {
+        reportsMap.set(report.id, report);
+      }
       return Array.from(reportsMap.values());
     });
   }, []);

@@ -1,5 +1,6 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
+import PropTypes from 'prop-types';
 import './styles/AuthModals.css';
 
 const RegistrationSuccessfulModal = ({ isOpen, onClose }) => {
@@ -33,6 +34,11 @@ const RegistrationSuccessfulModal = ({ isOpen, onClose }) => {
       </Modal.Footer>
     </Modal>
   );
+};
+
+RegistrationSuccessfulModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export { RegistrationSuccessfulModal };

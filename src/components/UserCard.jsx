@@ -1,9 +1,9 @@
+import PropTypes from "prop-types";
 import "./styles/UserCard.css";
 import { getRoleIcon } from "../constants/roleIcons";
 
 function UserCard({ user, availableRoles, onOpenRoleModal }) {
 
-  // Trova il roleId dall'array dei ruoli disponibili confrontando con il nome del ruolo
   const currentRoleObj = availableRoles?.find(r => r.role === user.role);
   const currentRoleId = currentRoleObj?.id;
   const isUnassigned = currentRoleId === 0;
@@ -36,5 +36,21 @@ function UserCard({ user, availableRoles, onOpenRoleModal }) {
     </div>
   );
 }
+
+UserCard.propTypes = {
+  user: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    role: PropTypes.string,
+  }).isRequired,
+  availableRoles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      role: PropTypes.string.isRequired,
+    })
+  ),
+  onOpenRoleModal: PropTypes.func.isRequired,
+};
 
 export default UserCard;

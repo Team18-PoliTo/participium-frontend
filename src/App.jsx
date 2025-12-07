@@ -2,7 +2,6 @@ import "./index.css";
 import { useState, createContext, useEffect, useMemo } from "react";
 import { Route, Routes, Navigate } from "react-router";
 import API from "./API/API";
-import "./App.css";
 import DefaultLayout from "./components/DefaultLayout";
 import Login from "./components/Login";
 import Registration from "./components/Registration";

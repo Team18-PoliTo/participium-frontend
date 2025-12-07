@@ -8,6 +8,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import "./styles/OfficerPage.css";
 import { UserContext } from "../App";
 import API from "../API/API";
+import useReportFilters from "../utils/useReportFilters";
 
 
 function OfficerPage() {
@@ -15,17 +16,24 @@ function OfficerPage() {
   const { userRole } = useContext(UserContext);
 
   const [reports, setReports] = useState([]);
-  const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Filtri
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [sortOrder, setSortOrder] = useState("desc"); // "asc" o "desc"
-  const [statusFilter, setStatusFilter] = useState("All");
+  // Uso del custom hook per i filtri
+  const {
+    filteredReports,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    sortOrder,
+    setSortOrder,
+    statusFilter,
+    setStatusFilter,
+    resetFilters
+  } = useReportFilters(reports, { statusFilter: "All" });
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -51,51 +59,6 @@ function OfficerPage() {
     };
     fetchReports();
   }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [reports, startDate, endDate, sortOrder, statusFilter]);
-
-  const applyFilters = () => {
-    let filtered = [...reports];
-
-    // Filtro per status
-    if (statusFilter !== "All") {
-      filtered = filtered.filter(report => report.status === statusFilter);
-    }
-
-    // Filtro per data inizio
-    if (startDate) {
-      filtered = filtered.filter(report =>
-        new Date(report.createdAt) >= startDate
-      );
-    }
-
-    // Filtro per data fine
-    if (endDate) {
-      const endDateCopy = new Date(endDate);
-      endDateCopy.setHours(23, 59, 59, 999);
-      filtered = filtered.filter(report =>
-        new Date(report.createdAt) <= endDateCopy
-      );
-    }
-
-    // Ordinamento per data
-    filtered.sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
-    });
-
-    setFilteredReports(filtered);
-  };
-
-  const handleResetFilters = () => {
-    setStartDate(null);
-    setEndDate(null);
-    setSortOrder("desc");
-    setStatusFilter("All");
-  };
 
   const handleReportClick = (report) => {
     setSelectedReport(report);
@@ -215,7 +178,7 @@ function OfficerPage() {
 
                   <button
                     className="officer-reset-btn w-100"
-                    onClick={handleResetFilters}
+                    onClick={resetFilters}
                   >
                     <i className="bi bi-arrow-counterclockwise me-2"></i>{' '}
                     Reset Filters

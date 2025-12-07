@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Container, Stack, Alert, Dropdown, Card, Badge } from "react-bootstrap";
+import {  Container,  Stack,  Alert,  Dropdown,  Card,  Badge,} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import API from "../API/API";
@@ -8,22 +8,29 @@ import ReportDescriptionModal from "./ReportDescriptionModal";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/PublicRelationsOfficer.css";
 import { getCategoryIcon } from "../constants/categoryIcons";
-
+import useReportFilters from "../utils/useReportFilters";
 
 function PublicRelationsOfficer() {
   const [reports, setReports] = useState([]);
-  const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  // Filtri
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [sortOrder, setSortOrder] = useState("desc"); // "asc" o "desc"
+  // Uso del custom hook per i filtri
+  const {
+    filteredReports,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    sortOrder,
+    setSortOrder,
+    categoryFilter: selectedCategory,
+    setCategoryFilter: setSelectedCategory,
+    resetFilters,
+  } = useReportFilters(reports, { categoryFilter: "" });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -55,58 +62,13 @@ function PublicRelationsOfficer() {
     fetchReportsIsPending();
   }, []);
 
-  useEffect(() => {
-    applyFilters();
-  }, [reports, selectedCategory, startDate, endDate, sortOrder]);
-
-  const applyFilters = () => {
-    let filtered = [...reports];
-
-    // Filtro per categoria
-    if (selectedCategory) {
-      filtered = filtered.filter(report => report.category.name === selectedCategory);
-    }
-
-    // Filtro per data inizio
-    if (startDate) {
-      filtered = filtered.filter(report =>
-        new Date(report.createdAt) >= startDate
-      );
-    }
-
-    // Filtro per data fine
-    if (endDate) {
-      const endDateCopy = new Date(endDate);
-      endDateCopy.setHours(23, 59, 59, 999);
-      filtered = filtered.filter(report =>
-        new Date(report.createdAt) <= endDateCopy
-      );
-    }
-
-    // Ordinamento per data
-    filtered.sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
-    });
-
-    setFilteredReports(filtered);
-  };
-
-  const handleResetFilters = () => {
-    setSelectedCategory("");
-    setStartDate(null);
-    setEndDate(null);
-    setSortOrder("desc");
-  };
-
   const handleReportClick = (report) => {
     setSelectedReport(report);
     setShowModal(true);
   };
 
   const handleReportUpdated = (reportId) => {
-    setReports(prevReports => prevReports.filter(r => r.id !== reportId));
+    setReports((prevReports) => prevReports.filter((r) => r.id !== reportId));
     // setShowModal(false); // Removed to allow modal to show success message
   };
 
@@ -130,7 +92,9 @@ function PublicRelationsOfficer() {
           <div className="pro-headline-text">
             <Badge className="pro-eyebrow">Public Relations</Badge>
             <h1 className="pro-title">Reports Dashboard</h1>
-            <p className="pro-subtitle">Review and manage pending citizen reports</p>
+            <p className="pro-subtitle">
+              Review and manage pending citizen reports
+            </p>
           </div>
         </header>
 
@@ -142,11 +106,17 @@ function PublicRelationsOfficer() {
                 <span className="pro-filter-title">FILTER OPTIONS</span>
                 <div className="pro-filter-group">
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="category-dropdown">Category</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="category-dropdown"
+                    >
+                      Category
+                    </label>
                     <Dropdown className="pro-custom-dropdown">
                       <Dropdown.Toggle id="category-dropdown">
                         <div className="d-flex align-items-center gap-2">
-                          {selectedCategory && getCategoryIcon(selectedCategory, 20)}
+                          {selectedCategory &&
+                            getCategoryIcon(selectedCategory, 20)}
                           <span>{selectedCategory || "All Categories"}</span>
                         </div>
                       </Dropdown.Toggle>
@@ -176,7 +146,12 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="start-date-picker">Start Date</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="start-date-picker"
+                    >
+                      Start Date
+                    </label>
                     <DatePicker
                       id="start-date-picker"
                       selected={startDate}
@@ -189,7 +164,12 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="end-date-picker">End Date</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="end-date-picker"
+                    >
+                      End Date
+                    </label>
                     <DatePicker
                       id="end-date-picker"
                       selected={endDate}
@@ -202,10 +182,16 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="sort-dropdown">Sort by Date</label>
+                    <label className="pro-filter-label" htmlFor="sort-dropdown">
+                      Sort by Date
+                    </label>
                     <Dropdown className="pro-custom-dropdown">
                       <Dropdown.Toggle id="sort-dropdown">
-                        <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
+                        <span>
+                          {sortOrder === "desc"
+                            ? "Newest First"
+                            : "Oldest First"}
+                        </span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item
@@ -226,10 +212,10 @@ function PublicRelationsOfficer() {
 
                   <button
                     className="pro-reset-filters-btn w-100"
-                    onClick={handleResetFilters}
+                    onClick={resetFilters}
                   >
-                    <i className="bi bi-arrow-counterclockwise me-2"></i>{' '}
-                    Reset Filters
+                    <i className="bi bi-arrow-counterclockwise me-2"></i> Reset
+                    Filters
                   </button>
                 </div>
               </Card.Body>
@@ -244,7 +230,11 @@ function PublicRelationsOfficer() {
                   <div>
                     <h2 className="pro-reports-title">Pending Reports</h2>
                     <p className="pro-reports-count">
-                      Showing <Badge bg="secondary" className="pro-count-badge">{filteredReports.length}</Badge> report{filteredReports.length === 1 ? '' : 's'}
+                      Showing{" "}
+                      <Badge bg="secondary" className="pro-count-badge">
+                        {filteredReports.length}
+                      </Badge>{" "}
+                      report{filteredReports.length === 1 ? "" : "s"}
                     </p>
                   </div>
                 </div>
@@ -253,7 +243,9 @@ function PublicRelationsOfficer() {
                   <div className="pro-empty-state">
                     <i className="bi bi-inbox pro-empty-icon"></i>
                     <p className="pro-empty-message">No reports found</p>
-                    <p className="pro-empty-hint">Try adjusting your filters or check back later.</p>
+                    <p className="pro-empty-hint">
+                      Try adjusting your filters or check back later.
+                    </p>
                   </div>
                 ) : (
                   <div className="pro-reports-list">

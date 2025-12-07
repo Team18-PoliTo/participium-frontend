@@ -33,6 +33,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         const fetchedCategories = await API.getAllCategories();
         setCategories(fetchedCategories);
       } catch (err) {
+        console.error(err);
         setCategories([]);
       }
     };
@@ -46,6 +47,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
         const user = await API.getUserInfo();
         setCitizenId(user.profile.id);
       } catch (err) {
+        console.error(err);
         setError("Error loading user information. Please login again.");
       }
     };

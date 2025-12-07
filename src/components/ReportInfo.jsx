@@ -6,12 +6,10 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
-import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCategory }) {
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -19,6 +17,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         const fetchedCategories = await API.getAllCategories();
         setCategories(fetchedCategories);
       } catch (error) {
+        console.error(error);
         setCategories([]);
       }
     };
@@ -170,12 +169,18 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             <Row className="g-3">
               {report.photos.map((photo, index) => (
                 <Col key={index} xs={4}>
-                  <img
-                    src={photo}
-                    alt={`Report photo ${index + 1}`}
-                    className="report-desc-photo"
+                  <button
+                    type="button"
                     onClick={() => setSelectedPhoto(photo)}
-                  />
+                    className="report-desc-photo-button"
+                    aria-label={`View photo ${index + 1}`}
+                  >
+                    <img
+                      src={photo}
+                      alt={`Report photo ${index + 1}`}
+                      className="report-desc-photo"
+                    />
+                  </button>
                 </Col>
               ))}
             </Row>

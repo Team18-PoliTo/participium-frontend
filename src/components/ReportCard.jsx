@@ -27,7 +27,7 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
 
   const getStatusBadge = (status) => {
     return (
-      <Badge className={`custom-status-badge status-${status.replace(/\s/g, '').toLowerCase()}`}>
+      <Badge className={`custom-status-badge status-${status.replaceAll(/\s/g, '').toLowerCase()}`}>
         {status}
       </Badge>
     );

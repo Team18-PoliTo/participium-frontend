@@ -1,5 +1,6 @@
 import { Button, Form, Alert } from "react-bootstrap";
 import { X, Check } from "lucide-react";
+import PropTypes from "prop-types";
 
 function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanation, error, onConfirm, onCancel }) {
   return (
@@ -72,5 +73,15 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
     </>
   );
 }
+
+ReportActions.propTypes = {
+  isRejecting: PropTypes.bool.isRequired,
+  setIsRejecting: PropTypes.func.isRequired,
+  explanation: PropTypes.string.isRequired,
+  setExplanation: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
 
 export default ReportActions;

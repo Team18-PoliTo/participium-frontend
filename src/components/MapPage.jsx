@@ -264,6 +264,7 @@ function MapPage() {
                     setSelectedReportForDetails(details);
                     setShowReportDetails(true);
                   } catch (error) {
+                    console.error(error)
                     setSelectedReportForDetails(selectedPin);
                     setShowReportDetails(true);
                   }
@@ -320,11 +321,15 @@ function MapPage() {
       </div>
 
       {!isMobile && !showReportsSidebar && (
-        <div className="reports-sidebar-tab" onClick={toggleReportsSidebar}>
+        <button 
+          type="button"
+          className="reports-sidebar-tab" 
+          onClick={toggleReportsSidebar}
+        >
           <ChevronLeft size={20} className="reports-sidebar-tab-icon" />
           <span className="reports-sidebar-tab-text">Reports</span>
           <span className="reports-sidebar-tab-count">{visibleReports.length}</span>
-        </div>
+        </button>
       )}
 
       <Offcanvas show={showForm} onHide={handleFormClose} placement="start" className="report-offcanvas">

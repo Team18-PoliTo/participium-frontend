@@ -1,30 +1,32 @@
-.role-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  background-color: rgba(26, 35, 50, 0.75);
+/* Custom Backdrop for React Bootstrap Modal */
+.role-modal-backdrop {
+  background-color: rgba(26, 35, 50, 0.75) !important;
   backdrop-filter: blur(4px);
+  opacity: 1 !important;
+  /* Remove layout properties as Bootstrap handles them */
 }
 
+/* Dialog wrapper for width control */
+.role-modal-dialog {
+  max-width: 480px;
+  width: 90%;
+  margin: auto;
+}
+
+/* Modal Content styling */
 .role-modal-content {
   background: #ffffff;
   border-radius: 20px;
   padding: 28px;
-  max-width: 480px;
-  width: 90%;
+  /* width attributes moved to dialog */
   max-height: 75vh;
   position: relative;
   box-shadow: 0 12px 48px rgba(26, 35, 50, 0.15);
   border: 1px solid rgba(41, 65, 92, 0.08);
   overflow: hidden;
-  box-sizing: border-box;
+  /* Assumes content needs to clip */
   display: flex;
+  /* flex-col is default for modal-content usually but good to enforce if children rely on it */
   flex-direction: column;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Button, Row, Col, Alert, Modal } from "react-bootstrap";
 import "./styles/SetUpUserModal.css";

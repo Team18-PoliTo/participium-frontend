@@ -150,7 +150,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
       {/* Submitted On */}
       <div className="mb-4">
-        <label className="report-desc-label">Submitted On</label>
+        <div className="report-desc-label">Submitted On</div>
         <div className="report-desc-text-display text-muted small">
           {new Date(report.createdAt).toLocaleDateString("en-US", {
             year: "numeric",
@@ -164,12 +164,12 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
 
       {/* Photos */}
       <div className="mb-4">
-        <label className="report-desc-label">Photos</label>
+        <div className="report-desc-label">Photos</div>
         <div className="report-desc-photos-container">
           {report.photos && report.photos.length > 0 ? (
             <Row className="g-3">
               {report.photos.map((photo, index) => (
-                <Col key={index} xs={4}>
+                <Col key={photo} xs={4}>
                   <button
                     type="button"
                     onClick={() => setSelectedPhoto(photo)}
@@ -178,7 +178,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                   >
                     <img
                       src={photo}
-                      alt={`Report photo ${index + 1}`}
+                      alt="Report evidence"
                       className="report-desc-photo"
                     />
                   </button>

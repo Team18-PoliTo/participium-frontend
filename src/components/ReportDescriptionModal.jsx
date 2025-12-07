@@ -7,11 +7,18 @@ import API from "../API/API";
 import ReportInfo from "./ReportInfo";
 import ReportActions from "./ReportActions";
 
-function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOfficerView = false }) {
-  const [selectedCategory, setSelectedCategory] = useState(report?.category || "");
+function ReportDescriptionModal({
+  show,
+  onHide,
+  report,
+  onReportUpdated,
+  isOfficerView = false,
+}) {
+  const [selectedCategory, setSelectedCategory] = useState(
+    report?.category || ""
+  );
   const [explanation, setExplanation] = useState("");
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
   const [isRejecting, setIsRejecting] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
@@ -25,24 +32,13 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
     }
   }, [report]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await API.getAllCategories();
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
-
   const handleConfirm = async () => {
     try {
       setError(null);
       const status = isRejecting ? "Rejected" : "Assigned";
-      const explanationText = isRejecting ? explanation : "No explanation required";
+      const explanationText = isRejecting
+        ? explanation
+        : "No explanation required";
 
       const categoryId = selectedCategory.id;
 
@@ -60,8 +56,12 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
       }
     } catch (error) {
       setError(
-        (error.message && typeof error.message === 'string' ? error.message : "An error occurred") ||
-        `Failed to ${isRejecting ? 'reject' : 'approve'} the report. Please try again.`
+        (error.message && typeof error.message === "string"
+          ? error.message
+          : "An error occurred") ||
+          `Failed to ${
+            isRejecting ? "reject" : "approve"
+          } the report. Please try again.`
       );
     }
   };
@@ -76,7 +76,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
   };
 
   const renderSafeValue = (val) => {
-    if (typeof val === 'object' && val !== null) {
+    if (typeof val === "object" && val !== null) {
       return val.name || val.description || JSON.stringify(val);
     }
     return val;
@@ -94,29 +94,34 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
       contentClassName="report-desc-modal-content"
     >
       <Modal.Header closeButton className="report-desc-modal-header">
-        <Modal.Title>{successData ? "Report Processed" : "Report Details"}</Modal.Title>
+        <Modal.Title>
+          {successData ? "Report Processed" : "Report Details"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body className="report-desc-modal-body">
         {successData ? (
           <div className="d-flex flex-column align-items-center justify-content-center p-4">
-            <div className="text-success mb-3" style={{ fontSize: '3rem' }}>
+            <div className="text-success mb-3" style={{ fontSize: "3rem" }}>
               <i className="bi bi-check-circle-fill"></i>
             </div>
             <h4 className="text-center mb-3">Operation Successful!</h4>
             {successData.status && (
-              <p className="text-center mb-1"><strong>Status:</strong> {renderSafeValue(successData.status)}</p>
+              <p className="text-center mb-1">
+                <strong>Status:</strong> {renderSafeValue(successData.status)}
+              </p>
             )}
             {successData.message && (
-              <p className="text-center mb-1"><strong>Message:</strong> {renderSafeValue(successData.message)}</p>
+              <p className="text-center mb-1">
+                <strong>Message:</strong> {renderSafeValue(successData.message)}
+              </p>
             )}
             {successData.assignedTo && (
-              <p className="text-center"><strong>Assigned To:</strong> {renderSafeValue(successData.assignedTo)}</p>
+              <p className="text-center">
+                <strong>Assigned To:</strong>{" "}
+                {renderSafeValue(successData.assignedTo)}
+              </p>
             )}
-            <Button
-              variant="success"
-              className="mt-4"
-              onClick={handleClose}
-            >
+            <Button variant="success" className="mt-4" onClick={handleClose}>
               Close
             </Button>
           </div>
@@ -128,7 +133,16 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-            {!isOfficerView ? (
+            {isOfficerView ? (
+              <Modal.Footer className="report-map-desc-modal-footer">
+                <Button
+                  className="report-map-desc-btn-cancel"
+                  onClick={handleClose}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            ) : (
               <ReportActions
                 isRejecting={isRejecting}
                 setIsRejecting={setIsRejecting}
@@ -138,16 +152,7 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
                 onConfirm={handleConfirm}
                 onCancel={handleClose}
               />
-            ) :
-              <Modal.Footer className="report-map-desc-modal-footer">
-                <Button
-                  className="report-map-desc-btn-cancel"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-              </Modal.Footer>
-            }
+            )}
           </>
         )}
       </Modal.Body>
@@ -155,6 +160,9 @@ function ReportDescriptionModal({ show, onHide, report, onReportUpdated, isOffic
   );
 }
 
+<<<<<<< HEAD
+export default ReportDescriptionModal;
+=======
 ReportDescriptionModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -167,3 +175,4 @@ ReportDescriptionModal.propTypes = {
 };
 
 export default ReportDescriptionModal;
+>>>>>>> 46fb8eb24eb42d1c505fc73a20b1a57e0a310448

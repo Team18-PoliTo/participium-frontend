@@ -465,6 +465,59 @@ const updateCitizenProfile = async (profileData) => {
   }
 };
 
+const getAllCompanies = async () => {
+  try {
+    const data = await request("api/companies", {
+      method: "GET",
+      customErrorMap: {
+        400: "Error when fetching companies",
+      },
+      defaultErrorMessage: "Failed to fetch companies",
+    });
+    return data;
+  }catch (error) {
+    console.error("Error fetching companies:", error);
+    throw error;
+  }
+};
+
+const getCompaniesByCategory = async (categoryId) => {
+  try {
+    const data = await request(`api/companies/category/${categoryId}`, {
+      method: "GET",
+      customErrorMap: {
+        400: "Error when fetching companies by category",
+      },
+      defaultErrorMessage: "Failed to fetch companies by category",
+    });
+    return data;
+  }catch (error) {
+    console.error("Error fetching companies by category:", error);
+    throw error;
+  }
+};
+
+const delegateReportToCompany = async (reportId, companyId) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/delegate`, {
+      method: "POST",
+      body: {
+        companyId: companyId,
+      },
+      customErrorMap: {
+        400: "Validation error",
+        403: "Forbidden - Only the currently assigned officer can delegate this report",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to delegate report to company",
+    });
+    return data;
+  }catch (error) {
+    console.error("Error delegating report to company:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -486,6 +539,9 @@ const API = {
   getReportMapDetails,
   getReportsAssignedToMe,
   updateCitizenProfile,
+  getAllCompanies,
+  getCompaniesByCategory,
+  delegateReportToCompany,
 };
 
 export default API;

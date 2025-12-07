@@ -4,7 +4,7 @@ import { UserContext } from "../App";
 import { allowedOfficerRoles } from "../constants/allowedOfficerRoles";
 
 function RoleBasedRedirect() {
-  const { user, citizenLoggedIn, userLoggedIn, userRole } = useContext(UserContext);
+  const { citizenLoggedIn, userLoggedIn, userRole } = useContext(UserContext);
 
   if (citizenLoggedIn) {
     return <Navigate replace to="/" />;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { X, Check } from "lucide-react";
 
@@ -10,7 +9,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
         <label className="report-desc-label fw-bold">Action</label>
         <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
           <Button
-            className={`report-desc-toggle-btn ${!isRejecting ? 'active' : ''}`}
+            className={`report-desc-toggle-btn ${isRejecting ? '' : 'active'}`}
             variant="link"
             onClick={() => setIsRejecting(false)}
           >

@@ -1,6 +1,5 @@
-import React from "react";
+import PropTypes from "prop-types";
 import "./styles/RoleAssignmentModal.css";
-import API from "../API/API";
 import { getRoleIcon } from "../constants/roleIcons";
 
 function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRoles }) {
@@ -35,5 +34,22 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
     </div>
   );
 }
+
+RoleAssignmentModal.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+  }).isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onAssignRole: PropTypes.func.isRequired,
+  availableRoles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      role: PropTypes.string.isRequired,
+    })
+  ),
+};
 
 export default RoleAssignmentModal;

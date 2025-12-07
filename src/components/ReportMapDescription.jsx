@@ -32,7 +32,7 @@ function ReportMapDescription({ show, onHide, report }) {
           
           {/* Title */}
           <div className="mb-4">
-            <label className="report-map-desc-label">Title</label>
+            <div className="report-map-desc-label">Title</div>
             <div className="report-map-desc-text-display fs-5 fw-bold text-dark">
                 {report.title}
             </div>
@@ -40,7 +40,7 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Description */}
           <div className="mb-4">
-            <label className="report-map-desc-label">Description</label>
+            <div className="report-map-desc-label">Description</div>
             <div className="report-map-desc-text-display" style={{minHeight: '80px'}}>
                 {report.description}
             </div>
@@ -48,7 +48,7 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Address */}
           <div className="mb-4">
-            <label className="report-map-desc-label">Address</label>
+            <div className="report-map-desc-label">Address</div>
             <div className="report-map-desc-text-display d-flex align-items-center gap-2">
               <MapPin size={20} color="#EE6C4D" />
               <span className="fw-medium">
@@ -88,14 +88,14 @@ function ReportMapDescription({ show, onHide, report }) {
           {/* Info Grid (Category, Status, Date) */}
           <Row className="g-3 mb-4">
              <Col md={6}>
-                <label className="report-map-desc-label">Category</label>
+                <div className="report-map-desc-label">Category</div>
                 <div className="report-map-desc-text-display d-flex align-items-center gap-2">
                   {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 20)}
                   <span className="fw-medium">{report.category.name}</span>
                 </div>
              </Col>
              <Col md={6}>
-                <label className="report-map-desc-label">Status</label>
+                <div className="report-map-desc-label">Status</div>
                 <div className="report-map-desc-text-display">
                   <span className="fw-bold text-uppercase" style={{color: '#3D5A80', letterSpacing:'0.5px'}}>{report.status}</span>
                 </div>
@@ -103,7 +103,7 @@ function ReportMapDescription({ show, onHide, report }) {
           </Row>
 
           <div className="mb-4">
-             <label className="report-map-desc-label">Submitted On</label>
+             <div className="report-map-desc-label">Submitted On</div>
              <div className="report-map-desc-text-display text-muted small">
                 {new Date(report.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -117,19 +117,25 @@ function ReportMapDescription({ show, onHide, report }) {
 
           {/* Photos */}
           <div className="mb-3">
-            <label className="report-map-desc-label">Photos</label>
+            <div className="report-map-desc-label">Photos</div>
             <div className="report-map-desc-photos-container">
               {report.photos && report.photos.length > 0 ? (
                 <Row className="g-3">
                   {report.photos.map((photo, index) => (
                     <Col key={photo} xs={4}>
-                      <img
-                        src={photo}
-                        alt={`Report photo ${index + 1}`}
-                        className="report-map-desc-photo"
+                      <button
+                        type="button"
                         onClick={() => setSelectedPhoto(photo)}
-                        style={{ cursor: "pointer" }}
-                      />
+                        className="report-map-desc-photo-button"
+                        aria-label={`View photo ${index + 1}`}
+                        style={{ border: 'none', padding: 0, background: 'none', cursor: 'pointer', width: '100%' }}
+                      >
+                        <img
+                          src={photo}
+                          alt=""
+                          className="report-map-desc-photo"
+                        />
+                      </button>
                     </Col>
                   ))}
                 </Row>

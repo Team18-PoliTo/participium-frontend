@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Form, Card, Container, Button, Badge, InputGroup } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {  Form,  Card,  Container,  Button,  Badge,  InputGroup,} from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
@@ -11,7 +11,6 @@ function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(new Set());
   const [users, setUsers] = useState([]);
   const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
-  const [roles, setRoles] = useState([]);
   const [visibleRoles, setVisibleRoles] = useState([]);
   const [roleMapping, setRoleMapping] = useState({});
   const [searchEmail, setSearchEmail] = useState("");
@@ -22,7 +21,6 @@ function AdminPage() {
     const fetchRoles = async () => {
       try {
         const fetchedRoles = await API.getAllRoles();
-        setRoles(fetchedRoles);
 
         const mapping = {};
         fetchedRoles.forEach((role) => {
@@ -90,9 +88,7 @@ function AdminPage() {
       (id) => roleMapping[id] === user.role
     );
     const roleMatch =
-      selectedFilter.size === 0
-        ? true
-        : selectedFilter.has(Number(userRoleId));
+      selectedFilter.size === 0 ? true : selectedFilter.has(Number(userRoleId));
 
     // Filtra per email
     const emailMatch = user.email
@@ -152,7 +148,9 @@ function AdminPage() {
           <div className="admin-headline-text">
             <Badge className="admin-eyebrow">Administrator</Badge>
             <h1 className="admin-title">Administration</h1>
-            <p className="admin-subtitle">Manage internal municipality users and assign roles</p>
+            <p className="admin-subtitle">
+              Manage internal municipality users and assign roles
+            </p>
           </div>
           <Button
             variant="primary"
@@ -204,9 +202,11 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${selectedFilter.has(role.id) ? 'legend-chip-active' : ''}`}
+                      className={`legend-chip ${
+                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                      }`}
                       onClick={() => handleFilterClick(role.id)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
                       <span className="legend-chip-icon">
                         {getRoleIcon(role.role, 20)}
@@ -226,8 +226,13 @@ function AdminPage() {
                   <div>
                     <h2 className="users-title">Team directory</h2>
                     <p className="users-count">
-                      Showing <Badge bg="secondary" className="count-badge">{filteredUsers.length}</Badge> municipality user
-                      {filteredUsers.length === 1 ? "" : "s"} for the selected filters.
+                      Showing{" "}
+                      <Badge bg="secondary" className="count-badge">
+                        {filteredUsers.length}
+                      </Badge>{" "}
+                      municipality user
+                      {filteredUsers.length === 1 ? "" : "s"} for the selected
+                      filters.
                     </p>
                   </div>
                 </div>

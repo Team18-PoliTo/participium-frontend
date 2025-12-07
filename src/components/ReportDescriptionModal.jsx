@@ -160,9 +160,6 @@ function ReportDescriptionModal({
   );
 }
 
-<<<<<<< HEAD
-export default ReportDescriptionModal;
-=======
 ReportDescriptionModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -175,4 +172,3 @@ ReportDescriptionModal.propTypes = {
 };
 
 export default ReportDescriptionModal;
->>>>>>> 46fb8eb24eb42d1c505fc73a20b1a57e0a310448

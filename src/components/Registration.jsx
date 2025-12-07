@@ -8,7 +8,7 @@ import ErrorModal from "./ErrorModal";
 import "./styles/Registration.css";
 
 function Registration() {
-  const [state, formAction, isPending] = useActionState(registrationFunction, {
+  const [, formAction, isPending] = useActionState(registrationFunction, {
     name: "",
     surname: "",
     username: "",

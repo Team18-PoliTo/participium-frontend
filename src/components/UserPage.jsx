@@ -20,7 +20,6 @@ import { useNavigate } from "react-router";
 
 function UserProfile() {
   const { user, setUser, setCitizenLoggedIn } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
   const [loadingReports, setLoadingReports] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -55,12 +54,12 @@ function UserProfile() {
   // Caricamento dati iniziali
   useEffect(() => {
     const fetchProfileData = async () => {
-      setLoading(true);
+      setLoadingReports(true);
       try {
         const userData = await API.getUserInfo();
         setUser(userData);
 
-        if (userData && userData.profile) {
+        if (userData?.profile) {
           setFirstName(userData.profile.firstName || "");
           setLastName(userData.profile.lastName || "");
           setEmail(userData.profile.email || "");
@@ -85,7 +84,7 @@ function UserProfile() {
         }
 
         // fetch reports AFTER avere userData disponibile
-        if (userData && userData.profile && userData.profile.id) {
+        if (userData?.profile?.id) {
           setLoadingReports(true);
           setReportsError("");
           try {
@@ -115,7 +114,7 @@ function UserProfile() {
         console.error("Error fetching user info:", error);
         setMessage({ type: "danger", text: "Failed to load profile data." });
       } finally {
-        setLoading(false);
+        setLoadingReports(false);
       }
     };
 
@@ -198,7 +197,7 @@ function UserProfile() {
         try {
           await API.logoutUser();
         } catch (e) {
-          console.warn("Server logout failed, proceeding with local logout");
+          console.warn("Server logout failed, proceeding with local logout. Error:", e);
         }
 
         navigate("/login", { replace: true });
@@ -236,6 +235,27 @@ function UserProfile() {
   };
 
   if (!user) return <LoadingSpinner />;
+
+  let reportsContent;
+  if (loadingReports) {
+    reportsContent = <LoadingSpinner />;
+  } else if (citizenReports.length === 0) {
+    reportsContent = (
+      <p className="text-center no-reports-message">
+        You haven't submitted any reports yet.
+      </p>
+    );
+  } else {
+    reportsContent = (
+      <div className="profile-reports-scrollable">
+        {citizenReports.map((report) => (
+          <div key={report.id} className="profile-report-card-wrapper">
+            <ReportCard report={report} onClick={handleReportClick} />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="user-profile-wrapper">
@@ -312,7 +332,7 @@ function UserProfile() {
                       onChange={(e) => setFirstName(e.target.value)}
                       readOnly={!isEditing}
                       className={`profile-input ${
-                        !isEditing ? "read-only" : ""
+                        isEditing ? "" : "read-only"
                       }`}
                     />
                   </Form.Group>
@@ -326,7 +346,7 @@ function UserProfile() {
                       onChange={(e) => setLastName(e.target.value)}
                       readOnly={!isEditing}
                       className={`profile-input ${
-                        !isEditing ? "read-only" : ""
+                        isEditing ? "" : "read-only"
                       }`}
                     />
                   </Form.Group>
@@ -342,7 +362,7 @@ function UserProfile() {
                       onChange={(e) => setEmail(e.target.value)}
                       readOnly={!isEditing}
                       className={`profile-input ${
-                        !isEditing ? "read-only" : ""
+                        isEditing ? "" : "read-only"
                       }`}
                     />
                   </Form.Group>
@@ -381,7 +401,7 @@ function UserProfile() {
                       onChange={(e) => setUsername(e.target.value)}
                       readOnly={!isEditing}
                       className={`profile-input ${
-                        !isEditing ? "read-only" : ""
+                        isEditing ? "" : "read-only"
                       }`}
                     />
                   </Form.Group>
@@ -454,21 +474,7 @@ function UserProfile() {
             </Alert>
           )}
 
-          {loadingReports ? (
-            <LoadingSpinner />
-          ) : citizenReports.length === 0 ? (
-            <p className="text-center no-reports-message">
-              You haven't submitted any reports yet.
-            </p>
-          ) : (
-            <div className="profile-reports-scrollable">
-              {citizenReports.map((report) => (
-                <div key={report.id} className="profile-report-card-wrapper">
-                  <ReportCard report={report} onClick={handleReportClick} />
-                </div>
-              ))}
-            </div>
-          )}
+          {reportsContent}
         </Form>
       </Container>
 

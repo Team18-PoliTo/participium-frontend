@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { Form, Button, Alert, Dropdown } from "react-bootstrap";
 import "./styles/ReportForm.css";
 import API from "../API/API";
@@ -177,8 +178,8 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
       const reportData = {
         title,
         description,
-        categoryId: parseInt(categoryId), // Ensure categoryId is a number
-        citizenId: parseInt(citizenId),
+        categoryId: Number.parseInt(categoryId), // Ensure categoryId is a number
+        citizenId: Number.parseInt(citizenId),
         location: {
           latitude: position.lat,
           longitude: position.lng,
@@ -288,8 +289,7 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
           <span className="report-form__category-icon-wrapper me-2">
              {categoryId 
                 ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18) 
-                : <Wrench size={18} className="text-primary-blue" />}
-          </span>
+                : <Wrench size={18} className="text-primary-blue" />}</span>
           Category <span className="report-form__required">*</span>
         </Form.Label>
         <Dropdown className="w-100">
@@ -405,5 +405,15 @@ function ReportForm({ position, onFormSubmit, onReportResult }) {
     </Form>
   );
 }
+
+ReportForm.propTypes = {
+  position: PropTypes.shape({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+    address: PropTypes.string,
+  }),
+  onFormSubmit: PropTypes.func.isRequired,
+  onReportResult: PropTypes.func.isRequired,
+};
 
 export default ReportForm;

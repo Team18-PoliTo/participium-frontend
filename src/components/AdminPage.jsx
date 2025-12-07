@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Form, Card, Container, Button, Badge, InputGroup } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import {  Form,  Card,  Container,  Button,  Badge,  InputGroup,} from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
@@ -11,7 +11,6 @@ function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(new Set());
   const [users, setUsers] = useState([]);
   const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
-  const [roles, setRoles] = useState([]);
   const [visibleRoles, setVisibleRoles] = useState([]);
   const [roleMapping, setRoleMapping] = useState({});
   const [searchEmail, setSearchEmail] = useState("");
@@ -22,12 +21,11 @@ function AdminPage() {
     const fetchRoles = async () => {
       try {
         const fetchedRoles = await API.getAllRoles();
-        setRoles(fetchedRoles);
 
         const mapping = {};
-        fetchedRoles.forEach((role) => {
+        for (const role of fetchedRoles) {
           mapping[role.id] = role.role;
-        });
+        }
         setRoleMapping(mapping);
 
         const filtered = fetchedRoles.filter((role) => role.id !== 1);
@@ -90,9 +88,7 @@ function AdminPage() {
       (id) => roleMapping[id] === user.role
     );
     const roleMatch =
-      selectedFilter.size === 0
-        ? true
-        : selectedFilter.has(Number(userRoleId));
+      selectedFilter.size === 0 ? true : selectedFilter.has(Number(userRoleId));
 
     // Filtra per email
     const emailMatch = user.email
@@ -152,14 +148,16 @@ function AdminPage() {
           <div className="admin-headline-text">
             <Badge className="admin-eyebrow">Administrator</Badge>
             <h1 className="admin-title">Administration</h1>
-            <p className="admin-subtitle">Manage internal municipality users and assign roles</p>
+            <p className="admin-subtitle">
+              Manage internal municipality users and assign roles
+            </p>
           </div>
           <Button
             variant="primary"
             className="add-user-btn desktop-only"
             onClick={handleOpenSetUpModal}
           >
-            <i className="bi bi-plus-lg me-2"></i>
+            <i className="bi bi-plus-lg me-2" />
             Add user
           </Button>
         </header>
@@ -173,7 +171,7 @@ function AdminPage() {
                 </label>
                 <InputGroup className="search-input-group">
                   <InputGroup.Text className="search-icon">
-                    <i className="bi bi-search"></i>
+                    <i className="bi bi-search" />
                   </InputGroup.Text>
                   <Form.Control
                     id="admin-search-input"
@@ -192,7 +190,7 @@ function AdminPage() {
               className="add-user-btn mobile-only w-100"
               onClick={handleOpenSetUpModal}
             >
-              <i className="bi bi-plus-lg me-2"></i>
+              <i className="bi bi-plus-lg me-2" />
               Add user
             </Button>
 
@@ -204,9 +202,11 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${selectedFilter.has(role.id) ? 'legend-chip-active' : ''}`}
+                      className={`legend-chip ${
+                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                      }`}
                       onClick={() => handleFilterClick(role.id)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
                       <span className="legend-chip-icon">
                         {getRoleIcon(role.role, 20)}
@@ -226,15 +226,19 @@ function AdminPage() {
                   <div>
                     <h2 className="users-title">Team directory</h2>
                     <p className="users-count">
-                      Showing <Badge bg="secondary" className="count-badge">{filteredUsers.length}</Badge> municipality user
-                      {filteredUsers.length === 1 ? "" : "s"} for the selected filters.
+                      Showing{" "}
+                      <Badge bg="secondary" className="count-badge">
+                        {filteredUsers.length}
+                      </Badge>{" "}
+                      municipality user
+                      {filteredUsers.length === 1 ? "" : "s"} for the selected
+                      filters.
                     </p>
                   </div>
                 </div>
-
                 {filteredUsers.length === 0 ? (
                   <div className="admin-empty-state">
-                    <i className="bi bi-inbox empty-icon"></i>
+                    <i className="bi bi-inbox empty-icon" />
                     <p className="empty-message">No users match this filter.</p>
                     <p className="empty-hint">Try another email or role.</p>
                   </div>

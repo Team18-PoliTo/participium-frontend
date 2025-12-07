@@ -42,15 +42,13 @@ function Homepage() {
 
   // Effect to handle fade-out animation before removing button from DOM
   useEffect(() => {
-    if (!showScrollButton) {
-      // Wait for fade-out animation to complete (300ms) before removing from DOM
+    if (showScrollButton) {
+      setIsVisible(true);
+    } else {
       const timer = setTimeout(() => {
         setIsVisible(false);
       }, 300);
       return () => clearTimeout(timer);
-    } else {
-      // Immediately show button when scrolling up
-      setIsVisible(true);
     }
   }, [showScrollButton]);
 
@@ -115,7 +113,7 @@ function Homepage() {
           <h2 className="section-title">Key Features</h2>
           <Row className="g-4">
             {features.map((feature, index) => (
-              <Col key={index} md={6} lg={3} className="d-flex">
+              <Col key={feature.title} md={6} lg={3} className="d-flex">
                 <Card className="feature-card">
                   <Card.Body className="text-center">
                     <div className="feature-icon">{feature.icon}</div>
@@ -190,7 +188,7 @@ function Homepage() {
       {/* Floating Scroll Button */}
       {isVisible && (
         <button 
-          className={`floating-scroll-btn ${!showScrollButton ? 'hide' : ''}`} 
+          className={`floating-scroll-btn ${showScrollButton ? '' : 'hide'}`} 
           onClick={scrollToBottom}
         >
           <ArrowDown size={24} />

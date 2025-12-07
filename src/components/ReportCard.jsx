@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { Card, Badge } from "react-bootstrap";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
@@ -12,11 +13,11 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
     const currentCard = cardRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+          for (const entry of entries) {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
           }
-        });
+        }
       },
       { rootMargin: "100px", threshold: 0.1 }
     );
@@ -27,7 +28,7 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
 
   const getStatusBadge = (status) => {
     return (
-      <Badge className={`custom-status-badge status-${status.replace(/\s/g, '').toLowerCase()}`}>
+      <Badge className={`custom-status-badge status-${status.replaceAll(/\s/g, '').toLowerCase()}`}>
         {status}
       </Badge>
     );
@@ -73,5 +74,21 @@ function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
     </Card>
   );
 }
+
+ReportCard.propTypes = {
+  report: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    address: PropTypes.string,
+    citizenName: PropTypes.string,
+    citizenLastName: PropTypes.string,
+    status: PropTypes.string.isRequired,
+    category: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  onClick: PropTypes.func.isRequired,
+  showUser: PropTypes.bool,
+  showPRO: PropTypes.bool,
+};
 
 export default React.memo(ReportCard);

@@ -1,30 +1,13 @@
-/* Overlay per il modal */
-.setup-user-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  background-color: rgba(26, 35, 50, 0.75);
-  backdrop-filter: blur(4px);
-}
+/* Overlay per il modal - Removed as Bootstrap handles backdrop */
 
 /* Contenuto del modal */
 .setup-user-modal-content {
   background: #ffffff;
   border-radius: 20px;
   padding: 28px;
-  max-width: 550px;
-  width: 90%;
-  max-height: 85vh;
   position: relative;
   box-shadow: 0 12px 48px rgba(26, 35, 50, 0.15);
   border: 1px solid rgba(41, 65, 92, 0.08);
-  overflow-y: auto;
   box-sizing: border-box;
 }
 
@@ -117,9 +100,9 @@
 
 /* Spaziatura gruppi form */
 .setup-user-form .form-group {
-    margin-bottom: 1rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+  margin-bottom: 1rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 /* Pulsante crea utente */

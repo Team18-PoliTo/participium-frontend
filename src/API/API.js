@@ -35,6 +35,7 @@ const registerCitizen = async (credentials) => {
       );
     }
   } catch (error) {
+    console.error("Error during citizen registration:", error);
     throw error;
   }
 };
@@ -71,6 +72,7 @@ const loginCitizen = async (credentials) => {
       throw new Error(errorData.error || errorData.message || "Login failed");
     }
   } catch (error) {
+    console.error("Error during citizen login:", error);
     throw error;
   }
 };
@@ -107,6 +109,7 @@ const loginInternalUser = async (credentials) => {
       throw new Error(errorData.error || errorData.message || "Login failed");
     }
   } catch (error) {
+    console.error("Error during internal user login:", error);
     throw error;
   }
 };
@@ -133,6 +136,7 @@ const getUserInfo = async () => {
       );
     }
   } catch (error) {
+    console.error("Error fetching user info:", error);
     throw error;
   }
 };
@@ -157,6 +161,7 @@ const logoutUser = async () => {
       throw new Error(errorData.error || errorData.message || "Logout failed");
     }
   } catch (error) {
+    console.error("Error during logout:", error);
     throw error;
   }
 };
@@ -185,6 +190,7 @@ const getAllInternalUsers = async () => {
       );
     }
   } catch (error) {
+    console.error("Error fetching internal users:", error);
     throw error;
   }
 };
@@ -223,6 +229,7 @@ const registerInternalUser = async (credentials) => {
       );
     }
   } catch (error) {
+    console.error("Error registering internal user:", error);
     throw error;
   }
 };
@@ -262,6 +269,7 @@ const updateInternalUserRole = async (id, name, surname, email, role) => {
       throw new Error(errorData.error || errorData.message || "Update failed");
     }
   } catch (error) {
+    console.error("Error updating internal user role:", error);
     throw error;
   }
 };
@@ -291,6 +299,7 @@ const getAllRoles = async () => {
       );
     }
   } catch (error) {
+    console.error("Error fetching roles:", error);
     throw error;
   }
 };
@@ -339,12 +348,12 @@ const addNewReport = async (reportData) => {
           errorData.error || errorData.message || "Failed to create report"
         );
       } catch (jsonError) {
-        throw new Error(
-          `Server error: ${response.status} ${response.statusText}`
-        );
+        console.error("Error parsing error response:", jsonError);
+        throw new Error("Failed to create report");
       }
     }
   } catch (error) {
+    console.error("Error adding new report:", error);
     throw error;
   }
 };
@@ -378,6 +387,7 @@ const judgeReport = async (reportId, status, categoryId, explanation) => {
       );
     }
   } catch (error) {
+    console.error("Error judging report:", error);
     throw error;
   }
 };
@@ -399,6 +409,7 @@ const getAllCategories = async () => {
       return data.slice(0, 8);
     }
   } catch (error) {
+    console.error("Error fetching categories:", error);
     throw error;
   }
 };
@@ -437,6 +448,7 @@ const uploadFile = async (formData, type = "report") => {
       );
     }
   } catch (error) {
+    console.error("Error uploading file:", error);
     throw error;
   }
 };
@@ -468,6 +480,7 @@ const deleteTempFile = async (fileId) => {
       );
     }
   } catch (error) {
+    console.error("Error deleting temporary file:", error);
     throw error;
   }
 };
@@ -497,6 +510,7 @@ const getAllReportsIsPending = async () => {
       throw new Error(errorData.error || errorData.message);
     }
   } catch (error) {
+    console.error("Error fetching pending reports:", error);
     throw error;
   }
 };
@@ -533,6 +547,7 @@ const getCitizenReports = async () => {
       );
     }
   } catch (error) {
+    console.error("Error fetching citizen reports:", error);
     throw error;
   }
 };
@@ -572,6 +587,7 @@ const getReportsByMapArea = async (bounds) => {
       );
     }
   } catch (error) {
+    console.error("Error fetching reports by map area:", error);
     throw error;
   }
 };
@@ -614,6 +630,7 @@ const getReportMapDetails = async (reportId) => {
       );
     }
   } catch (error) {
+    console.error("Error fetching report map details:", error);
     throw error;
   }
 };
@@ -647,6 +664,7 @@ const getReportsAssignedToMe = async () => {
       );
     }
   } catch (error) {
+    console.error("Error fetching reports assigned to technical user:", error);
     throw error;
   }
 };
@@ -684,6 +702,7 @@ const updateCitizenProfile = async (profileData) => {
       );
     }
   } catch (error) {
+    console.error("Error updating citizen profile:", error);
     throw error;
   }
 };

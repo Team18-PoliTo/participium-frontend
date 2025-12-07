@@ -1,27 +1,34 @@
 import { Navigate } from "react-router";
 import { useContext } from "react";
+import PropTypes from "prop-types";
 import { UserContext } from "../App";
 
 function ProtectedRoute({ children, allowedRoles, requireCitizen = false }) {
   const { user, citizenLoggedIn, userLoggedIn, userRole } = useContext(UserContext);
 
-  // Se richiede citizen e l'utente è un citizen
+  // If citizen access is required and user is a citizen
   if (requireCitizen && citizenLoggedIn) {
     return children;
   }
 
-  // Se richiede un ruolo specifico e l'utente ha quel ruolo
+  // If specific role is required and user has that role
   if (allowedRoles && userLoggedIn && allowedRoles.includes(userRole)) {
     return children;
   }
 
-  // Se non è loggato, redirect al login
+  // If not logged in, redirect to login
   if (!user) {
     return <Navigate replace to="/login" />;
   }
 
-  // Se è loggato ma non autorizzato, mostra NotAuthorized
+  // If logged in but not authorized, show not authorized page
   return <Navigate replace to="/not-authorized" />;
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+  allowedRoles: PropTypes.arrayOf(PropTypes.string),
+  requireCitizen: PropTypes.bool,
+};
 
 export default ProtectedRoute;

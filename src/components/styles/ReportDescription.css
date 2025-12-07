@@ -146,6 +146,13 @@
   border: 1px dashed #98C1D9;
 }
 
+.report-desc-photo-button {
+  all: unset;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
 .report-desc-photo {
   width: 100%;
   aspect-ratio: 1;
@@ -154,7 +161,6 @@
   border: 2px solid white;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
 }
 
 .report-desc-photo:hover {

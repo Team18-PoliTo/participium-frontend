@@ -1,4 +1,5 @@
 import { Modal } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import './styles/ErrorModal.css';
 
 const ErrorModal = ({ isOpen, onClose, title, message }) => {
@@ -20,6 +21,13 @@ const ErrorModal = ({ isOpen, onClose, title, message }) => {
       </Modal.Body>
     </Modal>
   );
+};
+
+ErrorModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
 };
 
 export default ErrorModal;

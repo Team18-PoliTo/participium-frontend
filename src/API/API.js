@@ -114,28 +114,32 @@ const registerCitizen = async (credentials) => {
   }
 };
 
+const performLogin = async (endpoint, credentials) => {
+  const responseData = await request(endpoint, {
+    method: "POST",
+    useAuth: false,
+    body: {
+      email: credentials.email,
+      password: credentials.password,
+    },
+    customErrorMap: {
+      400: "Email and password are required",
+      401: "Invalid email or password",
+    },
+    defaultErrorMessage: "Login failed",
+  });
+
+  const token = {
+    accessToken: responseData.access_token,
+    tokenType: responseData.token_type,
+  };
+  localStorage.setItem("authToken", JSON.stringify(token.accessToken));
+  return token;
+};
+
 const loginCitizen = async (credentials) => {
   try {
-    const responseData = await request("api/auth/citizens/login", {
-      method: "POST",
-      useAuth: false,
-      body: {
-        email: credentials.email,
-        password: credentials.password,
-      },
-      customErrorMap: {
-        400: "Email and password are required",
-        401: "Invalid email or password",
-      },
-      defaultErrorMessage: "Login failed",
-    });
-
-    const token = {
-      accessToken: responseData.access_token,
-      tokenType: responseData.token_type,
-    };
-    localStorage.setItem("authToken", JSON.stringify(token.accessToken));
-    return token;
+    return await performLogin("api/auth/citizens/login", credentials);
   } catch (error) {
     console.error("Error during citizen login:", error);
     throw error;
@@ -144,26 +148,7 @@ const loginCitizen = async (credentials) => {
 
 const loginInternalUser = async (credentials) => {
   try {
-    const responseData = await request("api/auth/internal/login", {
-      method: "POST",
-      useAuth: false,
-      body: {
-        email: credentials.email,
-        password: credentials.password,
-      },
-      customErrorMap: {
-        400: "Email and password are required",
-        401: "Invalid email or password",
-      },
-      defaultErrorMessage: "Login failed",
-    });
-
-    const token = {
-      accessToken: responseData.access_token,
-      tokenType: responseData.token_type,
-    };
-    localStorage.setItem("authToken", JSON.stringify(token.accessToken));
-    return token;
+    return await performLogin("api/auth/internal/login", credentials);
   } catch (error) {
     console.error("Error during internal user login:", error);
     throw error;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  Form,  Card,  Container,  Button,  Badge,  InputGroup,} from "react-bootstrap";
+import { Form, Card, Container, Button, Badge, InputGroup, } from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
@@ -156,10 +156,7 @@ function AdminPage() {
             variant="primary"
             className="add-user-btn desktop-only"
             onClick={handleOpenSetUpModal}
-          >
-            <i className="bi bi-plus-lg me-2" />
-            Add user
-          </Button>
+          ><i className="bi bi-plus-lg me-2" />Add user</Button>
         </header>
 
         <div className="admin-layout">
@@ -189,11 +186,7 @@ function AdminPage() {
               variant="primary"
               className="add-user-btn mobile-only w-100"
               onClick={handleOpenSetUpModal}
-            >
-              <i className="bi bi-plus-lg me-2" />
-              Add user
-            </Button>
-
+            ><i className="bi bi-plus-lg me-2" />Add user</Button>
             <Card className="legend-card">
               <Card.Body>
                 <p className="legend-card-title">Filter by roles</p>
@@ -202,9 +195,8 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${
-                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
-                      }`}
+                      className={`legend-chip ${selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                        }`}
                       onClick={() => handleFilterClick(role.id)}
                       style={{ cursor: "pointer" }}
                     >

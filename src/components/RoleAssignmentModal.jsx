@@ -11,7 +11,18 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
   };
 
   return (
-    <div className="role-modal-overlay" onClick={onClose}>
+    <div
+      className="role-modal-overlay"
+      onClick={onClose}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      }}
+      aria-label="Close modal"
+    >
       <div className="role-modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="role-modal-close" onClick={onClose}>
           ×
@@ -22,12 +33,17 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
         </p>
         <div className="role-options">
           {availableRoles && availableRoles.filter((role) => role.id > 1).map((role) => (
-            <div key={role.id} className="role-option" onClick={() => handleRoleSelect(role.id)}>
+            <button
+              key={role.id}
+              type="button"
+              className="role-option"
+              onClick={() => handleRoleSelect(role.id)}
+            >
               <div className="role-icon">
                 {getRoleIcon(role.role, 28)}
               </div>
               <span className="role-name">{role.role}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>

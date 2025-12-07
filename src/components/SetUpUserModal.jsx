@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 import "./styles/SetUpUserModal.css";
 
@@ -121,5 +122,11 @@ function SetUpUserModal({ isOpen, onClose, onCreateUser }) {
     </div>
   );
 }
+
+SetUpUserModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onCreateUser: PropTypes.func.isRequired,
+};
 
 export default SetUpUserModal;

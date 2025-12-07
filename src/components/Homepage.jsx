@@ -42,15 +42,13 @@ function Homepage() {
 
   // Effect to handle fade-out animation before removing button from DOM
   useEffect(() => {
-    if (!showScrollButton) {
-      // Wait for fade-out animation to complete (300ms) before removing from DOM
+    if (showScrollButton) {
+      setIsVisible(true);
+    } else {
       const timer = setTimeout(() => {
         setIsVisible(false);
       }, 300);
       return () => clearTimeout(timer);
-    } else {
-      // Immediately show button when scrolling up
-      setIsVisible(true);
     }
   }, [showScrollButton]);
 
@@ -190,7 +188,7 @@ function Homepage() {
       {/* Floating Scroll Button */}
       {isVisible && (
         <button 
-          className={`floating-scroll-btn ${!showScrollButton ? 'hide' : ''}`} 
+          className={`floating-scroll-btn ${showScrollButton ? '' : 'hide'}`} 
           onClick={scrollToBottom}
         >
           <ArrowDown size={24} />

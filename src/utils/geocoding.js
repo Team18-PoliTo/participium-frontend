@@ -57,7 +57,7 @@ const fetchAddressFromAPI = async (lat, lng) => {
 
     const data = await response.json();
 
-    if (!data || !data.address) {
+    if (!data?.address) {
       return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
     }
 

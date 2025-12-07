@@ -49,12 +49,12 @@ function NavHeader() {
     };
 
     window.addEventListener("scroll", handleCloseOnScroll, { passive: true });
-    window.addEventListener("touchmove", handleCloseOnScroll, { passive: true });
+    globalThis.addEventListener("touchmove", handleCloseOnScroll, { passive: true });
     window.addEventListener("resize", handleCloseOnScroll);
 
     return () => {
       window.removeEventListener("scroll", handleCloseOnScroll);
-      window.removeEventListener("touchmove", handleCloseOnScroll);
+      globalThis.removeEventListener("touchmove", handleCloseOnScroll);
       window.removeEventListener("resize", handleCloseOnScroll);
     };
   }, [isMenuOpen]);
@@ -68,7 +68,7 @@ function NavHeader() {
     <>
       {/* Overlay to close the menu */}
       {isMobile && isMenuOpen && (
-        <div className="menu-overlay" onClick={closeMenu}></div>
+        <button className="menu-overlay" onClick={closeMenu}></button>
       )}
 
       <div style={{ position: "relative" }}>

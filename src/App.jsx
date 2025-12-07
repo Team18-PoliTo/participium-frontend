@@ -1,5 +1,5 @@
 import "./index.css";
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useMemo } from "react";
 import { Route, Routes, Navigate } from "react-router";
 import API from "./API/API";
 import "./App.css";
@@ -36,13 +36,14 @@ function App() {
     try {
       const user = await API.getUserInfo();
       setUser(user);
-      if (user.kind !== "citizen") {
+      if (user.kind === "citizen") {
+        setCitizenLoggedIn(true);
+      } else {
         setUserRole(user.profile.role);
         setUserLoggedIn(true);
-      } else {
-        setCitizenLoggedIn(true);
       }
     } catch (err) {
+      console.log("Auth check failed:", err);
       setUser(null);
     } finally {
       setIsCheckingAuth(false);
@@ -66,25 +67,35 @@ function App() {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
+  const userContextValue = useMemo(() => ({
+    user,
+    setUser,
+    citizenLoggedIn,
+    setCitizenLoggedIn,
+    userLoggedIn,
+    setUserLoggedIn,
+    userRole,
+    setUserRole,
+  }), [user, citizenLoggedIn, userLoggedIn, userRole]);
+
+  const navbarContextValue = useMemo(() => ({
+    navbarText,
+    setNavbarText,
+  }), [navbarText]);
+
+  const mobileContextValue = useMemo(() => ({
+    isMobile,
+    setIsMobile,
+  }), [isMobile]);
+
   if (isCheckingAuth) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        setUser,
-        citizenLoggedIn,
-        setCitizenLoggedIn,
-        userLoggedIn,
-        setUserLoggedIn,
-        userRole,
-        setUserRole,
-      }}
-    >
-      <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
-        <MobileContext.Provider value={{ isMobile, setIsMobile }}>
+    <UserContext.Provider value={userContextValue}>
+      <NavbarTextContext.Provider value={navbarContextValue}>
+        <MobileContext.Provider value={mobileContextValue}>
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />

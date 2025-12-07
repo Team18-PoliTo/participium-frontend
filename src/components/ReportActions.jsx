@@ -7,7 +7,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
     <>
       {/* Action Toggle */}
       <div className="mb-3">
-        <label className="report-desc-label fw-bold">Action</label>
+        <div className="report-desc-label fw-bold">Action</div>
         <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
           <Button
             className={`report-desc-toggle-btn ${isRejecting ? '' : 'active'}`}
@@ -28,7 +28,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
 
       {/* Explanation */}
       <div className="mb-3">
-        <label className="report-desc-label fw-bold">Explanation</label>
+        <div className="report-desc-label fw-bold">Explanation</div>
         <Form.Control
           as="textarea"
           rows={4}

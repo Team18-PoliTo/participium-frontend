@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import './styles/Login.css';
-import { useActionState, useContext } from 'react';
+import { useActionState, useContext,useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate} from 'react-router';
 import { UserContext } from '../App';
@@ -8,7 +7,7 @@ import API from '../API/API';
 import ErrorModal from './ErrorModal'; 
 
 function Login() {
-    const [state, formAction, isPending] = useActionState(loginFunction, {
+    const [, formAction, isPending] = useActionState(loginFunction, {
         email: '',
         password: ''
     });
@@ -17,7 +16,7 @@ function Login() {
     // State per il toggle tra Citizen e Employee
     const [isEmployee, setIsEmployee] = useState(false);
 
-    const {citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, setUser, setUserRole} = useContext(UserContext);
+    const { setCitizenLoggedIn,  setUserLoggedIn, setUser, setUserRole} = useContext(UserContext);
 
     const [errorModalShow, setErrorModalShow] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -58,7 +57,7 @@ function Login() {
                 {/* Toggle per switchare tra Citizen e Employee */}
                 <div className={`user-type-toggle ${isEmployee ? 'employee-active' : ''}`}>
                     <Button
-                        className={`toggle-btn ${!isEmployee ? 'active' : ''}`}
+                        className={`toggle-btn ${isEmployee ? '' : 'active'}`}
                         variant="link"
                         onClick={() => setIsEmployee(false)}
                         disabled={isPending}

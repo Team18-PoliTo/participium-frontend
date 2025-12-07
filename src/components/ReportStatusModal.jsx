@@ -16,13 +16,11 @@ function ReportStatusModal({ show, onClose, isSuccess, message }) {
         <Modal.Title>
           {isSuccess ? (
             <>
-              <i className="bi bi-check-circle-fill me-2" />
-              Success
+              <i className="bi bi-check-circle-fill me-2" /> Success
             </>
           ) : (
             <>
-              <i className="bi bi-exclamation-circle-fill me-2" />
-              Error
+              <i className="bi bi-exclamation-circle-fill me-2" /> Error
             </>
           )}
         </Modal.Title>

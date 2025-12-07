@@ -20,7 +20,7 @@ import { useNavigate } from "react-router";
 
 function UserProfile() {
   const { user, setUser, setCitizenLoggedIn } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loadingReports, setLoadingReports] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -60,7 +60,7 @@ function UserProfile() {
         const userData = await API.getUserInfo();
         setUser(userData);
 
-        if (userData && userData.profile) {
+        if (userData?.profile) {
           setFirstName(userData.profile.firstName || "");
           setLastName(userData.profile.lastName || "");
           setEmail(userData.profile.email || "");
@@ -85,7 +85,7 @@ function UserProfile() {
         }
 
         // fetch reports AFTER avere userData disponibile
-        if (userData && userData.profile && userData.profile.id) {
+        if (userData?.profile?.id) {
           setLoadingReports(true);
           setReportsError("");
           try {
@@ -235,7 +235,28 @@ function UserProfile() {
     }
   };
 
-  if (!user) return <LoadingSpinner />;
+  if (loading || !user) return <LoadingSpinner />;
+
+  let reportsContent;
+  if (loadingReports) {
+    reportsContent = <LoadingSpinner />;
+  } else if (citizenReports.length === 0) {
+    reportsContent = (
+      <p className="text-center no-reports-message">
+        You haven't submitted any reports yet.
+      </p>
+    );
+  } else {
+    reportsContent = (
+      <div className="profile-reports-scrollable">
+        {citizenReports.map((report) => (
+          <div key={report.id} className="profile-report-card-wrapper">
+            <ReportCard report={report} onClick={handleReportClick} />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="user-profile-wrapper">
@@ -311,9 +332,8 @@ function UserProfile() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       readOnly={!isEditing}
-                      className={`profile-input ${
-                        !isEditing ? "read-only" : ""
-                      }`}
+                      className={`profile-input ${!isEditing ? "read-only" : ""
+                        }`}
                     />
                   </Form.Group>
                 </Col>
@@ -325,9 +345,8 @@ function UserProfile() {
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       readOnly={!isEditing}
-                      className={`profile-input ${
-                        !isEditing ? "read-only" : ""
-                      }`}
+                      className={`profile-input ${!isEditing ? "read-only" : ""
+                        }`}
                     />
                   </Form.Group>
                 </Col>
@@ -341,9 +360,8 @@ function UserProfile() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       readOnly={!isEditing}
-                      className={`profile-input ${
-                        !isEditing ? "read-only" : ""
-                      }`}
+                      className={`profile-input ${!isEditing ? "read-only" : ""
+                        }`}
                     />
                   </Form.Group>
                 </Col>
@@ -380,9 +398,8 @@ function UserProfile() {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       readOnly={!isEditing}
-                      className={`profile-input ${
-                        !isEditing ? "read-only" : ""
-                      }`}
+                      className={`profile-input ${!isEditing ? "read-only" : ""
+                        }`}
                     />
                   </Form.Group>
                 </Col>
@@ -454,21 +471,7 @@ function UserProfile() {
             </Alert>
           )}
 
-          {loadingReports ? (
-            <LoadingSpinner />
-          ) : citizenReports.length === 0 ? (
-            <p className="text-center no-reports-message">
-              You haven't submitted any reports yet.
-            </p>
-          ) : (
-            <div className="profile-reports-scrollable">
-              {citizenReports.map((report) => (
-                <div key={report.id} className="profile-report-card-wrapper">
-                  <ReportCard report={report} onClick={handleReportClick} />
-                </div>
-              ))}
-            </div>
-          )}
+          {reportsContent}
         </Form>
       </Container>
 

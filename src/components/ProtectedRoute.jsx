@@ -1,5 +1,6 @@
 import { Navigate } from "react-router";
 import { useContext } from "react";
+import PropTypes from "prop-types";
 import { UserContext } from "../App";
 
 function ProtectedRoute({ children, allowedRoles, requireCitizen = false }) {
@@ -23,5 +24,11 @@ function ProtectedRoute({ children, allowedRoles, requireCitizen = false }) {
   // If logged in but not authorized, show not authorized page
   return <Navigate replace to="/not-authorized" />;
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+  allowedRoles: PropTypes.arrayOf(PropTypes.string),
+  requireCitizen: PropTypes.bool,
+};
 
 export default ProtectedRoute;

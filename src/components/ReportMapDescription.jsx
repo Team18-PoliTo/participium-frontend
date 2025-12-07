@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { Modal, Button, Row, Col } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { MapPin } from "lucide-react";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportMapDescription.css";
-import { getAddressFromCoordinates } from "../utils/geocoding";
 
 function ReportMapDescription({ show, onHide, report }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -122,7 +122,7 @@ function ReportMapDescription({ show, onHide, report }) {
               {report.photos && report.photos.length > 0 ? (
                 <Row className="g-3">
                   {report.photos.map((photo, index) => (
-                    <Col key={index} xs={4}>
+                    <Col key={photo} xs={4}>
                       <img
                         src={photo}
                         alt={`Report photo ${index + 1}`}
@@ -135,7 +135,7 @@ function ReportMapDescription({ show, onHide, report }) {
                 </Row>
               ) : (
                 <div className="text-center text-muted py-3">
-                    <i className="bi bi-image" style={{fontSize: '2rem', opacity: 0.5}}></i>
+                    <i className="bi bi-image" style={{fontSize: '2rem', opacity: 0.5}} />
                     <p className="mb-0 mt-2 small">No photos attached</p>
                 </div>
               )}
@@ -174,5 +174,25 @@ function ReportMapDescription({ show, onHide, report }) {
     </>
   );
 }
+
+ReportMapDescription.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+  report: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    address: PropTypes.string,
+    location: PropTypes.shape({
+      latitude: PropTypes.number,
+      longitude: PropTypes.number,
+    }),
+    category: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    status: PropTypes.string,
+    createdAt: PropTypes.string,
+    photos: PropTypes.arrayOf(PropTypes.string),
+  }),
+};
 
 export default ReportMapDescription;

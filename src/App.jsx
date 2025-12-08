@@ -17,6 +17,7 @@ import RoleBasedRedirect from "./components/RoleBasedRedirect";
 import OfficerPage from "./components/OfficerPage";
 import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/UserPage";
+import MaintainerPage from "./components/MaintainerPage";   
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -147,6 +148,15 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={allowedOfficerRoles}>
                     <OfficerPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/maintainer"
+                element={
+                  <ProtectedRoute allowedRoles={["External Maintainer"]}>
+                    <MaintainerPage />
                   </ProtectedRoute>
                 }
               />

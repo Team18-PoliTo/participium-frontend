@@ -13,6 +13,7 @@ function ReportDescriptionModal({
   report,
   onReportUpdated,
   isOfficerView = false,
+  actionsRenderer = null,
 }) {
   const [selectedCategory, setSelectedCategory] = useState(
     report?.category || ""
@@ -59,9 +60,8 @@ function ReportDescriptionModal({
         (error.message && typeof error.message === "string"
           ? error.message
           : "An error occurred") ||
-          `Failed to ${
-            isRejecting ? "reject" : "approve"
-          } the report. Please try again.`
+        `Failed to ${isRejecting ? "reject" : "approve"
+        } the report. Please try again.`
       );
     }
   };
@@ -80,6 +80,41 @@ function ReportDescriptionModal({
       return val.name || val.description || JSON.stringify(val);
     }
     return val;
+  };
+
+  const renderFooterOrActions = () => {
+    if (actionsRenderer) {
+      return actionsRenderer({
+        report,
+        onSuccess: (data) => {
+          setSuccessData(data);
+          if (onReportUpdated) onReportUpdated(report.id);
+        },
+        onCancel: handleClose,
+      });
+    }
+
+    if (isOfficerView) {
+      return (
+        <Modal.Footer className="report-map-desc-modal-footer">
+          <Button className="report-map-desc-btn-cancel" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      );
+    }
+
+    return (
+      <ReportActions
+        isRejecting={isRejecting}
+        setIsRejecting={setIsRejecting}
+        explanation={explanation}
+        setExplanation={setExplanation}
+        error={error}
+        onConfirm={handleConfirm}
+        onCancel={handleClose}
+      />
+    );
   };
 
   if (!report) return null;
@@ -129,30 +164,11 @@ function ReportDescriptionModal({
           <>
             <ReportInfo
               report={report}
-              canEditCategory={!isOfficerView}
+              canEditCategory={!isOfficerView && !actionsRenderer}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-            {isOfficerView ? (
-              <Modal.Footer className="report-map-desc-modal-footer">
-                <Button
-                  className="report-map-desc-btn-cancel"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-              </Modal.Footer>
-            ) : (
-              <ReportActions
-                isRejecting={isRejecting}
-                setIsRejecting={setIsRejecting}
-                explanation={explanation}
-                setExplanation={setExplanation}
-                error={error}
-                onConfirm={handleConfirm}
-                onCancel={handleClose}
-              />
-            )}
+            {renderFooterOrActions()}
           </>
         )}
       </Modal.Body>
@@ -169,6 +185,7 @@ ReportDescriptionModal.propTypes = {
   }),
   onReportUpdated: PropTypes.func,
   isOfficerView: PropTypes.bool,
+  actionsRenderer: PropTypes.func,
 };
 
 export default ReportDescriptionModal;

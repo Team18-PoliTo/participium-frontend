@@ -4,12 +4,16 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReportCard from "./ReportCard";
 import ReportDescriptionModal from "./ReportDescriptionModal";
+import DelegationActions from "./DelegationActions";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/OfficerPage.css";
 import { UserContext } from "../App";
 import API from "../API/API";
 import useReportFilters from "../utils/useReportFilters";
 
+
+
+const renderDelegationActions = (props) => <DelegationActions {...props} />;
 
 function OfficerPage() {
 
@@ -230,7 +234,7 @@ function OfficerPage() {
         onHide={() => setShowModal(false)}
         report={selectedReport}
         onReportUpdated={handleReportUpdated}
-        isOfficerView={true}
+        actionsRenderer={renderDelegationActions}
       />
     </div>
   );

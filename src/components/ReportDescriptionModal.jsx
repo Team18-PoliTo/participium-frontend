@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
-import API from "../API/API";
 import ReportInfo from "./ReportInfo";
-import ReportActions from "./ReportActions";
+import ReportPROActions from "./ReportPROActions";
 
 function ReportDescriptionModal({
   show,
@@ -18,59 +17,17 @@ function ReportDescriptionModal({
   const [selectedCategory, setSelectedCategory] = useState(
     report?.category || ""
   );
-  const [explanation, setExplanation] = useState("");
-  const [error, setError] = useState(null);
-  const [isRejecting, setIsRejecting] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
   useEffect(() => {
     if (report) {
       setSelectedCategory(report.category || "");
-      setError(null);
-      setIsRejecting(false);
-      setExplanation("");
       setSuccessData(null);
     }
   }, [report]);
 
-  const handleConfirm = async () => {
-    try {
-      setError(null);
-      const status = isRejecting ? "Rejected" : "Assigned";
-      const explanationText = isRejecting
-        ? explanation
-        : "No explanation required";
-
-      const categoryId = selectedCategory.id;
-
-      const response = await API.judgeReport(
-        report.id,
-        status,
-        categoryId,
-        explanationText
-      );
-
-      setSuccessData(response);
-
-      if (onReportUpdated) {
-        onReportUpdated(report.id);
-      }
-    } catch (error) {
-      setError(
-        (error.message && typeof error.message === "string"
-          ? error.message
-          : "An error occurred") ||
-        `Failed to ${isRejecting ? "reject" : "approve"
-        } the report. Please try again.`
-      );
-    }
-  };
-
   const handleClose = () => {
-    setExplanation("");
     setSelectedCategory(report.category || "");
-    setError(null);
-    setIsRejecting(false);
     setSuccessData(null);
     onHide();
   };
@@ -86,6 +43,7 @@ function ReportDescriptionModal({
     if (actionsRenderer) {
       return actionsRenderer({
         report,
+        selectedCategory,
         onSuccess: (data) => {
           setSuccessData(data);
           if (onReportUpdated) onReportUpdated(report.id);
@@ -105,13 +63,13 @@ function ReportDescriptionModal({
     }
 
     return (
-      <ReportActions
-        isRejecting={isRejecting}
-        setIsRejecting={setIsRejecting}
-        explanation={explanation}
-        setExplanation={setExplanation}
-        error={error}
-        onConfirm={handleConfirm}
+      <ReportPROActions
+        report={report}
+        selectedCategory={selectedCategory}
+        onSuccess={(data) => {
+          setSuccessData(data);
+          if (onReportUpdated) onReportUpdated(report.id);
+        }}
         onCancel={handleClose}
       />
     );
@@ -164,7 +122,7 @@ function ReportDescriptionModal({
           <>
             <ReportInfo
               report={report}
-              canEditCategory={!isOfficerView && !actionsRenderer}
+              canEditCategory={!isOfficerView}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />

@@ -9,6 +9,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import "./styles/PublicRelationsOfficer.css";
 import { getCategoryIcon } from "../constants/categoryIcons";
 import useReportFilters from "../utils/useReportFilters";
+import ReportPROActions from "./ReportPROActions";
 
 function PublicRelationsOfficer() {
   const [reports, setReports] = useState([]);
@@ -83,6 +84,8 @@ function PublicRelationsOfficer() {
       </Container>
     );
   }
+
+  const renderReportActions = (props) => <ReportPROActions {...props} />;
 
   return (
     <div className="pro-board">
@@ -272,6 +275,7 @@ function PublicRelationsOfficer() {
         onHide={() => setShowModal(false)}
         report={selectedReport}
         onReportUpdated={handleReportUpdated}
+        actionsRenderer={renderReportActions}
       />
     </div>
   );

@@ -1,8 +1,53 @@
+import { useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { X, Check } from "lucide-react";
 import PropTypes from "prop-types";
+import API from "../API/API";
 
-function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanation, error, onConfirm, onCancel }) {
+function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
+  const [explanation, setExplanation] = useState("");
+  const [error, setError] = useState(null);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleConfirm = async () => {
+    try {
+      setSubmitting(true);
+      setError(null);
+      const status = isRejecting ? "Rejected" : "Assigned";
+      const explanationText = isRejecting
+        ? explanation
+        : "No explanation required";
+
+      const categoryId = selectedCategory?.id;
+
+      if (!categoryId) {
+        setError("Category is required.");
+        setSubmitting(false);
+        return;
+      }
+
+      const response = await API.judgeReport(
+        report.id,
+        status,
+        categoryId,
+        explanationText
+      );
+
+      onSuccess(response);
+    } catch (error) {
+      setError(
+        (error.message && typeof error.message === "string"
+          ? error.message
+          : "An error occurred") ||
+        `Failed to ${isRejecting ? "reject" : "approve"
+        } the report. Please try again.`
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
       {/* Action Toggle */}
@@ -13,6 +58,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
             className={`report-desc-toggle-btn ${isRejecting ? '' : 'active'}`}
             variant="link"
             onClick={() => setIsRejecting(false)}
+            disabled={submitting}
           >
             Approve
           </Button>
@@ -20,6 +66,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
             className={`report-desc-toggle-btn ${isRejecting ? 'active' : ''}`}
             variant="link"
             onClick={() => setIsRejecting(true)}
+            disabled={submitting}
           >
             Reject
           </Button>
@@ -36,7 +83,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
           value={isRejecting ? explanation : ""}
           onChange={(e) => setExplanation(e.target.value)}
           className="report-desc-textarea"
-          disabled={!isRejecting}
+          disabled={!isRejecting || submitting}
           required={isRejecting}
         />
       </div>
@@ -46,7 +93,7 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
         <Alert
           variant="danger"
           dismissible
-          onClose={() => {}}
+          onClose={() => setError(null)}
         >
           {error}
         </Alert>
@@ -58,12 +105,14 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
           variant="secondary"
           onClick={onCancel}
           className="report-desc-btn-cancel"
+          disabled={submitting}
         >
           Cancel
         </Button>
         <Button
           variant={isRejecting ? "danger" : "success"}
-          onClick={onConfirm}
+          onClick={handleConfirm}
+          disabled={submitting}
           className={`d-flex align-items-center gap-2 ${isRejecting ? 'report-desc-btn-reject' : 'report-desc-btn-approve'}`}
         >
           {isRejecting ? <X size={18} /> : <Check size={18} />}
@@ -74,14 +123,15 @@ function ReportActions({ isRejecting, setIsRejecting, explanation, setExplanatio
   );
 }
 
-ReportActions.propTypes = {
-  isRejecting: PropTypes.bool.isRequired,
-  setIsRejecting: PropTypes.func.isRequired,
-  explanation: PropTypes.string.isRequired,
-  setExplanation: PropTypes.func.isRequired,
-  error: PropTypes.string,
-  onConfirm: PropTypes.func.isRequired,
+ReportPROActions.propTypes = {
+  report: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  selectedCategory: PropTypes.shape({
+    id: PropTypes.number,
+  }),
+  onSuccess: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 
-export default ReportActions;
+export default ReportPROActions;

@@ -16,4 +16,5 @@ export const allowedOfficerRoles = [
   "Digital Services Technician",
   "Emergency Response Liaison",
   "Noise and Air Quality Technician",
+  "External Maintainer"
 ];

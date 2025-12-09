@@ -475,7 +475,7 @@ const getAllCompanies = async () => {
       defaultErrorMessage: "Failed to fetch companies",
     });
     return data;
-  }catch (error) {
+  } catch (error) {
     console.error("Error fetching companies:", error);
     throw error;
   }
@@ -491,7 +491,7 @@ const getCompaniesByCategory = async (categoryId) => {
       defaultErrorMessage: "Failed to fetch companies by category",
     });
     return data;
-  }catch (error) {
+  } catch (error) {
     console.error("Error fetching companies by category:", error);
     throw error;
   }
@@ -500,7 +500,7 @@ const getCompaniesByCategory = async (categoryId) => {
 const delegateReportToCompany = async (reportId, companyId) => {
   try {
     const data = await request(`api/internal/reports/${reportId}/delegate`, {
-      method: "POST",
+      method: "PATCH",
       body: {
         companyId: companyId,
       },
@@ -512,7 +512,7 @@ const delegateReportToCompany = async (reportId, companyId) => {
       defaultErrorMessage: "Failed to delegate report to company",
     });
     return data;
-  }catch (error) {
+  } catch (error) {
     console.error("Error delegating report to company:", error);
     throw error;
   }

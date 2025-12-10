@@ -28,7 +28,11 @@ const buildHeaders = (contentType, useAuth) => {
   return headers;
 };
 
-const handleResponseError = async (response, customErrorMap, defaultErrorMessage) => {
+const handleResponseError = async (
+  response,
+  customErrorMap,
+  defaultErrorMessage
+) => {
   let errorData = {};
   try {
     const contentType = response.headers.get("content-type");
@@ -43,9 +47,7 @@ const handleResponseError = async (response, customErrorMap, defaultErrorMessage
     throw new Error(errorData.error || customErrorMap[response.status]);
   }
 
-  throw new Error(
-    errorData.error || errorData.message || defaultErrorMessage
-  );
+  throw new Error(errorData.error || errorData.message || defaultErrorMessage);
 };
 
 const parseSuccessResponse = async (response) => {
@@ -77,7 +79,8 @@ const request = async (endpoint, options = {}) => {
   };
 
   if (body) {
-    config.body = contentType === "application/json" ? JSON.stringify(body) : body;
+    config.body =
+      contentType === "application/json" ? JSON.stringify(body) : body;
   }
 
   const response = await fetch(`${SERVER_URL}${endpoint}`, config);
@@ -218,7 +221,14 @@ const registerInternalUser = async (credentials) => {
   }
 };
 
-const updateInternalUserRole = async (id, name, surname, email, role, companyId = null) => {
+const updateInternalUserRole = async (
+  id,
+  name,
+  surname,
+  email,
+  role,
+  companyId = null
+) => {
   try {
     const body = {
       newEmail: email,

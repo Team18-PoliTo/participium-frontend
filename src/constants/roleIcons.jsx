@@ -1,4 +1,4 @@
-import { 
+import {
   UserX,
   Shield,
   Users,
@@ -18,12 +18,12 @@ import {
   Search,
   Laptop,
   Siren,
-  Wind
+  Wind,
 } from "lucide-react";
 
 export const ROLE_ICONS = {
-  "Unassigned": UserX,
-  "ADMIN": Shield,
+  Unassigned: UserX,
+  ADMIN: Shield,
   "Public Relations Officer": Users,
   "Street Maintenance Operator": HardHat,
   "Public Lighting Operator": Lightbulb,

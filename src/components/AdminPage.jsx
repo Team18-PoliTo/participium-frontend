@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Form, Card, Container, Button, Badge, InputGroup, } from "react-bootstrap";
+import {
+  Form,
+  Card,
+  Container,
+  Button,
+  Badge,
+  InputGroup,
+} from "react-bootstrap";
 import "./styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";

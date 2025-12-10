@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import { UserContext } from "../App";
 
 function ProtectedRoute({ children, allowedRoles, requireCitizen = false }) {
-  const { user, citizenLoggedIn, userLoggedIn, userRole } = useContext(UserContext);
+  const { user, citizenLoggedIn, userLoggedIn, userRole } =
+    useContext(UserContext);
 
   // If citizen access is required and user is a citizen
   if (requireCitizen && citizenLoggedIn) {

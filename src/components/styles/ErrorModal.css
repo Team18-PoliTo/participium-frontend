@@ -1,15 +1,14 @@
 .error-modal .modal-content {
-  background-color: #E1EDF4;
-  font-family: 'Inter', sans-serif;
-  border: 3px solid #3D5A80;
+  background-color: #e1edf4;
+  font-family: "Inter", sans-serif;
+  border: 3px solid #3d5a80;
 }
 
 .error-modal .modal-dialog {
-  max-width: 400px;     
-  width: 90vw;         
-  margin: 0 auto;      
+  max-width: 400px;
+  width: 90vw;
+  margin: 0 auto;
 }
-
 
 .error-modal .modal-title {
   font-weight: bold;

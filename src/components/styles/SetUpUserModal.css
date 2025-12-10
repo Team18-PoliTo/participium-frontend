@@ -41,7 +41,7 @@
 .set-up-user-title {
   color: #1a2332;
   font-size: 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   margin-bottom: 20px;
   text-align: center;
@@ -80,7 +80,7 @@
 /* Campi di input */
 .setup-user-form .form-control {
   border-radius: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   border: 1px solid rgba(61, 90, 128, 0.2);
   background: #ffffff;
   padding: 10px 14px;
@@ -89,7 +89,7 @@
 }
 
 .setup-user-form .form-control:focus {
-  border-color: #98C1D9;
+  border-color: #98c1d9;
   box-shadow: 0 0 0 3px rgba(152, 193, 217, 0.15);
   background: #ffffff;
 }
@@ -108,7 +108,7 @@
 /* Pulsante crea utente */
 .setup-user-btn {
   width: 100%;
-  background: linear-gradient(135deg, #EE6C4D, #f6906f) !important;
+  background: linear-gradient(135deg, #ee6c4d, #f6906f) !important;
   color: #fff !important;
   font-weight: 600 !important;
   border: none !important;
@@ -116,14 +116,14 @@
   border-radius: 10px;
   font-size: 15px;
   margin-top: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(61, 90, 128, 0.25);
   letter-spacing: 0.02em;
 }
 
 .setup-user-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #EE6C4D, #f6906f) !important;
+  background: linear-gradient(135deg, #ee6c4d, #f6906f) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(61, 90, 128, 0.3);
 }

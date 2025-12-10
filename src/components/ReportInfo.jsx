@@ -8,7 +8,12 @@ import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
 import API from "../API/API";
 
-function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCategory }) {
+function ReportInfo({
+  report,
+  canEditCategory,
+  selectedCategory,
+  setSelectedCategory,
+}) {
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
@@ -34,12 +39,16 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <div className="report-desc-label">Reported By</div>
         <div className="report-desc-text-display d-flex gap-3">
           <div className="flex-fill">
-            <small className="text-muted d-block text-uppercase report-desc-sublabel">First Name</small>
+            <small className="text-muted d-block text-uppercase report-desc-sublabel">
+              First Name
+            </small>
             <span>{report.citizenName || "N/A"}</span>
           </div>
           <div className="border-start mx-2"></div>
           <div className="flex-fill">
-            <small className="text-muted d-block text-uppercase report-desc-sublabel">Last Name</small>
+            <small className="text-muted d-block text-uppercase report-desc-sublabel">
+              Last Name
+            </small>
             <span>{report.citizenLastName || "N/A"}</span>
           </div>
         </div>
@@ -85,13 +94,10 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; OpenStreetMap'
+                attribution="&copy; OpenStreetMap"
               />
               <Marker
-                position={[
-                  report.location.latitude,
-                  report.location.longitude,
-                ]}
+                position={[report.location.latitude, report.location.longitude]}
               />
             </MapContainer>
           </div>
@@ -107,12 +113,13 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
               <Dropdown.Toggle id="report-category-dropdown">
                 <div className="d-flex align-items-center gap-2">
                   {getCategoryIcon(
-                    categories.find((c) => c.id === selectedCategory?.id)?.name || "",
+                    categories.find((c) => c.id === selectedCategory?.id)
+                      ?.name || "",
                     20
                   )}
                   <span>
-                    {categories.find((c) => c.id === selectedCategory?.id)?.name ||
-                      "Select a category"}
+                    {categories.find((c) => c.id === selectedCategory?.id)
+                      ?.name || "Select a category"}
                   </span>
                 </div>
               </Dropdown.Toggle>
@@ -185,7 +192,10 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
             </Row>
           ) : (
             <div className="text-center text-muted py-3">
-              <i className="bi bi-image" style={{ fontSize: '2rem', opacity: 0.5 }}></i>
+              <i
+                className="bi bi-image"
+                style={{ fontSize: "2rem", opacity: 0.5 }}
+              ></i>
               <p className="mb-0 mt-2 small">No photos attached</p>
             </div>
           )}
@@ -207,7 +217,11 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "80vh",
+              objectFit: "contain",
+            }}
           />
         </Modal.Body>
       </Modal>

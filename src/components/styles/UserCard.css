@@ -43,7 +43,7 @@
   gap: 6px;
   min-width: 0;
   color: #1b2432;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .user-info-main {
@@ -70,7 +70,11 @@
   letter-spacing: 0.03em;
   padding: 5px 12px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(61, 90, 128, 0.12), rgba(61, 90, 128, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(61, 90, 128, 0.12),
+    rgba(61, 90, 128, 0.08)
+  );
   color: #284366;
   white-space: normal;
   word-wrap: break-word;
@@ -83,7 +87,11 @@
 }
 
 .user-role-pill.unassigned {
-  background: linear-gradient(135deg, rgba(238, 108, 77, 0.18), rgba(238, 108, 77, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(238, 108, 77, 0.18),
+    rgba(238, 108, 77, 0.12)
+  );
   color: #bb3f26;
 }
 
@@ -102,7 +110,7 @@
   height: 42px;
   min-width: 42px;
   min-height: 42px;
-  background: linear-gradient(135deg, #EE6C4D, #f6906f);
+  background: linear-gradient(135deg, #ee6c4d, #f6906f);
   border-radius: 50%;
   border: none;
   cursor: pointer;
@@ -114,7 +122,7 @@
 }
 
 .user-add-btn:hover {
-  background: linear-gradient(135deg, #f6906f, #EE6C4D);
+  background: linear-gradient(135deg, #f6906f, #ee6c4d);
   box-shadow: 0 6px 16px rgba(238, 108, 77, 0.35);
   transform: scale(1.05);
 }
@@ -125,7 +133,7 @@
 
 .plus-icon::before,
 .plus-icon::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;

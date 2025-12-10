@@ -1,6 +1,6 @@
-import { Modal } from 'react-bootstrap';
-import PropTypes from 'prop-types';
-import './styles/ErrorModal.css';
+import { Modal } from "react-bootstrap";
+import PropTypes from "prop-types";
+import "./styles/ErrorModal.css";
 
 const ErrorModal = ({ isOpen, onClose, title, message }) => {
   return (
@@ -31,4 +31,3 @@ ErrorModal.propTypes = {
 };
 
 export default ErrorModal;
-

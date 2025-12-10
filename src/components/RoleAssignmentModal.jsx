@@ -4,9 +4,15 @@ import "./styles/RoleAssignmentModal.css";
 import { getRoleIcon } from "../constants/roleIcons";
 import { useState } from "react";
 
-function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRoles, companies, }) {
-
-  const[selectedRoleId, setSelectedRoleId] = useState(null);
+function RoleAssignmentModal({
+  user,
+  isOpen,
+  onClose,
+  onAssignRole,
+  availableRoles,
+  companies,
+}) {
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [step, setStep] = useState("role");
 
   const handleRoleSelect = (roleId) => {
@@ -51,37 +57,39 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
         ×
       </button>
 
-{step === "role" ? (
+      {step === "role" ? (
         <>
           <h2 className="role-modal-title">Assign Role</h2>
           <p className="role-modal-subtitle">
             Select a role for {user.firstName} {user.lastName}
           </p>
           <div className="role-options">
-            {availableRoles?.filter((role) => role.id > 1)?.map((role) => (
-              <button
-                key={role.id}
-                type="button"
-                className="role-option"
-                onClick={() => handleRoleSelect(role.id)}
-              >
-                <div className="role-icon">{getRoleIcon(role.role, 28)}</div>
-                <span className="role-name">{role.role}</span>
-              </button>
-            ))}
+            {availableRoles
+              ?.filter((role) => role.id > 1)
+              ?.map((role) => (
+                <button
+                  key={role.id}
+                  type="button"
+                  className="role-option"
+                  onClick={() => handleRoleSelect(role.id)}
+                >
+                  <div className="role-icon">{getRoleIcon(role.role, 28)}</div>
+                  <span className="role-name">{role.role}</span>
+                </button>
+              ))}
           </div>
         </>
       ) : (
         <>
           <div className="d-flex align-items-center mb-3">
-             <button 
-                className="btn btn-link text-decoration-none p-0 me-3" 
-                onClick={handleBack}
-                style={{ fontSize: '1.2rem', color: '#333' }}
-             >
-                <i className="bi bi-arrow-left"></i>
-             </button>
-             <h2 className="role-modal-title mb-0">Select Company</h2>
+            <button
+              className="btn btn-link text-decoration-none p-0 me-3"
+              onClick={handleBack}
+              style={{ fontSize: "1.2rem", color: "#333" }}
+            >
+              <i className="bi bi-arrow-left"></i>
+            </button>
+            <h2 className="role-modal-title mb-0">Select Company</h2>
           </div>
           <p className="role-modal-subtitle">
             Assign a company for External Maintainer
@@ -95,7 +103,10 @@ function RoleAssignmentModal({ user, isOpen, onClose, onAssignRole, availableRol
                 onClick={() => handleCompanySelect(company.id)}
               >
                 <div className="role-icon">
-                  <i className="bi bi-building" style={{ fontSize: "28px" }}></i>
+                  <i
+                    className="bi bi-building"
+                    style={{ fontSize: "28px" }}
+                  ></i>
                 </div>
                 <span className="role-name">{company.name}</span>
               </button>

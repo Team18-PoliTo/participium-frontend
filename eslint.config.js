@@ -82,4 +82,12 @@ export default [
       "no-unused-vars": "off",
     },
   },
+
+  // App.jsx - allow context exports (Fast Refresh warning suppression)
+  {
+    files: ["src/App.jsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ];

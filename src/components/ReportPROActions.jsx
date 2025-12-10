@@ -17,7 +17,7 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
       const status = isRejecting ? "Rejected" : "Assigned";
       const explanationText = isRejecting
         ? explanation
-        : "No explanation required";
+        : "Report assigned to PARTICIPIUM officers";
 
       const categoryId = selectedCategory?.id;
 

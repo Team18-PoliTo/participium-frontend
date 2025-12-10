@@ -84,6 +84,15 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
             {/* Riutilizziamo ReportInfo per i dettagli readonly */}
             <ReportInfo report={report} canEditCategory={false} />
 
+            {report.explanation && (
+              <div className="mb-4 mt-3">
+                <div className="report-desc-label">Last Maintenance Note</div>
+                <div className="report-desc-text-display report-desc-description">
+                  {report.explanation}
+                </div>
+              </div>
+            )}
+
             <div className="mt-4">
               {error && (
                 <Alert

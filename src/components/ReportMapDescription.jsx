@@ -33,7 +33,7 @@ function ReportMapDescription({ show, onHide, report }) {
           {/* Title */}
           <div className="mb-4">
             <div className="report-map-desc-label">Title</div>
-            <div className="report-map-desc-text-display fs-5 fw-bold text-dark">
+            <div className="report-map-desc-text-display report-map-desc-title">
                 {report.title}
             </div>
           </div>
@@ -41,7 +41,7 @@ function ReportMapDescription({ show, onHide, report }) {
           {/* Description */}
           <div className="mb-4">
             <div className="report-map-desc-label">Description</div>
-            <div className="report-map-desc-text-display" style={{minHeight: '80px'}}>
+            <div className="report-map-desc-text-display report-map-desc-description">
                 {report.description}
             </div>
           </div>
@@ -50,10 +50,8 @@ function ReportMapDescription({ show, onHide, report }) {
           <div className="mb-4">
             <div className="report-map-desc-label">Address</div>
             <div className="report-map-desc-text-display d-flex align-items-center gap-2">
-              <MapPin size={20} color="#EE6C4D" />
-              <span className="fw-medium">
-                { report.address }
-              </span>
+              <MapPin size={20} color="#3D5A80" />
+              <span>{ report.address }</span>
             </div>
           </div>
 
@@ -91,20 +89,20 @@ function ReportMapDescription({ show, onHide, report }) {
                 <div className="report-map-desc-label">Category</div>
                 <div className="report-map-desc-text-display d-flex align-items-center gap-2">
                   {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 20)}
-                  <span className="fw-medium">{report.category.name}</span>
+                  <span>{report.category.name}</span>
                 </div>
              </Col>
              <Col md={6}>
                 <div className="report-map-desc-label">Status</div>
-                <div className="report-map-desc-text-display">
-                  <span className="fw-bold text-uppercase" style={{color: '#3D5A80', letterSpacing:'0.5px'}}>{report.status}</span>
+                <div className="report-map-desc-text-display report-map-desc-status">
+                  <span>{report.status}</span>
                 </div>
              </Col>
           </Row>
 
           <div className="mb-4">
              <div className="report-map-desc-label">Submitted On</div>
-             <div className="report-map-desc-text-display text-muted small">
+             <div className="report-map-desc-text-display report-map-desc-date">
                 {new Date(report.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -114,6 +112,16 @@ function ReportMapDescription({ show, onHide, report }) {
                 })}
              </div>
           </div>
+
+          {/* Explanation */}
+          {report.explanation && report.explanation.trim() !== "" && (
+            <div className="mb-4">
+              <div className="report-map-desc-label">Explanation</div>
+              <div className="report-map-desc-text-display report-map-desc-description">
+                {report.explanation}
+              </div>
+            </div>
+          )}
 
           {/* Photos */}
           <div className="mb-3">
@@ -197,6 +205,7 @@ ReportMapDescription.propTypes = {
     }),
     status: PropTypes.string,
     createdAt: PropTypes.string,
+    explanation: PropTypes.string,
     photos: PropTypes.arrayOf(PropTypes.string),
   }),
 };

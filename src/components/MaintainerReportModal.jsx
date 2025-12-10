@@ -24,15 +24,11 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
       setError(null);
 
       // Chiamata API per aggiornare lo stato
-      await API.updateReportStatus(
-        report.id,
-        newStatus,
-        note
-      );
+      await API.updateReportStatus(report.id, newStatus, note);
 
       setSuccessData({
         status: newStatus,
-        message: "Report status updated successfully."
+        message: "Report status updated successfully.",
       });
 
       if (onReportUpdated) {
@@ -75,7 +71,11 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
             <p className="text-center mb-1">
               The report is now marked as <strong>{successData.status}</strong>.
             </p>
-            <Button variant="success" className="mt-4 rounded-pill px-4" onClick={handleClose}>
+            <Button
+              variant="success"
+              className="mt-4 rounded-pill px-4"
+              onClick={handleClose}
+            >
               Close
             </Button>
           </div>
@@ -84,13 +84,19 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
             {/* Riutilizziamo ReportInfo per i dettagli readonly */}
             <ReportInfo report={report} canEditCategory={false} />
 
-            <div className="mt-4 p-3 bg-white rounded-4 border border-light shadow-sm">
-              <h5 className="text-primary mb-3" style={{ color: '#3D5A80', fontWeight: 700 }}>Update Status</h5>
+            <div className="mt-4">
+              {error && (
+                <Alert
+                  variant="danger"
+                  dismissible
+                  onClose={() => setError(null)}
+                >
+                  {error}
+                </Alert>
+              )}
 
-              {error && <Alert variant="danger" dismissible onClose={() => setError(null)}>{error}</Alert>}
-
-              <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold text-muted small text-uppercase">Maintenance Note (Optional)</Form.Label>
+              <div className="mb-3">
+                <div className="report-desc-label">Maintenance Note</div>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -99,36 +105,34 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
                   onChange={(e) => setNote(e.target.value)}
                   className="report-desc-textarea"
                 />
-              </Form.Group>
+              </div>
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                 {/* Logica bottoni basata sullo stato corrente */}
-                {report.status == "Assigned" || report.status == "Delegated" && (
-                  <Button
-                    variant="warning"
-                    className="d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
-                    onClick={() => handleUpdateStatus("In Progress")}
-                    style={{ background: '#F59E0B', border: 'none' }}
-                  >
-                    <Hammer size={18} /> Start Work
-                  </Button>
-                )}
+                {report.status == "Assigned" ||
+                  (report.status == "Delegated" && (
+                    <Button
+                      variant="warning"
+                      className="maintainer-btn-start-work d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
+                      onClick={() => handleUpdateStatus("In Progress")}
+                    >
+                      <Hammer size={18} /> Start Work
+                    </Button>
+                  ))}
 
                 {report.status === "In Progress" && (
                   <>
                     <Button
                       variant="warning"
-                      className="d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
+                      className="maintainer-btn-suspend d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
                       onClick={() => handleUpdateStatus("Suspended")}
-                      style={{ background: '#F97316', border: 'none' }}
                     >
                       <PauseCircle size={18} /> Suspend
                     </Button>
                     <Button
                       variant="success"
-                      className="d-flex align-items-center gap-2 rounded-pill px-4 py-2 fw-bold"
+                      className="maintainer-btn-resolved d-flex align-items-center gap-2 rounded-pill px-4 py-2 fw-bold"
                       onClick={() => handleUpdateStatus("Resolved")}
-                      style={{ background: '#10B981', border: 'none' }}
                     >
                       <CheckCircle size={18} /> Mark as Resolved
                     </Button>
@@ -138,9 +142,8 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
                 {report.status === "Suspended" && (
                   <Button
                     variant="warning"
-                    className="d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
+                    className="maintainer-btn-start-work d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
                     onClick={() => handleUpdateStatus("In Progress")}
-                    style={{ background: '#F59E0B', border: 'none' }}
                   >
                     <Hammer size={18} /> Resume Work
                   </Button>

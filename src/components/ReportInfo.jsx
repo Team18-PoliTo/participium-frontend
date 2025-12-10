@@ -34,13 +34,13 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
         <div className="report-desc-label">Reported By</div>
         <div className="report-desc-text-display d-flex gap-3">
           <div className="flex-fill">
-            <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>First Name</small>
-            <span className="fw-bold">{report.citizenName || "N/A"}</span>
+            <small className="text-muted d-block text-uppercase report-desc-sublabel">First Name</small>
+            <span>{report.citizenName || "N/A"}</span>
           </div>
           <div className="border-start mx-2"></div>
           <div className="flex-fill">
-            <small className="text-muted d-block text-uppercase" style={{ fontSize: '0.7rem', fontWeight: '700' }}>Last Name</small>
-            <span className="fw-bold">{report.citizenLastName || "N/A"}</span>
+            <small className="text-muted d-block text-uppercase report-desc-sublabel">Last Name</small>
+            <span>{report.citizenLastName || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       {/* Title */}
       <div className="mb-4">
         <div className="report-desc-label">Title</div>
-        <div className="report-desc-text-display fs-5 fw-bold text-dark">
+        <div className="report-desc-text-display report-desc-title">
           {report.title}
         </div>
       </div>
@@ -56,7 +56,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       {/* Description */}
       <div className="mb-4">
         <div className="report-desc-label">Description</div>
-        <div className="report-desc-text-display" style={{ minHeight: '80px' }}>
+        <div className="report-desc-text-display report-desc-description">
           {report.description}
         </div>
       </div>
@@ -65,10 +65,8 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       <div className="mb-4">
         <div className="report-desc-label">Address</div>
         <div className="report-desc-text-display d-flex align-items-center gap-2">
-          <MapPin size={20} color="#EE6C4D" />
-          <span className="fw-medium">
-            {report.address}
-          </span>
+          <MapPin size={20} color="#3D5A80" />
+          <span>{report.address}</span>
         </div>
       </div>
 
@@ -112,7 +110,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
                     categories.find((c) => c.id === selectedCategory?.id)?.name || "",
                     20
                   )}
-                  <span className="fw-medium">
+                  <span>
                     {categories.find((c) => c.id === selectedCategory?.id)?.name ||
                       "Select a category"}
                   </span>
@@ -136,14 +134,14 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
           ) : (
             <div className="report-desc-text-display d-flex align-items-center gap-2">
               {getCategoryIcon(report.category?.name || "", 20)}
-              <span className="fw-medium">{report.category?.name || "No category"}</span>
+              <span>{report.category?.name || "No category"}</span>
             </div>
           )}
         </Col>
         <Col md={6}>
           <div className="report-desc-label">Status</div>
-          <div className="report-desc-text-display">
-            <span className="fw-bold text-uppercase" style={{ color: '#3D5A80', letterSpacing: '0.5px' }}>{report.status}</span>
+          <div className="report-desc-text-display report-desc-status">
+            <span>{report.status}</span>
           </div>
         </Col>
       </Row>
@@ -151,7 +149,7 @@ function ReportInfo({ report, canEditCategory, selectedCategory, setSelectedCate
       {/* Submitted On */}
       <div className="mb-4">
         <div className="report-desc-label">Submitted On</div>
-        <div className="report-desc-text-display text-muted small">
+        <div className="report-desc-text-display report-desc-date">
           {new Date(report.createdAt).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",

@@ -260,19 +260,19 @@
 }
 
 .maintainer-reports-list {
-  max-height: calc(100vh - 400px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.maintainer-reports-list::-webkit-scrollbar {
-  width: 8px;
+.maintainer-reports-list .stack {
+  width: 100%;
 }
 
-.maintainer-reports-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #98C1D9, #8ab3cc);
-  border-radius: 10px;
+.maintainer-reports-list .report-card-clickable {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .maintainer-empty-state {

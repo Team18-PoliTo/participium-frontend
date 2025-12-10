@@ -68,7 +68,7 @@ function MaintainerPage() {
     setShowModal(true);
   };
 
-  const handleReportUpdated = async (reportId) => {
+  const handleReportUpdated = async (_reportId) => {
     await fetchReports(true);
   };
 

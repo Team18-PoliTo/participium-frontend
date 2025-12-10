@@ -7,7 +7,7 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import { MapPin, Type, AlignLeft, Camera, Image, X, Send, AlertTriangle, Wrench } from "lucide-react";
 
 
-function ReportForm({ position, onFormSubmit, onReportResult }) {
+function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
   // Form state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

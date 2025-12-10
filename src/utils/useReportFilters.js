@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /**
  * Custom hook to manage report filtering logic
@@ -18,11 +18,7 @@ const useReportFilters = (reports, options = {}) => {
     options.categoryFilter || null
   );
 
-  useEffect(() => {
-    applyFilters();
-  }, [reports, startDate, endDate, sortOrder, statusFilter, categoryFilter]);
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...reports];
 
     // Filtro per status (se presente)
@@ -61,7 +57,11 @@ const useReportFilters = (reports, options = {}) => {
     });
 
     setFilteredReports(filtered);
-  };
+  }, [reports, startDate, endDate, sortOrder, statusFilter, categoryFilter]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const resetFilters = () => {
     setStartDate(null);

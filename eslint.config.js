@@ -1,5 +1,6 @@
 import js from "@eslint/js";
 import globals from "globals";
+import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import prettier from "eslint-config-prettier";
@@ -23,6 +24,7 @@ export default [
       ecmaVersion: 2020,
       globals: {
         ...globals.browser,
+        ...globals.node,
       },
       parserOptions: {
         ecmaVersion: "latest",
@@ -31,10 +33,20 @@ export default [
       },
     },
     plugins: {
+      react: react,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     rules: {
+      // React plugin rules
+      ...react.configs.recommended.rules,
+      ...react.configs["jsx-runtime"].rules,
+
       // React Hooks rules
       ...reactHooks.configs.recommended.rules,
 
@@ -52,6 +64,9 @@ export default [
           argsIgnorePattern: "^_",
         },
       ],
+      // React plugin marks JSX-used vars as used
+      "react/jsx-uses-vars": "error",
+      "react/jsx-uses-react": "error",
       "no-console": "off",
       "prefer-const": "error",
       "no-var": "error",

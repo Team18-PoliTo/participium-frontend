@@ -27,7 +27,7 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 // Inizializzazione dati geografici (statici)
 let turinFeature = null;
-let turinPolygons = [];
+const turinPolygons = [];
 let inverseMask = null;
 
 try {
@@ -42,7 +42,7 @@ try {
     }
     
     const worldBounds = [[90, -180],[90, 180],[-90, 180],[-90, -180],[90, -180]];
-    let holes = geometry.type === "Polygon" ? geometry.coordinates : [];
+    const holes = geometry.type === "Polygon" ? geometry.coordinates : [];
     if (geometry.type === "MultiPolygon") {
       for (const p of geometry.coordinates) {
       holes.push(...p);

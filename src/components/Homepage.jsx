@@ -112,7 +112,7 @@ function Homepage() {
         <Container>
           <h2 className="section-title">Key Features</h2>
           <Row className="g-4">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <Col key={feature.title} md={6} lg={3} className="d-flex">
                 <Card className="feature-card">
                   <Card.Body className="text-center">
@@ -134,7 +134,7 @@ function Homepage() {
             <Col lg={6}>
               <h2 className="info-title">Georeferenced Reports</h2>
               <p className="info-text">
-                Every report is precisely positioned on Turin's map. Citizens
+                Every report is precisely positioned on Turin&apos;s map. Citizens
                 can report issues such as potholes, defective lighting,
                 abandoned waste, and much more.
               </p>
@@ -173,7 +173,7 @@ function Homepage() {
         <Container className="text-center">
           <h2 className="cta-title">Ready to make a difference?</h2>
           <p className="cta-text">
-            Join the community of active citizens contributing to Turin's
+            Join the community of active citizens contributing to Turin&apos;s
             improvement
           </p>
           <Button

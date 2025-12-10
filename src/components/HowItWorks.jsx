@@ -39,12 +39,12 @@ function HowItWorks() {
                 <div className="how-it-works-header">
                     <h1 className="how-it-works-title">Welcome to PARTICIPIUM!</h1>
                     <p className="how-it-works-subtitle">
-                        Here's how you can start making a difference in your city
+                        Here&apos;s how you can start making a difference in your city
                     </p>
                 </div>
 
                 <div className="steps-container">
-                    {steps.map((step, index) => (
+                    {steps.map((step) => (
                         <div key={step.title} className="step-item">
                             <div className="step-icon-wrapper">
                                 <div className="step-icon">{step.icon}</div>

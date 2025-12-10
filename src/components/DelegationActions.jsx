@@ -41,7 +41,7 @@ function DelegationActions({ report, onSuccess, onCancel }) {
                 report.id,
                 selectedCompanyId
             );
-            const { assignedTo, ...responseWithoutAssignedTo } = response;
+            const { assignedTo: _assignedTo, ...responseWithoutAssignedTo } = response;
             onSuccess(responseWithoutAssignedTo);
         } catch (err) {
             console.error("Delegation failed", err);

@@ -5,7 +5,7 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
 import { MapPin, User } from "lucide-react";
 
-function ReportCard({ report, onClick, showUser = false, showPRO = true }) {
+function ReportCard({ report, onClick, showUser = false, showPRO: _showPRO = true }) {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 

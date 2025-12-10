@@ -87,7 +87,7 @@ function Login() {
                     {
                         !isEmployee && (
                             <div className="register-link-text">
-                                If you don't have an account, <Link to="/register">register</Link>
+                                If you don&apos;t have an account, <Link to="/register">register</Link>
                             </div>
                         )
                     }

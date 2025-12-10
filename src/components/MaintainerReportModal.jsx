@@ -118,8 +118,8 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                 {/* Logica bottoni basata sullo stato corrente */}
-                {report.status == "Assigned" ||
-                  (report.status == "Delegated" && (
+                {(report.status === "Assigned" ||
+                  report.status === "Delegated") && (
                     <Button
                       variant="warning"
                       className="maintainer-btn-start-work d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
@@ -127,7 +127,7 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
                     >
                       <Hammer size={18} /> Start Work
                     </Button>
-                  ))}
+                  )}
 
                 {report.status === "In Progress" && (
                   <>

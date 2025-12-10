@@ -8,7 +8,7 @@ function NotAuthorized() {
       <Container className="not-authorized-container">
         <Card className="not-authorized-card">
           <Card.Body className="text-center">
-            <h1 className="not-authorized-title mb-4">You're not authorized to access this page</h1>
+            <h1 className="not-authorized-title mb-4">You&apos;re not authorized to access this page</h1>
             <Link to="/" className="btn btn-primary not-authorized-btn">Go to Home</Link>
           </Card.Body>
         </Card>

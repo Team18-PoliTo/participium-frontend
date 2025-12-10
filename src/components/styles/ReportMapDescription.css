@@ -61,6 +61,44 @@
   word-wrap: break-word;
 }
 
+/* --- TEXT DISPLAY VARIANTS --- */
+.report-map-desc-text-display * {
+  font-family: 'Inter', sans-serif;
+}
+
+.report-map-desc-text-display span {
+  color: #293241;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.report-map-desc-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #293241;
+}
+
+.report-map-desc-description {
+  min-height: 80px;
+  line-height: 1.6;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.report-map-desc-status {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #3D5A80;
+  font-size: 1rem;
+}
+
+.report-map-desc-date {
+  color: #6c757d;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
 /* --- MAP --- */
 .report-map-desc-map-container {
     border-radius: 16px;

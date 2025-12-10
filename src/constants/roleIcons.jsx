@@ -41,7 +41,8 @@ export const ROLE_ICONS = {
   "Accessibility Inspector": Search,
   "Digital Services Technician": Laptop,
   "Emergency Response Liaison": Siren,
-  "Noise and Air Quality Technician": Wind
+  "Noise and Air Quality Technician": Wind,
+  "External Maintainer": HardHat,
 };
 
 export const getRoleIcon = (role, size, color) => {

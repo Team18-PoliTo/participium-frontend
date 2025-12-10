@@ -10,6 +10,7 @@ import { getRoleIcon } from "../constants/roleIcons";
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(new Set());
   const [users, setUsers] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [isSetUpModalOpen, setIsSetUpModalOpen] = useState(false);
   const [visibleRoles, setVisibleRoles] = useState([]);
   const [roleMapping, setRoleMapping] = useState({});
@@ -39,9 +40,12 @@ function AdminPage() {
   }, []);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const fetchedUsers = await API.getAllInternalUsers();
+        const [fetchedUsers, fetchedCompanies] = await Promise.all([
+          API.getAllInternalUsers(),
+          API.getAllCompanies(),
+        ]);
 
         const roleNameToExclude = roleMapping[1];
         const filteredUsers = roleNameToExclude
@@ -49,13 +53,14 @@ function AdminPage() {
           : fetchedUsers;
 
         setUsers(filteredUsers);
+        setCompanies(fetchedCompanies);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     if (Object.keys(roleMapping).length > 0) {
-      fetchUsers();
+      fetchData();
     }
   }, [roleMapping]);
 
@@ -110,7 +115,7 @@ function AdminPage() {
     });
   };
 
-  const handleAssignRole = async (userId, newRoleId) => {
+  const handleAssignRole = async (userId, newRoleId, companyId = null) => {
     try {
       // Trova l'utente corrente
       const currentUser = users.find((user) => user.id === userId);
@@ -119,25 +124,27 @@ function AdminPage() {
         return;
       }
 
-      // Chiama l'API con i vecchi valori tranne il ruolo
-      await API.updateInternalUserRole(
+      const updatedUser = await API.updateInternalUserRole(
         userId,
         currentUser.firstName,
         currentUser.lastName,
         currentUser.email,
-        newRoleId
+        newRoleId,
+        companyId
       );
 
-      // Aggiorna lo state locale con il nuovo ruolo (come nome)
-      const newRoleName = roleMapping[newRoleId];
+      setSelectedFilter(new Set());
+      setSearchEmail("");
+
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.id === userId ? { ...user, role: newRoleName } : user
+          user.id === userId ? { ...currentUser, ...updatedUser } : user
         )
       );
+
+      handleCloseRoleModal();
     } catch (error) {
       console.error("Error assigning role:", error);
-      // Potresti mostrare un messaggio di errore all'utente qui
     }
   };
 
@@ -156,7 +163,9 @@ function AdminPage() {
             variant="primary"
             className="add-user-btn desktop-only"
             onClick={handleOpenSetUpModal}
-          ><i className="bi bi-plus-lg me-2" />Add user</Button>
+          >
+            <i className="bi bi-plus-lg me-2" /> Add user
+          </Button>
         </header>
 
         <div className="admin-layout">
@@ -186,7 +195,9 @@ function AdminPage() {
               variant="primary"
               className="add-user-btn mobile-only w-100"
               onClick={handleOpenSetUpModal}
-            ><i className="bi bi-plus-lg me-2" />Add user</Button>
+            >
+              <i className="bi bi-plus-lg me-2" /> Add user
+            </Button>
             <Card className="legend-card">
               <Card.Body>
                 <p className="legend-card-title">Filter by roles</p>
@@ -195,8 +206,9 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${selectedFilter.has(role.id) ? "legend-chip-active" : ""
-                        }`}
+                      className={`legend-chip ${
+                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                      }`}
                       onClick={() => handleFilterClick(role.id)}
                       style={{ cursor: "pointer" }}
                     >
@@ -263,6 +275,7 @@ function AdminPage() {
           onClose={handleCloseRoleModal}
           onAssignRole={handleAssignRole}
           availableRoles={visibleRoles}
+          companies={companies}
         />
       )}
     </div>

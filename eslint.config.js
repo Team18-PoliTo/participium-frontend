@@ -1,29 +1,70 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from "@eslint/js";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import prettier from "eslint-config-prettier";
 
-export default defineConfig([
-  globalIgnores(['dist']),
+export default [
+  // Ignore patterns
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    ignores: ["dist/**", "build/**", "node_modules/**", "coverage/**"],
+  },
+
+  // Base JS recommended rules
+  js.configs.recommended,
+
+  // Prettier integration - must be last
+  prettier,
+
+  // Main config
+  {
+    files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+      },
       parserOptions: {
-        ecmaVersion: 'latest',
+        ecmaVersion: "latest",
         ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+        sourceType: "module",
       },
     },
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+    },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // React Hooks rules
+      ...reactHooks.configs.recommended.rules,
+
+      // React Refresh rules
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
+
+      // Custom rules
+      "no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+        },
+      ],
+      "no-console": "off",
+      "prefer-const": "error",
+      "no-var": "error",
+      eqeqeq: ["error", "always"],
     },
   },
-])
+
+  // Test files - more lenient
+  {
+    files: ["**/*.test.{js,jsx}", "**/*.spec.{js,jsx}", "**/test/**/*.{js,jsx}"],
+    rules: {
+      "no-console": "off",
+      "no-unused-vars": "off",
+    },
+  },
+];

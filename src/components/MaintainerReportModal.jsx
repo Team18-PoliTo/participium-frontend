@@ -10,14 +10,12 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
   const [note, setNote] = useState("");
   const [error, setError] = useState(null);
   const [successData, setSuccessData] = useState(null);
-  const [actionType, setActionType] = useState(null); // 'In Progress', 'Resolved', 'Suspended'
 
   useEffect(() => {
     if (report) {
       setNote("");
       setError(null);
       setSuccessData(null);
-      setActionType(null);
     }
   }, [report]);
 
@@ -26,7 +24,7 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
       setError(null);
 
       // Chiamata API per aggiornare lo stato
-      const response = await API.updateReportStatus(
+      await API.updateReportStatus(
         report.id,
         newStatus,
         note
@@ -49,7 +47,6 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
     setNote("");
     setError(null);
     setSuccessData(null);
-    setActionType(null);
     onHide();
   };
 
@@ -106,7 +103,7 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
 
               <div className="d-grid gap-2 d-md-flex justify-content-md-center">
                 {/* Logica bottoni basata sullo stato corrente */}
-                {report.status !== "In Progress" && report.status !== "Resolved" && (
+                {report.status == "Assigned" || report.status == "Delegated" && (
                   <Button
                     variant="warning"
                     className="d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"

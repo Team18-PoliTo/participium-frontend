@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { Container, Alert, Dropdown, Card, Badge, Stack } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,52 +31,45 @@ function MaintainerPage() {
     statusFilter,
     setStatusFilter,
     resetFilters,
-  } = useReportFilters(reports, { statusFilter: "All" }); // Default mostra Assigned
+  } = useReportFilters(reports, { statusFilter: "All" });
 
-  // Caricamento Report Assegnati all'azienda
-  useEffect(() => {
-    const fetchCompanyReports = async () => {
-      try {
-        setLoading(true);
-        // Assumiamo che l'utente loggato sia l'External Maintainer e il backend sappia chi è dal token
-        const fetchedReports = await API.getReportsAssignedToMe();
-        console.log(fetchedReports);
+  const fetchReports = useCallback(async (background = false) => {
+    try {
+      if (!background) setLoading(true);
 
-        // Normalizzazione dati se necessario
-        const normalize = (r) => {
-          if (!r) return [];
-          if (Array.isArray(r)) return r;
-          if (Array.isArray(r.data)) return r.data;
-          return [];
-        };
+      const fetchedReports = await API.getReportsAssignedToMe();
 
-        setReports(normalize(fetchedReports));
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch company reports:", err);
-        setError("Failed to load maintenance reports. Please try again later.");
-        setReports([]); // Pulisce in caso di errore
-      } finally {
-        setLoading(false);
-      }
-    };
+      const normalize = (r) => {
+        if (!r) return [];
+        if (Array.isArray(r)) return r;
+        if (Array.isArray(r.data)) return r.data;
+        return [];
+      };
 
-    fetchCompanyReports();
+      setReports(normalize(fetchedReports));
+      setError(null);
+      return normalize(fetchedReports);
+    } catch (err) {
+      console.error("Failed to fetch reports:", err);
+      setError("Failed to load maintenance reports. Please try again later.");
+      setReports([]);
+      return [];
+    } finally {
+      if (!background) setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
 
   const handleReportClick = (report) => {
     setSelectedReport(report);
     setShowModal(true);
   };
 
-  const handleReportUpdated = (reportId) => {
-    // Ricarichiamo i report per avere lo stato aggiornato, oppure aggiorniamo localmente
-    // Qui optiamo per un refresh ottimistico locale se il modale passa l'ID
-    // Ma siccome cambiamo lo stato, potrebbe uscire dai filtri correnti (es. se filtro per Assigned e diventa In Progress)
-
-    // Per semplicità, richiamiamo l'API o filtriamo. Se l'API restituisce lo stato aggiornato è meglio.
-    // Simuliamo aggiornamento locale o refresh
-    window.location.reload(); // Quick fix to ensure consistency, or fetchReports again
+  const handleReportUpdated = async (reportId) => {
+    await fetchReports(true);
   };
 
   if (loading) {

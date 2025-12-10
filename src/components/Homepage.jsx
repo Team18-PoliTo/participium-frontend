@@ -17,12 +17,13 @@ function Homepage() {
   useEffect(() => {
     const handleScroll = () => {
       // Get current scroll position
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       // Get total scrollable height
       const scrollHeight = document.documentElement.scrollHeight;
       // Get viewport height
       const clientHeight = document.documentElement.clientHeight;
-      
+
       // Hide button if user is within 100px of page bottom
       if (scrollTop + clientHeight >= scrollHeight - 100) {
         setShowScrollButton(false);
@@ -32,12 +33,12 @@ function Homepage() {
     };
 
     // Attach scroll listener
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     // Check initial state on component mount
     handleScroll();
 
     // Cleanup: remove listener on unmount
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Effect to handle fade-out animation before removing button from DOM
@@ -56,7 +57,7 @@ function Homepage() {
   const scrollToBottom = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -134,8 +135,8 @@ function Homepage() {
             <Col lg={6}>
               <h2 className="info-title">Georeferenced Reports</h2>
               <p className="info-text">
-                Every report is precisely positioned on Turin&apos;s map. Citizens
-                can report issues such as potholes, defective lighting,
+                Every report is precisely positioned on Turin&apos;s map.
+                Citizens can report issues such as potholes, defective lighting,
                 abandoned waste, and much more.
               </p>
               <p className="info-text">
@@ -187,8 +188,8 @@ function Homepage() {
 
       {/* Floating Scroll Button */}
       {isVisible && (
-        <button 
-          className={`floating-scroll-btn ${showScrollButton ? '' : 'hide'}`} 
+        <button
+          className={`floating-scroll-btn ${showScrollButton ? "" : "hide"}`}
           onClick={scrollToBottom}
         >
           <ArrowDown size={24} />

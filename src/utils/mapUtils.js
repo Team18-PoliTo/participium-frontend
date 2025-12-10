@@ -1,38 +1,45 @@
 import L from "leaflet";
 
 // --- STILI GEOJSON ---
-export const turinStyle = { 
-  color: "#EE6C4D", 
-  weight: 4, 
-  opacity: 0.6, 
-  fillOpacity: 0 
+export const turinStyle = {
+  color: "#EE6C4D",
+  weight: 4,
+  opacity: 0.6,
+  fillOpacity: 0,
 };
 
-export const inverseMaskStyle = { 
-  color: "transparent", 
-  weight: 0, 
-  fillColor: "#3D5A80", 
-  fillOpacity: 0.15 
+export const inverseMaskStyle = {
+  color: "transparent",
+  weight: 0,
+  fillColor: "#3D5A80",
+  fillOpacity: 0.15,
 };
 
 // --- GESTIONE COLORI (PALETTE UNIFICATA) ---
 // Questi colori corrispondono esattamente ai bordi/testo dei badge nelle card
 export const getStatusColor = (status) => {
   switch (status) {
-    case "Resolved": return "#10B981"; // Verde Smeraldo (Successo)
-    case "Rejected": return "#EF4444"; // Rosso (Errore/Rifiuto)
-    case "In Progress": return "#F59E0B"; // Ambra/Giallo (Attenzione/Lavori)
-    case "Suspended": return "#F97316"; // Arancione (Pausa)
-    case "Assigned": return "#3B82F6"; // Blu (Azione)
-    case "Pending Approval": return "#64748B"; // Grigio/Slate (In attesa)
-    default: return "#3D5A80"; // Blu Brand (Fallback)
+    case "Resolved":
+      return "#10B981"; // Verde Smeraldo (Successo)
+    case "Rejected":
+      return "#EF4444"; // Rosso (Errore/Rifiuto)
+    case "In Progress":
+      return "#F59E0B"; // Ambra/Giallo (Attenzione/Lavori)
+    case "Suspended":
+      return "#F97316"; // Arancione (Pausa)
+    case "Assigned":
+      return "#3B82F6"; // Blu (Azione)
+    case "Pending Approval":
+      return "#64748B"; // Grigio/Slate (In attesa)
+    default:
+      return "#3D5A80"; // Blu Brand (Fallback)
   }
 };
 
 // --- CREAZIONE ICONE ---
 export const createPinIcon = (status) => {
   const color = getStatusColor(status);
-  
+
   return L.divIcon({
     html: `
       <div class="custom-pin-marker">
@@ -67,7 +74,7 @@ export const createClusterCustomIcon = function (cluster) {
     ">
       <span>${cluster.getChildCount()}</span>
     </div>`,
-    className: 'custom-cluster-icon',
+    className: "custom-cluster-icon",
     iconSize: L.point(36, 36, true),
   });
 };

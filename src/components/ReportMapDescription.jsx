@@ -29,7 +29,6 @@ function ReportMapDescription({ show, onHide, report }) {
           <Modal.Title>Report Details</Modal.Title>
         </Modal.Header>
         <Modal.Body className="report-map-desc-modal-body">
-
           {/* Title */}
           <div className="mb-4">
             <div className="report-map-desc-label">Title</div>
@@ -70,7 +69,7 @@ function ReportMapDescription({ show, onHide, report }) {
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; OpenStreetMap'
+                    attribution="&copy; OpenStreetMap"
                   />
                   <Marker
                     position={[
@@ -88,7 +87,12 @@ function ReportMapDescription({ show, onHide, report }) {
             <Col md={6}>
               <div className="report-map-desc-label">Category</div>
               <div className="report-map-desc-text-display d-flex align-items-center gap-2">
-                {getCategoryIcon(report.category.name ? report.category.name : report.category || "", 20)}
+                {getCategoryIcon(
+                  report.category.name
+                    ? report.category.name
+                    : report.category || "",
+                  20
+                )}
                 <span>{report.category.name}</span>
               </div>
             </Col>
@@ -136,7 +140,13 @@ function ReportMapDescription({ show, onHide, report }) {
                         onClick={() => setSelectedPhoto(photo)}
                         className="report-map-desc-photo-button"
                         aria-label={`View photo ${index + 1}`}
-                        style={{ border: 'none', padding: 0, background: 'none', cursor: 'pointer', width: '100%' }}
+                        style={{
+                          border: "none",
+                          padding: 0,
+                          background: "none",
+                          cursor: "pointer",
+                          width: "100%",
+                        }}
                       >
                         <img
                           src={photo}
@@ -149,7 +159,10 @@ function ReportMapDescription({ show, onHide, report }) {
                 </Row>
               ) : (
                 <div className="text-center text-muted py-3">
-                  <i className="bi bi-image" style={{ fontSize: '2rem', opacity: 0.5 }} />
+                  <i
+                    className="bi bi-image"
+                    style={{ fontSize: "2rem", opacity: 0.5 }}
+                  />
                   <p className="mb-0 mt-2 small">No photos attached</p>
                 </div>
               )}
@@ -157,10 +170,7 @@ function ReportMapDescription({ show, onHide, report }) {
           </div>
         </Modal.Body>
         <Modal.Footer className="report-map-desc-modal-footer">
-          <Button
-            className="report-map-desc-btn-cancel"
-            onClick={handleClose}
-          >
+          <Button className="report-map-desc-btn-cancel" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>
@@ -181,7 +191,11 @@ function ReportMapDescription({ show, onHide, report }) {
           <img
             src={selectedPhoto}
             alt="Full size preview"
-            style={{ maxWidth: "100%", maxHeight: "80vh", objectFit: 'contain' }}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "80vh",
+              objectFit: "contain",
+            }}
           />
         </Modal.Body>
       </Modal>

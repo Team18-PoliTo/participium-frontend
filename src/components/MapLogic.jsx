@@ -28,14 +28,14 @@ export const SearchBar = ({ onLocationSelected }) => {
       keepResult: false,
     });
     map.addControl(searchControl);
-    
+
     const handleLocation = (result) => {
       const { x: lng, y: lat } = result.location;
       onLocationSelected({ lat, lng }, map);
     };
 
     map.on("geosearch/showlocation", handleLocation);
-    
+
     return () => {
       map.removeControl(searchControl);
       map.off("geosearch/showlocation", handleLocation);

@@ -15,7 +15,7 @@
 .report-card-clickable:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-  border-color: #3D5A80 !important;
+  border-color: #3d5a80 !important;
 }
 
 /* Layout Flexbox */
@@ -33,7 +33,7 @@
   min-width: 42px;
   border-radius: 50%;
   background-color: #f8f9fa;
-  color: #3D5A80;
+  color: #3d5a80;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,44 +107,44 @@
 
 /* Assigned (Blu #3B82F6) */
 .custom-status-badge.status-assigned.badge {
-  background-color: #EFF6FF !important; /* Blue 50 */
-  color: #3B82F6 !important; /* Blue 500 */
-  border: 1px solid #BFDBFE; /* Blue 200 */
+  background-color: #eff6ff !important; /* Blue 50 */
+  color: #3b82f6 !important; /* Blue 500 */
+  border: 1px solid #bfdbfe; /* Blue 200 */
 }
 
 /* In Progress (Ambra #F59E0B) - Ora coincide col pin Giallo/Ambra */
 .custom-status-badge.status-inprogress.badge {
-  background-color: #FFFBEB !important; /* Amber 50 */
-  color: #F59E0B !important; /* Amber 500 */
-  border: 1px solid #FDE68A; /* Amber 200 */
+  background-color: #fffbeb !important; /* Amber 50 */
+  color: #f59e0b !important; /* Amber 500 */
+  border: 1px solid #fde68a; /* Amber 200 */
 }
 
 /* Resolved (Verde #10B981) */
 .custom-status-badge.status-resolved.badge {
-  background-color: #ECFDF5 !important; /* Emerald 50 */
-  color: #10B981 !important; /* Emerald 500 */
-  border: 1px solid #A7F3D0; /* Emerald 200 */
+  background-color: #ecfdf5 !important; /* Emerald 50 */
+  color: #10b981 !important; /* Emerald 500 */
+  border: 1px solid #a7f3d0; /* Emerald 200 */
 }
 
 /* Rejected (Rosso #EF4444) */
 .custom-status-badge.status-rejected.badge {
-  background-color: #FEF2F2 !important; /* Red 50 */
-  color: #EF4444 !important; /* Red 500 */
-  border: 1px solid #FECACA; /* Red 200 */
+  background-color: #fef2f2 !important; /* Red 50 */
+  color: #ef4444 !important; /* Red 500 */
+  border: 1px solid #fecaca; /* Red 200 */
 }
 
 /* Suspended (Arancio #F97316) */
 .custom-status-badge.status-suspended.badge {
-  background-color: #FFF7ED !important; /* Orange 50 */
-  color: #F97316 !important; /* Orange 500 */
-  border: 1px solid #FED7AA; /* Orange 200 */
+  background-color: #fff7ed !important; /* Orange 50 */
+  color: #f97316 !important; /* Orange 500 */
+  border: 1px solid #fed7aa; /* Orange 200 */
 }
 
 /* Pending Approval (Grigio #64748B) */
 .custom-status-badge.status-pendingapproval.badge {
-  background-color: #F8FAFC !important; /* Slate 50 */
-  color: #64748B !important; /* Slate 500 */
-  border: 1px solid #E2E8F0; /* Slate 200 */
+  background-color: #f8fafc !important; /* Slate 50 */
+  color: #64748b !important; /* Slate 500 */
+  border: 1px solid #e2e8f0; /* Slate 200 */
 }
 
 /* Responsive */
@@ -192,7 +192,7 @@
     height: 36px;
     min-width: 36px;
   }
-  
+
   .report-card-title {
     font-size: 0.85rem !important;
   }

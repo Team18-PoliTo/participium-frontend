@@ -9,7 +9,12 @@
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #eef4fa 0%, #e3ecf5 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 .officer-content-wrapper {
@@ -124,7 +129,12 @@
 
 .officer-filter-title {
   font-size: 14px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-weight: 700;
   margin: 0 0 16px;
   text-transform: uppercase;
@@ -141,7 +151,7 @@
 .officer-filter-label {
   color: #1f2a37;
   font-size: 13px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 600;
   margin: 0 0 8px;
   display: block;
@@ -154,7 +164,7 @@
   border-radius: 12px !important;
   color: #1f2a37;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 500;
   padding: 10px 14px;
   width: 100%;
@@ -188,7 +198,7 @@
   border-radius: 12px !important;
   color: #1f2a37 !important;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 500;
   padding: 10px 14px !important;
   width: 100%;
@@ -244,7 +254,7 @@
 }
 
 .officer-custom-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
-  background: #98C1D9;
+  background: #98c1d9;
   border-radius: 10px;
 }
 
@@ -255,7 +265,7 @@
 .officer-custom-dropdown .dropdown-item {
   color: #1f2a37;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 400;
   padding: 10px 12px;
   border-radius: 8px;
@@ -282,7 +292,7 @@
   border-radius: 12px;
   padding: 11px 16px;
   font-size: 13px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -314,7 +324,7 @@
 
 .officer-reports-title {
   font-size: 22px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 800;
   color: #1a2332;
   margin: 0 0 8px;
@@ -330,7 +340,7 @@
 }
 
 .officer-count-badge {
-  background: linear-gradient(135deg, #98C1D9, #8ab3cc) !important;
+  background: linear-gradient(135deg, #98c1d9, #8ab3cc) !important;
   color: #1f2a37 !important;
   font-weight: 700;
   padding: 4px 10px;
@@ -362,7 +372,7 @@
 
 .officer-empty-message {
   font-size: 18px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   color: #1a2332;
   margin: 0 0 8px;
@@ -370,7 +380,7 @@
 
 .officer-empty-hint {
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #5d6c82;
   margin: 0;
 }

@@ -1,5 +1,12 @@
 import { useState, useEffect, useContext, useCallback } from "react";
-import { Container, Alert, Dropdown, Card, Badge, Stack } from "react-bootstrap";
+import {
+  Container,
+  Alert,
+  Dropdown,
+  Card,
+  Badge,
+  Stack,
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import API from "../API/API";
@@ -79,7 +86,6 @@ function MaintainerPage() {
   return (
     <div className="maintainer-board">
       <Container fluid className="maintainer-content-wrapper">
-
         {/* Header */}
         <header className="maintainer-headline">
           <div className="maintainer-headline-text">
@@ -101,14 +107,12 @@ function MaintainerPage() {
         {error && <Alert variant="danger">{error}</Alert>}
 
         <div className="maintainer-layout">
-
           {/* Sidebar Filtri */}
           <aside className="maintainer-sidebar">
             <Card className="maintainer-filter-card">
               <Card.Body>
                 <span className="maintainer-filter-title">FILTER OPTIONS</span>
                 <div className="maintainer-filter-group">
-
                   {/* Status Filter */}
                   <div className="mb-3">
                     <div className="maintainer-filter-label">Status</div>
@@ -117,12 +121,34 @@ function MaintainerPage() {
                         <span>{statusFilter || "All Statuses"}</span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setStatusFilter("All")}>All</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Delegated")}>Delegated</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Assigned")}>Assigned</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("In Progress")}>In Progress</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Suspended")}>Suspended</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Resolved")}>Resolved</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setStatusFilter("All")}>
+                          All
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Delegated")}
+                        >
+                          Delegated
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Assigned")}
+                        >
+                          Assigned
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("In Progress")}
+                        >
+                          In Progress
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Suspended")}
+                        >
+                          Suspended
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Resolved")}
+                        >
+                          Resolved
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -156,19 +182,30 @@ function MaintainerPage() {
                     <div className="maintainer-filter-label">Sort by Date</div>
                     <Dropdown className="maintainer-custom-dropdown">
                       <Dropdown.Toggle>
-                        <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
+                        <span>
+                          {sortOrder === "desc"
+                            ? "Newest First"
+                            : "Oldest First"}
+                        </span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setSortOrder("desc")}>Newest First</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortOrder("asc")}>Oldest First</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortOrder("desc")}>
+                          Newest First
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortOrder("asc")}>
+                          Oldest First
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
 
-                  <button className="maintainer-reset-btn" onClick={resetFilters}>
-                    <i className="bi bi-arrow-counterclockwise me-2"></i> Reset Filters
+                  <button
+                    className="maintainer-reset-btn"
+                    onClick={resetFilters}
+                  >
+                    <i className="bi bi-arrow-counterclockwise me-2"></i> Reset
+                    Filters
                   </button>
-
                 </div>
               </Card.Body>
             </Card>
@@ -182,7 +219,11 @@ function MaintainerPage() {
                   <div>
                     <h2 className="maintainer-reports-title">Tasks</h2>
                     <p className="maintainer-reports-count">
-                      Showing <Badge bg="secondary" className="maintainer-count-badge">{filteredReports.length}</Badge> tasks
+                      Showing{" "}
+                      <Badge bg="secondary" className="maintainer-count-badge">
+                        {filteredReports.length}
+                      </Badge>{" "}
+                      tasks
                     </p>
                   </div>
                 </div>
@@ -191,7 +232,9 @@ function MaintainerPage() {
                   <div className="maintainer-empty-state">
                     <i className="bi bi-clipboard-check maintainer-empty-icon"></i>
                     <p className="maintainer-empty-message">No tasks found</p>
-                    <p className="maintainer-empty-hint">Check back later or adjust filters.</p>
+                    <p className="maintainer-empty-hint">
+                      Check back later or adjust filters.
+                    </p>
                   </div>
                 ) : (
                   <div className="maintainer-reports-list">
@@ -201,7 +244,7 @@ function MaintainerPage() {
                           key={report.id}
                           report={report}
                           onClick={handleReportClick}
-                        // showPRO={false} 
+                          // showPRO={false}
                         />
                       ))}
                     </Stack>
@@ -210,7 +253,6 @@ function MaintainerPage() {
               </Card.Body>
             </Card>
           </section>
-
         </div>
       </Container>
 

@@ -5,7 +5,12 @@ import { getCategoryIcon } from "../constants/categoryIcons";
 import "./styles/ReportCard.css";
 import { MapPin, User } from "lucide-react";
 
-function ReportCard({ report, onClick, showUser = false, showPRO: _showPRO = true }) {
+function ReportCard({
+  report,
+  onClick,
+  showUser = false,
+  showPRO: _showPRO = true,
+}) {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 
@@ -13,7 +18,7 @@ function ReportCard({ report, onClick, showUser = false, showPRO: _showPRO = tru
     const currentCard = cardRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
-          for (const entry of entries) {
+        for (const entry of entries) {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
           }
@@ -23,12 +28,16 @@ function ReportCard({ report, onClick, showUser = false, showPRO: _showPRO = tru
     );
 
     if (currentCard) observer.observe(currentCard);
-    return () => { if (currentCard) observer.unobserve(currentCard); };
+    return () => {
+      if (currentCard) observer.unobserve(currentCard);
+    };
   }, [isVisible]);
 
   const getStatusBadge = (status) => {
     return (
-      <Badge className={`custom-status-badge status-${status.replaceAll(/\s/g, '').toLowerCase()}`}>
+      <Badge
+        className={`custom-status-badge status-${status.replaceAll(/\s/g, "").toLowerCase()}`}
+      >
         {status}
       </Badge>
     );
@@ -57,14 +66,11 @@ function ReportCard({ report, onClick, showUser = false, showPRO: _showPRO = tru
             <span className="text-truncate">
               {showUser
                 ? `${report.citizenName} ${report.citizenLastName}`
-                : report.address
-              }
+                : report.address}
             </span>
           </div>
 
-          <div className="report-card-category">
-            {report.category.name}
-          </div>
+          <div className="report-card-category">{report.category.name}</div>
         </div>
 
         <div className="report-status-badge-container">

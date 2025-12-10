@@ -43,7 +43,7 @@ function GetBoundsLogger({ onReportsFetched }) {
       // Set a new timer: execute fetchReports only after 600ms of inactivity
       debounceTimerRef.current = setTimeout(() => {
         fetchReports();
-      }, 600); 
+      }, 600);
     };
 
     // Initial load (without delay)
@@ -51,7 +51,7 @@ function GetBoundsLogger({ onReportsFetched }) {
 
     // Add event listeners
     map.on("moveend", handleMoveEnd);
-    
+
     // Add zoomend listener as well for completeness
     map.on("zoomend", handleMoveEnd);
 

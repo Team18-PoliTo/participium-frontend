@@ -40,8 +40,9 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
         (error.message && typeof error.message === "string"
           ? error.message
           : "An error occurred") ||
-        `Failed to ${isRejecting ? "reject" : "approve"
-        } the report. Please try again.`
+          `Failed to ${
+            isRejecting ? "reject" : "approve"
+          } the report. Please try again.`
       );
     } finally {
       setSubmitting(false);
@@ -53,9 +54,11 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
       {/* Action Toggle */}
       <div className="mb-3">
         <div className="report-desc-label fw-bold">Action</div>
-        <div className={`report-desc-action-toggle ${isRejecting ? 'reject-active' : ''}`}>
+        <div
+          className={`report-desc-action-toggle ${isRejecting ? "reject-active" : ""}`}
+        >
           <Button
-            className={`report-desc-toggle-btn ${isRejecting ? '' : 'active'}`}
+            className={`report-desc-toggle-btn ${isRejecting ? "" : "active"}`}
             variant="link"
             onClick={() => setIsRejecting(false)}
             disabled={submitting}
@@ -63,7 +66,7 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
             Approve
           </Button>
           <Button
-            className={`report-desc-toggle-btn ${isRejecting ? 'active' : ''}`}
+            className={`report-desc-toggle-btn ${isRejecting ? "active" : ""}`}
             variant="link"
             onClick={() => setIsRejecting(true)}
             disabled={submitting}
@@ -79,7 +82,11 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
         <Form.Control
           as="textarea"
           rows={4}
-          placeholder={isRejecting ? "Enter your explanation here..." : "No explanation required"}
+          placeholder={
+            isRejecting
+              ? "Enter your explanation here..."
+              : "No explanation required"
+          }
           value={isRejecting ? explanation : ""}
           onChange={(e) => setExplanation(e.target.value)}
           className="report-desc-textarea"
@@ -90,11 +97,7 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
 
       {/* Error Alert */}
       {error && (
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setError(null)}
-        >
+        <Alert variant="danger" dismissible onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
@@ -113,7 +116,7 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
           variant={isRejecting ? "danger" : "success"}
           onClick={handleConfirm}
           disabled={submitting}
-          className={`d-flex align-items-center gap-2 ${isRejecting ? 'report-desc-btn-reject' : 'report-desc-btn-approve'}`}
+          className={`d-flex align-items-center gap-2 ${isRejecting ? "report-desc-btn-reject" : "report-desc-btn-approve"}`}
         >
           {isRejecting ? <X size={18} /> : <Check size={18} />}
           {isRejecting ? "Reject Report" : "Approve Report"}

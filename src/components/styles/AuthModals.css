@@ -1,15 +1,14 @@
 .success-modal .modal-content {
-  background-color: #E1EDF4;
-  font-family: 'Inter', sans-serif;
-  border: 3px solid #3D5A80;
+  background-color: #e1edf4;
+  font-family: "Inter", sans-serif;
+  border: 3px solid #3d5a80;
 }
 
 .success-modal .modal-dialog {
-  max-width: 400px;     
-  width: 90vw;         
-  margin: 0 auto;      
+  max-width: 400px;
+  width: 90vw;
+  margin: 0 auto;
 }
-
 
 .success-modal .modal-title {
   font-weight: bold;
@@ -26,7 +25,7 @@
   display: block;
   margin: 0 auto;
   margin-top: 1rem;
-  background-color: #EE6C4D;
+  background-color: #ee6c4d;
   border: none;
   color: white;
   width: 100%;
@@ -36,7 +35,7 @@
   color: white;
 }
 
-.success-modal .login-button:active{
+.success-modal .login-button:active {
   background-color: #d55a36 !important;
   color: white;
 }

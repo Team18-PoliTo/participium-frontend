@@ -4,8 +4,17 @@ import { Form, Button, Alert, Dropdown } from "react-bootstrap";
 import "./styles/ReportForm.css";
 import API from "../API/API";
 import { getCategoryIcon } from "../constants/categoryIcons";
-import { MapPin, Type, AlignLeft, Camera, Image, X, Send, AlertTriangle, Wrench } from "lucide-react";
-
+import {
+  MapPin,
+  Type,
+  AlignLeft,
+  Camera,
+  Image,
+  X,
+  Send,
+  AlertTriangle,
+  Wrench,
+} from "lucide-react";
 
 function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
   // Form state management
@@ -219,10 +228,12 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
 
   return (
     <Form onSubmit={handleSubmit} className="report-form">
-
       {/* Error alert display */}
       {error && (
-        <Alert variant="danger" className="report-form__error d-flex align-items-center gap-2">
+        <Alert
+          variant="danger"
+          className="report-form__error d-flex align-items-center gap-2"
+        >
           <AlertTriangle size={18} />
           <span>{error}</span>
         </Alert>
@@ -289,9 +300,16 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
       <Form.Group className="report-form__group" controlId="formCategory">
         <Form.Label className="report-form__label">
           <span className="report-form__category-icon-wrapper me-2">
-            {categoryId
-              ? getCategoryIcon(categories.find((c) => c.id === categoryId)?.name, 18)
-              : <Wrench size={18} className="text-primary-blue" />}</span> Category<span className="report-form__required">*</span>
+            {categoryId ? (
+              getCategoryIcon(
+                categories.find((c) => c.id === categoryId)?.name,
+                18
+              )
+            ) : (
+              <Wrench size={18} className="text-primary-blue" />
+            )}
+          </span>{" "}
+          Category<span className="report-form__required">*</span>
         </Form.Label>
         <Dropdown className="w-100">
           <Dropdown.Toggle
@@ -333,7 +351,13 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
       <Form.Group className="report-form__group">
         <Form.Label className="report-form__label mb-2">
           <Camera size={18} className="text-primary-blue me-2" />
-          Photos <span className="report-form__required text-muted fw-normal ms-auto" style={{ fontSize: '0.85rem' }}>(1 to 3 required)</span>
+          Photos{" "}
+          <span
+            className="report-form__required text-muted fw-normal ms-auto"
+            style={{ fontSize: "0.85rem" }}
+          >
+            (1 to 3 required)
+          </span>
         </Form.Label>
 
         {/* Upload button and photo counter */}

@@ -120,14 +120,14 @@ function MaintainerReportModal({ show, onHide, report, onReportUpdated }) {
                 {/* Logica bottoni basata sullo stato corrente */}
                 {(report.status === "Assigned" ||
                   report.status === "Delegated") && (
-                    <Button
-                      variant="warning"
-                      className="maintainer-btn-start-work d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
-                      onClick={() => handleUpdateStatus("In Progress")}
-                    >
-                      <Hammer size={18} /> Start Work
-                    </Button>
-                  )}
+                  <Button
+                    variant="warning"
+                    className="maintainer-btn-start-work d-flex align-items-center gap-2 rounded-pill px-4 py-2 text-white fw-bold"
+                    onClick={() => handleUpdateStatus("In Progress")}
+                  >
+                    <Hammer size={18} /> Start Work
+                  </Button>
+                )}
 
                 {report.status === "In Progress" && (
                   <>

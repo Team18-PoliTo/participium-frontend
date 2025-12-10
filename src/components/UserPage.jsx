@@ -197,7 +197,10 @@ function UserProfile() {
         try {
           await API.logoutUser();
         } catch (e) {
-          console.warn("Server logout failed, proceeding with local logout. Error:", e);
+          console.warn(
+            "Server logout failed, proceeding with local logout. Error:",
+            e
+          );
         }
 
         navigate("/login", { replace: true });

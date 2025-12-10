@@ -76,7 +76,11 @@ export default [
 
   // Test files - more lenient
   {
-    files: ["**/*.test.{js,jsx}", "**/*.spec.{js,jsx}", "**/test/**/*.{js,jsx}"],
+    files: [
+      "**/*.test.{js,jsx}",
+      "**/*.spec.{js,jsx}",
+      "**/test/**/*.{js,jsx}",
+    ],
     rules: {
       "no-console": "off",
       "no-unused-vars": "off",

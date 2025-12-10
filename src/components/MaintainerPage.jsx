@@ -31,7 +31,7 @@ function MaintainerPage() {
     statusFilter,
     setStatusFilter,
     resetFilters,
-  } = useReportFilters(reports, { statusFilter: "Assigned" }); // Default mostra Assigned
+  } = useReportFilters(reports, { statusFilter: "All" }); // Default mostra Assigned
 
   // Caricamento Report Assegnati all'azienda
   useEffect(() => {
@@ -39,16 +39,17 @@ function MaintainerPage() {
       try {
         setLoading(true);
         // Assumiamo che l'utente loggato sia l'External Maintainer e il backend sappia chi è dal token
-        const fetchedReports = await API.getCompanyReports();
-        
+        const fetchedReports = await API.getReportsAssignedToMe();
+        console.log(fetchedReports);
+
         // Normalizzazione dati se necessario
         const normalize = (r) => {
-            if (!r) return [];
-            if (Array.isArray(r)) return r;
-            if (Array.isArray(r.data)) return r.data;
-            return [];
+          if (!r) return [];
+          if (Array.isArray(r)) return r;
+          if (Array.isArray(r.data)) return r.data;
+          return [];
         };
-        
+
         setReports(normalize(fetchedReports));
         setError(null);
       } catch (err) {
@@ -72,7 +73,7 @@ function MaintainerPage() {
     // Ricarichiamo i report per avere lo stato aggiornato, oppure aggiorniamo localmente
     // Qui optiamo per un refresh ottimistico locale se il modale passa l'ID
     // Ma siccome cambiamo lo stato, potrebbe uscire dai filtri correnti (es. se filtro per Assigned e diventa In Progress)
-    
+
     // Per semplicità, richiamiamo l'API o filtriamo. Se l'API restituisce lo stato aggiornato è meglio.
     // Simuliamo aggiornamento locale o refresh
     window.location.reload(); // Quick fix to ensure consistency, or fetchReports again
@@ -85,7 +86,7 @@ function MaintainerPage() {
   return (
     <div className="maintainer-board">
       <Container fluid className="maintainer-content-wrapper">
-        
+
         {/* Header */}
         <header className="maintainer-headline">
           <div className="maintainer-headline-text">
@@ -97,33 +98,34 @@ function MaintainerPage() {
           </div>
           {/* Opzionale: info azienda */}
           {user?.companyName && (
-             <div className="d-flex align-items-center gap-2 text-muted">
-                <Briefcase size={20} />
-                <span className="fw-bold">{user.companyName}</span>
-             </div>
+            <div className="d-flex align-items-center gap-2 text-muted">
+              <Briefcase size={20} />
+              <span className="fw-bold">{user.companyName}</span>
+            </div>
           )}
         </header>
 
         {error && <Alert variant="danger">{error}</Alert>}
 
         <div className="maintainer-layout">
-          
+
           {/* Sidebar Filtri */}
           <aside className="maintainer-sidebar">
             <Card className="maintainer-filter-card">
               <Card.Body>
                 <span className="maintainer-filter-title">FILTER OPTIONS</span>
                 <div className="maintainer-filter-group">
-                  
+
                   {/* Status Filter */}
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">Status</label>
+                    <div className="maintainer-filter-label">Status</div>
                     <Dropdown className="maintainer-custom-dropdown">
                       <Dropdown.Toggle>
                         <span>{statusFilter || "All Statuses"}</span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item onClick={() => setStatusFilter("All")}>All</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setStatusFilter("Delegated")}>Delegated</Dropdown.Item>
                         <Dropdown.Item onClick={() => setStatusFilter("Assigned")}>Assigned</Dropdown.Item>
                         <Dropdown.Item onClick={() => setStatusFilter("In Progress")}>In Progress</Dropdown.Item>
                         <Dropdown.Item onClick={() => setStatusFilter("Suspended")}>Suspended</Dropdown.Item>
@@ -134,7 +136,7 @@ function MaintainerPage() {
 
                   {/* Date Filters */}
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">Start Date</label>
+                    <div className="maintainer-filter-label">Start Date</div>
                     <DatePicker
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
@@ -145,7 +147,7 @@ function MaintainerPage() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">End Date</label>
+                    <div className="maintainer-filter-label">End Date</div>
                     <DatePicker
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
@@ -158,7 +160,7 @@ function MaintainerPage() {
 
                   {/* Sort */}
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">Sort by Date</label>
+                    <div className="maintainer-filter-label">Sort by Date</div>
                     <Dropdown className="maintainer-custom-dropdown">
                       <Dropdown.Toggle>
                         <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
@@ -206,7 +208,7 @@ function MaintainerPage() {
                           key={report.id}
                           report={report}
                           onClick={handleReportClick}
-                          // showPRO={false} 
+                        // showPRO={false} 
                         />
                       ))}
                     </Stack>
@@ -220,7 +222,7 @@ function MaintainerPage() {
       </Container>
 
       {/* Modal Actions */}
-      <MaintainerReportModal 
+      <MaintainerReportModal
         show={showModal}
         onHide={() => setShowModal(false)}
         report={selectedReport}

@@ -218,7 +218,7 @@ const registerInternalUser = async (credentials) => {
   }
 };
 
-const updateInternalUserRole = async ( id, name, surname, email, role, companyId = null) => {
+const updateInternalUserRole = async (id, name, surname, email, role, companyId = null) => {
   try {
     const body = {
       newEmail: email,
@@ -524,6 +524,29 @@ const delegateReportToCompany = async (reportId, companyId) => {
   }
 };
 
+const updateReportStatus = async (reportId, status, note) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}`, {
+      method: "PATCH",
+      body: {
+        status: status,
+        categoryId: null,
+        explanation: note,
+      },
+      customErrorMap: {
+        400: "Validation error",
+        403: "Forbidden - Only the currently assigned officer can update this report",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to update report status",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error updating report status:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -548,6 +571,7 @@ const API = {
   getAllCompanies,
   getCompaniesByCategory,
   delegateReportToCompany,
+  updateReportStatus,
 };
 
 export default API;

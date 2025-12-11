@@ -279,6 +279,10 @@
   box-shadow: 0 4px 12px rgba(238, 108, 77, 0.3);
 }
 
+.legend-chip-active svg {
+  color: #1f2a37 !important;
+}
+
 .legend-chip-active:hover {
   background: linear-gradient(135deg, #f6906f, #ee6c4d) !important;
   border-color: #f6906f !important;

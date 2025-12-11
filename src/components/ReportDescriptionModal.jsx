@@ -122,7 +122,7 @@ function ReportDescriptionModal({
           <>
             <ReportInfo
               report={report}
-              canEditCategory={!isOfficerView}
+              canEditCategory={isOfficerView}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />

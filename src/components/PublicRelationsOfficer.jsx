@@ -283,6 +283,7 @@ function PublicRelationsOfficer() {
         report={selectedReport}
         onReportUpdated={handleReportUpdated}
         actionsRenderer={renderReportActions}
+        isOfficerView={true}
       />
     </div>
   );

@@ -4,8 +4,8 @@ import "./styles/LoadingSpinner.css";
 
 function LoadingSpinner({ message = "Loading..." }) {
   return (
-    <Container 
-      className="d-flex flex-column justify-content-center align-items-center gap-3" 
+    <Container
+      className="d-flex flex-column justify-content-center align-items-center gap-3"
       style={{ minHeight: "80vh" }}
     >
       <output>

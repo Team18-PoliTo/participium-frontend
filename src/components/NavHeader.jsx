@@ -6,6 +6,7 @@ import { NavbarTextContext, UserContext, MobileContext } from "../App";
 import API from "../API/API";
 import { Menu, X, Map, User, LogOut, LogIn, UserPlus } from "lucide-react";
 import { getRoleIcon } from "../constants/roleIcons";
+import { allowedOfficerRoles } from "../constants/allowedOfficerRoles";
 
 function NavHeader() {
   const { navbarText } = useContext(NavbarTextContext);
@@ -16,10 +17,20 @@ function NavHeader() {
     userLoggedIn,
     setUserLoggedIn,
     setUserRole,
-    user, 
+    user,
   } = useContext(UserContext);
   const { isMobile } = useContext(MobileContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Helper function to get the route based on user role
+  const getRoleRoute = (role) => {
+    if (!role) return "/dashboard";
+    if (role === "ADMIN") return "/admin";
+    if (role === "Public Relations Officer") return "/pro";
+    if (role === "External Maintainer") return "/maintainer";
+    if (allowedOfficerRoles.includes(role)) return "/officer";
+    return "/dashboard";
+  };
 
   const handleLogout = async () => {
     await API.logoutUser();
@@ -49,7 +60,9 @@ function NavHeader() {
     };
 
     window.addEventListener("scroll", handleCloseOnScroll, { passive: true });
-    globalThis.addEventListener("touchmove", handleCloseOnScroll, { passive: true });
+    globalThis.addEventListener("touchmove", handleCloseOnScroll, {
+      passive: true,
+    });
     window.addEventListener("resize", handleCloseOnScroll);
 
     return () => {
@@ -74,7 +87,10 @@ function NavHeader() {
       <div style={{ position: "relative" }}>
         <Navbar className="navbar-custom">
           <Container>
-            <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/dashboard"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <Navbar.Brand>{navbarText}</Navbar.Brand>
             </Link>
 
@@ -92,20 +108,18 @@ function NavHeader() {
               <>
                 {(citizenLoggedIn || userLoggedIn) && (
                   <div className="nav-auth-buttons">
-                    {
-                      citizenLoggedIn && location.pathname !== "/map" && (
-                        <Link className="nav-action-btn" to="/map">
-                          <Map size={20} /> <span>Map</span>
-                        </Link>
-                      )
-                    }
+                    {citizenLoggedIn && location.pathname !== "/map" && (
+                      <Link className="nav-action-btn" to="/map">
+                        <Map size={20} /> <span>Map</span>
+                      </Link>
+                    )}
                     {citizenLoggedIn && location.pathname !== "/profile" && (
                       <Link className="nav-action-btn" to="/profile">
                         {userAvatar ? (
-                          <img 
-                            src={userAvatar} 
-                            alt="User" 
-                            className="nav-user-avatar" 
+                          <img
+                            src={userAvatar}
+                            alt="User"
+                            className="nav-user-avatar"
                           />
                         ) : (
                           <User size={20} />
@@ -113,19 +127,24 @@ function NavHeader() {
                         <span>{displayName}</span>
                       </Link>
                     )}
-                    { userLoggedIn && (
-                      <div className="nav-action-btn">
+                    {userLoggedIn && (
+                      <Link
+                        className="nav-action-btn"
+                        to={getRoleRoute(user.profile.role)}
+                      >
                         {userAvatar ? (
-                          <img 
-                            src={userAvatar} 
-                            alt="User" 
-                            className="nav-user-avatar" 
+                          <img
+                            src={userAvatar}
+                            alt="User"
+                            className="nav-user-avatar"
                           />
                         ) : (
                           getRoleIcon(user.profile.role, 20)
                         )}
-                        <span>{displayName}  {displayLastName}</span>
-                        </div>
+                        <span>
+                          {displayName} {displayLastName}
+                        </span>
+                      </Link>
                     )}
                     <Link
                       className="nav-action-btn"
@@ -173,16 +192,47 @@ function NavHeader() {
                       onClick={closeMenu}
                     >
                       {userAvatar ? (
-                          <img 
-                            src={userAvatar} 
-                            alt="User" 
-                            className="nav-user-avatar me-2" 
-                            style={{width: '20px', height: '20px', display: 'inline-block'}}
-                          />
-                        ) : (
-                          <User size={20} className="me-2" />
-                        )}
+                        <img
+                          src={userAvatar}
+                          alt="User"
+                          className="nav-user-avatar me-2"
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            display: "inline-block",
+                          }}
+                        />
+                      ) : (
+                        <User size={20} className="me-2" />
+                      )}
                       {displayName}
+                    </Link>
+                  )}
+                  {userLoggedIn && (
+                    <Link
+                      className="mobile-menu-item"
+                      to={getRoleRoute(user.profile.role)}
+                      onClick={closeMenu}
+                    >
+                      {userAvatar ? (
+                        <img
+                          src={userAvatar}
+                          alt="User"
+                          className="nav-user-avatar me-2"
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            display: "inline-block",
+                          }}
+                        />
+                      ) : (
+                        getRoleIcon(user.profile.role, 20)
+                      )}
+                      <span
+                        className="me-2"
+                        style={{ display: "inline" }}
+                      ></span>
+                      {displayName} {displayLastName}
                     </Link>
                   )}
                   <Link

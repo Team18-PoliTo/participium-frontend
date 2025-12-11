@@ -1,7 +1,7 @@
 # Manual Testing Document: OfficerPage
 
 ## Purpose
-Verify that Officers (technical/operational users) can view, filter, and sort their assigned reports correctly, and can view report details in read-only mode.
+Verify that Officers (technical/operational users) can view assigned reports, filter them, and **delegate reports to external companies**.
 
 ## Components involved
 - Reports list
@@ -502,7 +502,35 @@ Verify that Officers (technical/operational users) can view, filter, and sort th
 **Verify:**
 - Each officer sees only reports assigned to their role.
 - Report categories match the officer's area of responsibility.
-- The role header displays the correct role name for each user.
+  - The role header displays the correct role name for each user.
+
+---
+
+## Test 31: Delegate Report Flow
+**Objective:** Verify that an officer can delegate a report to an external company.
+
+**Steps:**
+1. Open a report with status "Assigned" (or any status allowing delegation if applicable).
+2. Locate the "Delegate Report" section in the modal.
+3. Click the "Choose a company" dropdown.
+4. Select a company from the list.
+5. Click the "Delegate to Company" button.
+
+**Verify:**
+1. A loading spinner appears on the button.
+2. The modal closes (or shows a success message).
+3. The report is **removed** from the Officer's "Assigned Reports" list (since it's now delegated).
+
+## Test 32: Delegation Validation
+**Objective:** Verify validation when delegating without selecting a company.
+
+**Steps:**
+1. Open a report modal.
+2. Click "Delegate to Company" **without** selecting a company.
+
+**Verify:**
+1. An error alert appears: "Please select a company."
+2. The delegation request is NOT sent.
 
 ---
 

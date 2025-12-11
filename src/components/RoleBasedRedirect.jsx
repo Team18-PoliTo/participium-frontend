@@ -16,6 +16,8 @@ function RoleBasedRedirect() {
         return <Navigate replace to="/admin" />;
       case "Public Relations Officer":
         return <Navigate replace to="/pro" />;
+      case "External Maintainer":
+        return <Navigate replace to="/maintainer" />;
       default:
         if (allowedOfficerRoles.includes(userRole)) {
           return <Navigate replace to="/officer" />;

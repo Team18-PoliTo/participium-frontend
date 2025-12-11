@@ -28,7 +28,11 @@ const buildHeaders = (contentType, useAuth) => {
   return headers;
 };
 
-const handleResponseError = async (response, customErrorMap, defaultErrorMessage) => {
+const handleResponseError = async (
+  response,
+  customErrorMap,
+  defaultErrorMessage
+) => {
   let errorData = {};
   try {
     const contentType = response.headers.get("content-type");
@@ -43,9 +47,7 @@ const handleResponseError = async (response, customErrorMap, defaultErrorMessage
     throw new Error(errorData.error || customErrorMap[response.status]);
   }
 
-  throw new Error(
-    errorData.error || errorData.message || defaultErrorMessage
-  );
+  throw new Error(errorData.error || errorData.message || defaultErrorMessage);
 };
 
 const parseSuccessResponse = async (response) => {
@@ -77,7 +79,8 @@ const request = async (endpoint, options = {}) => {
   };
 
   if (body) {
-    config.body = contentType === "application/json" ? JSON.stringify(body) : body;
+    config.body =
+      contentType === "application/json" ? JSON.stringify(body) : body;
   }
 
   const response = await fetch(`${SERVER_URL}${endpoint}`, config);
@@ -218,16 +221,29 @@ const registerInternalUser = async (credentials) => {
   }
 };
 
-const updateInternalUserRole = async (id, name, surname, email, role) => {
+const updateInternalUserRole = async (
+  id,
+  name,
+  surname,
+  email,
+  role,
+  companyId = null
+) => {
   try {
+    const body = {
+      newEmail: email,
+      newFirstName: name,
+      newLastName: surname,
+      newRoleId: role,
+    };
+
+    if (companyId !== null && companyId !== undefined) {
+      body.newCompanyId = companyId;
+    }
+
     const data = await request(`api/admin/internal-users/${id}`, {
       method: "PUT",
-      body: {
-        newEmail: email,
-        newFirstName: name,
-        newLastName: surname,
-        newRoleId: role,
-      },
+      body,
       customErrorMap: {
         400: "Invalid ID or validation error",
         409: "Email already in use",
@@ -465,6 +481,82 @@ const updateCitizenProfile = async (profileData) => {
   }
 };
 
+const getAllCompanies = async () => {
+  try {
+    const data = await request("api/companies", {
+      method: "GET",
+      customErrorMap: {
+        400: "Error when fetching companies",
+      },
+      defaultErrorMessage: "Failed to fetch companies",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+    throw error;
+  }
+};
+
+const getCompaniesByCategory = async (categoryId) => {
+  try {
+    const data = await request(`api/companies/category/${categoryId}`, {
+      method: "GET",
+      customErrorMap: {
+        400: "Error when fetching companies by category",
+      },
+      defaultErrorMessage: "Failed to fetch companies by category",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching companies by category:", error);
+    throw error;
+  }
+};
+
+const delegateReportToCompany = async (reportId, companyId) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/delegate`, {
+      method: "PATCH",
+      body: {
+        companyId: companyId,
+      },
+      customErrorMap: {
+        400: "Validation error",
+        403: "Forbidden - Only the currently assigned officer can delegate this report",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to delegate report to company",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error delegating report to company:", error);
+    throw error;
+  }
+};
+
+const updateReportStatus = async (reportId, status, note) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}`, {
+      method: "PATCH",
+      body: {
+        status: status,
+        categoryId: null,
+        explanation: note,
+      },
+      customErrorMap: {
+        400: "Validation error",
+        403: "Forbidden - Only the currently assigned officer can update this report",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to update report status",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error updating report status:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -486,6 +578,10 @@ const API = {
   getReportMapDetails,
   getReportsAssignedToMe,
   updateCitizenProfile,
+  getAllCompanies,
+  getCompaniesByCategory,
+  delegateReportToCompany,
+  updateReportStatus,
 };
 
 export default API;

@@ -5,7 +5,7 @@ const addressCache = new Map();
 const requestQueue = [];
 let isProcessing = false;
 const DELAY_BETWEEN_REQUESTS = 1500; // 1.5 secondi tra una richiesta e l'altra (Nominatim richiede max 1 req/sec)
-const MAX_CONCURRENT = 1; // Una richiesta alla volta per rispettare i limiti di Nominatim
+// const MAX_CONCURRENT = 1; // Una richiesta alla volta per rispettare i limiti di Nominatim (unused for now)
 
 /**
  * Process the queue with rate limiting

@@ -9,7 +9,6 @@ function DefaultLayout() {
       <Container fluid className="p-0">
         <Outlet />
       </Container>
-      
     </>
   );
 }

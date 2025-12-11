@@ -4,15 +4,16 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReportCard from "./ReportCard";
 import ReportDescriptionModal from "./ReportDescriptionModal";
+import DelegationActions from "./DelegationActions";
 import LoadingSpinner from "./LoadingSpinner";
 import "./styles/OfficerPage.css";
 import { UserContext } from "../App";
 import API from "../API/API";
 import useReportFilters from "../utils/useReportFilters";
 
+const renderDelegationActions = (props) => <DelegationActions {...props} />;
 
 function OfficerPage() {
-
   const { userRole } = useContext(UserContext);
 
   const [reports, setReports] = useState([]);
@@ -32,7 +33,7 @@ function OfficerPage() {
     setSortOrder,
     statusFilter,
     setStatusFilter,
-    resetFilters
+    resetFilters,
   } = useReportFilters(reports, { statusFilter: "All" });
 
   useEffect(() => {
@@ -66,7 +67,7 @@ function OfficerPage() {
   };
 
   const handleReportUpdated = (reportId) => {
-    setReports(prevReports => prevReports.filter(r => r.id !== reportId));
+    setReports((prevReports) => prevReports.filter((r) => r.id !== reportId));
     // setShowModal(false); // Removed to allow modal to show success message
   };
 
@@ -90,7 +91,9 @@ function OfficerPage() {
           <div className="officer-headline-text">
             <Badge className="officer-eyebrow">{userRole}</Badge>
             <h1 className="officer-title">My Assigned Reports</h1>
-            <p className="officer-subtitle">Manage and track reports assigned to you</p>
+            <p className="officer-subtitle">
+              Manage and track reports assigned to you
+            </p>
           </div>
         </header>
 
@@ -102,7 +105,12 @@ function OfficerPage() {
                 <span className="officer-filter-title">FILTER OPTIONS</span>
                 <div className="officer-filter-group">
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="start-date-picker">Start Date</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="start-date-picker"
+                    >
+                      Start Date
+                    </label>
                     <DatePicker
                       id="start-date-picker"
                       selected={startDate}
@@ -115,7 +123,12 @@ function OfficerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="end-date-picker">End Date</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="end-date-picker"
+                    >
+                      End Date
+                    </label>
                     <DatePicker
                       id="end-date-picker"
                       selected={endDate}
@@ -128,10 +141,19 @@ function OfficerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="sort-dropdown">Sort by Date</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="sort-dropdown"
+                    >
+                      Sort by Date
+                    </label>
                     <Dropdown className="officer-custom-dropdown">
                       <Dropdown.Toggle id="sort-dropdown">
-                        <span>{sortOrder === "desc" ? "Newest First" : "Oldest First"}</span>
+                        <span>
+                          {sortOrder === "desc"
+                            ? "Newest First"
+                            : "Oldest First"}
+                        </span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item
@@ -151,25 +173,45 @@ function OfficerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="status-dropdown">Status</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="status-dropdown"
+                    >
+                      Status
+                    </label>
                     <Dropdown className="officer-custom-dropdown">
                       <Dropdown.Toggle id="status-dropdown">
                         <span>{statusFilter}</span>
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setStatusFilter("All")} active={statusFilter === "All"}>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("All")}
+                          active={statusFilter === "All"}
+                        >
                           All
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Assigned")} active={statusFilter === "Assigned"}>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Assigned")}
+                          active={statusFilter === "Assigned"}
+                        >
                           Assigned
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("In Progress")} active={statusFilter === "In Progress"}>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("In Progress")}
+                          active={statusFilter === "In Progress"}
+                        >
                           In Progress
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Suspended")} active={statusFilter === "Suspended"}>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Suspended")}
+                          active={statusFilter === "Suspended"}
+                        >
                           Suspended
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setStatusFilter("Resolved")} active={statusFilter === "Resolved"}>
+                        <Dropdown.Item
+                          onClick={() => setStatusFilter("Resolved")}
+                          active={statusFilter === "Resolved"}
+                        >
                           Resolved
                         </Dropdown.Item>
                       </Dropdown.Menu>
@@ -180,8 +222,8 @@ function OfficerPage() {
                     className="officer-reset-btn w-100"
                     onClick={resetFilters}
                   >
-                    <i className="bi bi-arrow-counterclockwise me-2"></i>{' '}
-                    Reset Filters
+                    <i className="bi bi-arrow-counterclockwise me-2"></i> Reset
+                    Filters
                   </button>
                 </div>
               </Card.Body>
@@ -196,7 +238,11 @@ function OfficerPage() {
                   <div>
                     <h2 className="officer-reports-title">Assigned Reports</h2>
                     <p className="officer-reports-count">
-                      Showing <Badge bg="secondary" className="officer-count-badge">{filteredReports.length}</Badge> report{filteredReports.length === 1 ? '' : 's'}
+                      Showing{" "}
+                      <Badge bg="secondary" className="officer-count-badge">
+                        {filteredReports.length}
+                      </Badge>{" "}
+                      report{filteredReports.length === 1 ? "" : "s"}
                     </p>
                   </div>
                 </div>
@@ -205,7 +251,9 @@ function OfficerPage() {
                   <div className="officer-empty-state">
                     <i className="bi bi-inbox officer-empty-icon"></i>
                     <p className="officer-empty-message">No reports found</p>
-                    <p className="officer-empty-hint">Try adjusting your filters or check back later.</p>
+                    <p className="officer-empty-hint">
+                      Try adjusting your filters or check back later.
+                    </p>
                   </div>
                 ) : (
                   <div className="officer-reports-list">
@@ -230,7 +278,7 @@ function OfficerPage() {
         onHide={() => setShowModal(false)}
         report={selectedReport}
         onReportUpdated={handleReportUpdated}
-        isOfficerView={true}
+        actionsRenderer={renderDelegationActions}
       />
     </div>
   );

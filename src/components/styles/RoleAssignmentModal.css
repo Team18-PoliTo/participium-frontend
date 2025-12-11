@@ -58,7 +58,7 @@
 .role-modal-title {
   color: #1a2332;
   font-size: 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   margin-bottom: 8px;
   text-align: center;
@@ -68,7 +68,7 @@
 .role-modal-subtitle {
   color: #5d6c82;
   font-size: 15px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 400;
   margin-bottom: 24px;
   text-align: center;
@@ -97,7 +97,7 @@
 }
 
 .role-options::-webkit-scrollbar-thumb {
-  background: #98C1D9;
+  background: #98c1d9;
   border-radius: 10px;
 }
 
@@ -141,7 +141,7 @@
 .role-name {
   color: #1f2a37;
   font-size: 15px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 600;
   flex: 1;
 }

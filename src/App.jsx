@@ -17,6 +17,7 @@ import RoleBasedRedirect from "./components/RoleBasedRedirect";
 import OfficerPage from "./components/OfficerPage";
 import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/UserPage";
+import MaintainerPage from "./components/MaintainerPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -56,36 +57,46 @@ function App() {
   useEffect(() => {
     const checkIfMobile = () => {
       const userAgent = navigator.userAgent.toLowerCase();
-      const mobileDevices = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const mobileDevices =
+        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
     };
 
     checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
+    window.addEventListener("resize", checkIfMobile);
 
-    return () => window.removeEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const userContextValue = useMemo(() => ({
-    user,
-    setUser,
-    citizenLoggedIn,
-    setCitizenLoggedIn,
-    userLoggedIn,
-    setUserLoggedIn,
-    userRole,
-    setUserRole,
-  }), [user, citizenLoggedIn, userLoggedIn, userRole]);
+  const userContextValue = useMemo(
+    () => ({
+      user,
+      setUser,
+      citizenLoggedIn,
+      setCitizenLoggedIn,
+      userLoggedIn,
+      setUserLoggedIn,
+      userRole,
+      setUserRole,
+    }),
+    [user, citizenLoggedIn, userLoggedIn, userRole]
+  );
 
-  const navbarContextValue = useMemo(() => ({
-    navbarText,
-    setNavbarText,
-  }), [navbarText]);
+  const navbarContextValue = useMemo(
+    () => ({
+      navbarText,
+      setNavbarText,
+    }),
+    [navbarText]
+  );
 
-  const mobileContextValue = useMemo(() => ({
-    isMobile,
-    setIsMobile,
-  }), [isMobile]);
+  const mobileContextValue = useMemo(
+    () => ({
+      isMobile,
+      setIsMobile,
+    }),
+    [isMobile]
+  );
 
   if (isCheckingAuth) {
     return <LoadingSpinner message="Checking authentication..." />;
@@ -100,10 +111,17 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="/register" element={<Registration />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute requireCitizen>
+                    <UserPage />
+                  </ProtectedRoute>
+                }
+              />
               {/* Redirect basato sul ruolo */}
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
-              
+
               {/* Route per Citizen */}
               <Route
                 path="/how-it-works"
@@ -121,7 +139,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
+
               {/* Route per Admin */}
               <Route
                 path="/admin"
@@ -131,7 +149,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
+
               {/* Route per Public Relations Officer */}
               <Route
                 path="/pro"
@@ -141,7 +159,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/officer"
                 element={
@@ -150,7 +168,16 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              
+
+              <Route
+                path="/maintainer"
+                element={
+                  <ProtectedRoute allowedRoles={["External Maintainer"]}>
+                    <MaintainerPage />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Route>

@@ -119,7 +119,7 @@ function UserProfile() {
     };
 
     fetchProfileData();
-  }, []);
+  }, [setUser]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -197,7 +197,10 @@ function UserProfile() {
         try {
           await API.logoutUser();
         } catch (e) {
-          console.warn("Server logout failed, proceeding with local logout. Error:", e);
+          console.warn(
+            "Server logout failed, proceeding with local logout. Error:",
+            e
+          );
         }
 
         navigate("/login", { replace: true });
@@ -242,7 +245,7 @@ function UserProfile() {
   } else if (citizenReports.length === 0) {
     reportsContent = (
       <p className="text-center no-reports-message">
-        You haven't submitted any reports yet.
+        You haven&apos;t submitted any reports yet.
       </p>
     );
   } else {

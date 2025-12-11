@@ -3,16 +3,13 @@ import "./styles/UserCard.css";
 import { getRoleIcon } from "../constants/roleIcons";
 
 function UserCard({ user, availableRoles, onOpenRoleModal }) {
-
-  const currentRoleObj = availableRoles?.find(r => r.role === user.role);
+  const currentRoleObj = availableRoles?.find((r) => r.role === user.role);
   const currentRoleId = currentRoleObj?.id;
   const isUnassigned = currentRoleId === 0;
 
   return (
     <div className="user-card">
-      <div className="user-icon">
-        {getRoleIcon(user.role, 28)}
-      </div>
+      <div className="user-icon">{getRoleIcon(user.role, 28)}</div>
       <div className="user-info">
         <div className="user-info-main">
           <span className="user-full-name">

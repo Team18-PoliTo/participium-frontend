@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import "leaflet/dist/leaflet.css";
 import "./styles/ReportDescription.css";
-import API from "../API/API";
 import ReportInfo from "./ReportInfo";
-import ReportActions from "./ReportActions";
+import ReportPROActions from "./ReportPROActions";
 
 function ReportDescriptionModal({
   show,
@@ -13,64 +12,22 @@ function ReportDescriptionModal({
   report,
   onReportUpdated,
   isOfficerView = false,
+  actionsRenderer = null,
 }) {
   const [selectedCategory, setSelectedCategory] = useState(
     report?.category || ""
   );
-  const [explanation, setExplanation] = useState("");
-  const [error, setError] = useState(null);
-  const [isRejecting, setIsRejecting] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
   useEffect(() => {
     if (report) {
       setSelectedCategory(report.category || "");
-      setError(null);
-      setIsRejecting(false);
-      setExplanation("");
       setSuccessData(null);
     }
   }, [report]);
 
-  const handleConfirm = async () => {
-    try {
-      setError(null);
-      const status = isRejecting ? "Rejected" : "Assigned";
-      const explanationText = isRejecting
-        ? explanation
-        : "No explanation required";
-
-      const categoryId = selectedCategory.id;
-
-      const response = await API.judgeReport(
-        report.id,
-        status,
-        categoryId,
-        explanationText
-      );
-
-      setSuccessData(response);
-
-      if (onReportUpdated) {
-        onReportUpdated(report.id);
-      }
-    } catch (error) {
-      setError(
-        (error.message && typeof error.message === "string"
-          ? error.message
-          : "An error occurred") ||
-          `Failed to ${
-            isRejecting ? "reject" : "approve"
-          } the report. Please try again.`
-      );
-    }
-  };
-
   const handleClose = () => {
-    setExplanation("");
     setSelectedCategory(report.category || "");
-    setError(null);
-    setIsRejecting(false);
     setSuccessData(null);
     onHide();
   };
@@ -80,6 +37,42 @@ function ReportDescriptionModal({
       return val.name || val.description || JSON.stringify(val);
     }
     return val;
+  };
+
+  const renderFooterOrActions = () => {
+    if (actionsRenderer) {
+      return actionsRenderer({
+        report,
+        selectedCategory,
+        onSuccess: (data) => {
+          setSuccessData(data);
+          if (onReportUpdated) onReportUpdated(report.id);
+        },
+        onCancel: handleClose,
+      });
+    }
+
+    if (isOfficerView) {
+      return (
+        <Modal.Footer className="report-map-desc-modal-footer">
+          <Button className="report-map-desc-btn-cancel" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      );
+    }
+
+    return (
+      <ReportPROActions
+        report={report}
+        selectedCategory={selectedCategory}
+        onSuccess={(data) => {
+          setSuccessData(data);
+          if (onReportUpdated) onReportUpdated(report.id);
+        }}
+        onCancel={handleClose}
+      />
+    );
   };
 
   if (!report) return null;
@@ -129,30 +122,11 @@ function ReportDescriptionModal({
           <>
             <ReportInfo
               report={report}
-              canEditCategory={!isOfficerView}
+              canEditCategory={isOfficerView}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-            {isOfficerView ? (
-              <Modal.Footer className="report-map-desc-modal-footer">
-                <Button
-                  className="report-map-desc-btn-cancel"
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-              </Modal.Footer>
-            ) : (
-              <ReportActions
-                isRejecting={isRejecting}
-                setIsRejecting={setIsRejecting}
-                explanation={explanation}
-                setExplanation={setExplanation}
-                error={error}
-                onConfirm={handleConfirm}
-                onCancel={handleClose}
-              />
-            )}
+            {renderFooterOrActions()}
           </>
         )}
       </Modal.Body>
@@ -169,6 +143,7 @@ ReportDescriptionModal.propTypes = {
   }),
   onReportUpdated: PropTypes.func,
   isOfficerView: PropTypes.bool,
+  actionsRenderer: PropTypes.func,
 };
 
 export default ReportDescriptionModal;

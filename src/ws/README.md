@@ -72,7 +72,7 @@ function CommentsList({ reportId }) {
 
   return (
     <div>
-      {isListening && <span>🎧 Listening for new comments</span>}
+      {isListening && <span>Listening for new comments</span>}
       {comments.map((comment) => (
         <div key={comment.id}>{comment.comment}</div>
       ))}

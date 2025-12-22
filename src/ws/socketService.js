@@ -20,7 +20,7 @@ class SocketService {
    */
   connect(
     token,
-    apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001"
+    apiUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"
   ) {
     if (this.socket?.connected) {
       console.warn("[WebSocket] Already connected");
@@ -29,11 +29,14 @@ class SocketService {
 
     const socketUrl = `${apiUrl}${WS_CONFIG.NAMESPACE}`;
 
+    console.log("[WebSocket] Connecting to:", socketUrl);
+
     this.socket = io(socketUrl, {
       auth: { token },
       autoConnect: true,
       reconnectionAttempts: WS_CONFIG.RECONNECTION_ATTEMPTS,
       reconnectionDelay: WS_CONFIG.RECONNECTION_DELAY,
+      transports: ["websocket", "polling"], // Try WebSocket first, fallback to polling
     });
 
     this._setupEventHandlers();

@@ -50,8 +50,6 @@ function WebSocketTest() {
   const {
     isConnected,
     currentReportId,
-    connect,
-    disconnect,
     joinReport,
     leaveReport,
   } = useWebSocket({
@@ -259,12 +257,12 @@ function WebSocketTest() {
             token will be loaded automatically.
           </li>
           <li>
-            <strong>Connect:</strong> Click "Connect" to establish the WebSocket
+            <strong>Connect:</strong> Click Connect to establish the WebSocket
             connection.
           </li>
           <li>
-            <strong>Join Report:</strong> Enter a valid reportId and click "Join
-            Report" to join the room.
+            <strong>Join Report:</strong> Enter a valid reportId and click Join
+            Report to join the room.
           </li>
           <li>
             <strong>Test:</strong> From the backend, create a comment for that

@@ -47,30 +47,26 @@ function WebSocketTest() {
     setEvents((prev) => [event, ...prev].slice(0, 50)); // Keep last 50 events
   };
 
-  const {
-    isConnected,
-    currentReportId,
-    joinReport,
-    leaveReport,
-  } = useWebSocket({
-    token: null, // do not auto-connect
-    reportId: null, // no auto-join
-    onCommentCreated: (comment) => {
-      addEvent("COMMENT_CREATED", comment);
-    },
-    onConnect: (data) => {
-      addEvent("CONNECTED", data);
-      setIsActive(true);
-    },
-    onDisconnect: (data) => {
-      addEvent("DISCONNECTED", data);
-      setIsActive(false);
-    },
-    onError: (error) => {
-      addEvent("ERROR", { message: error });
-    },
-    autoConnect: false,
-  });
+  const { isConnected, currentReportId, joinReport, leaveReport } =
+    useWebSocket({
+      token: null, // do not auto-connect
+      reportId: null, // no auto-join
+      onCommentCreated: (comment) => {
+        addEvent("COMMENT_CREATED", comment);
+      },
+      onConnect: (data) => {
+        addEvent("CONNECTED", data);
+        setIsActive(true);
+      },
+      onDisconnect: (data) => {
+        addEvent("DISCONNECTED", data);
+        setIsActive(false);
+      },
+      onError: (error) => {
+        addEvent("ERROR", { message: error });
+      },
+      autoConnect: false,
+    });
 
   const handleConnect = () => {
     if (!token) {

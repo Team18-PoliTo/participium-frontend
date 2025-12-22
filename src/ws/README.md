@@ -205,8 +205,8 @@ export const WS_CONFIG = {
 
 Set in `.env`:
 
-```javascript
-VITE_API_URL=http://localhost:3001
+```
+VITE_BACKEND_URL=http://localhost:3001
 ```
 
 ## Installation

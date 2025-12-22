@@ -5,15 +5,15 @@ import "./styles/WebSocketTest.css";
 /**
  * WebSocket Test Component
  *
- * Questo componente ti permette di testare la connessione WebSocket.
+ * This component allows you to test the WebSocket connection.
  *
- * Per usarlo:
- * 1. Importalo in App.jsx o in una route
- * 2. Devi essere loggato come utente interno (employee)
- * 3. Inserisci un reportId valido
- * 4. Osserva gli eventi in tempo reale
+ * Usage:
+ * 1. Import it in App.jsx or register a route
+ * 2. Log in as an internal user (employee)
+ * 3. Enter a valid reportId
+ * 4. Observe real-time events
  *
- * Esempio in App.jsx:
+ * Example in App.jsx:
  * import WebSocketTest from './components/WebSocketTest';
  * <Route path="/ws-test" element={<WebSocketTest />} />
  */
@@ -24,7 +24,7 @@ function WebSocketTest() {
   const [events, setEvents] = useState([]);
   const [manualToken, setManualToken] = useState("");
 
-  // Carica il token da localStorage al mount
+  // Load token from localStorage on mount
   useEffect(() => {
     try {
       const storedToken = JSON.parse(localStorage.getItem("authToken"));
@@ -55,8 +55,8 @@ function WebSocketTest() {
     joinReport,
     leaveReport,
   } = useWebSocket({
-    token: null, // Non auto-connettiamo
-    reportId: null, // Non auto-join
+    token: null, // do not auto-connect
+    reportId: null, // no auto-join
     onCommentCreated: (comment) => {
       addEvent("COMMENT_CREATED", comment);
     },
@@ -76,21 +76,21 @@ function WebSocketTest() {
 
   const handleConnect = () => {
     if (!token) {
-      alert("Token mancante! Fai login come utente interno.");
+      alert("Missing token. Please log in as an internal user.");
       return;
     }
-    // Connetti direttamente con il servizio
+    // Connect directly via the service
     socketService.connect(token);
   };
 
   const handleDisconnect = () => {
     socketService.disconnect();
-    addEvent("MANUAL_DISCONNECT", { message: "Disconnesso manualmente" });
+    addEvent("MANUAL_DISCONNECT", { message: "Manually disconnected" });
   };
 
   const handleJoinReport = () => {
     if (!reportId || isNaN(Number(reportId))) {
-      alert("Inserisci un reportId valido (numero)");
+      alert("Enter a valid numeric reportId");
       return;
     }
     joinReport(Number(reportId));
@@ -99,7 +99,7 @@ function WebSocketTest() {
 
   const handleLeaveReport = () => {
     if (!currentReportId) {
-      alert("Non sei in nessun report room");
+      alert("You are not in any report room");
       return;
     }
     leaveReport(currentReportId);
@@ -108,7 +108,7 @@ function WebSocketTest() {
 
   const handleUpdateToken = () => {
     setToken(manualToken);
-    addEvent("TOKEN_UPDATED", { message: "Token aggiornato" });
+    addEvent("TOKEN_UPDATED", { message: "Token updated" });
   };
 
   const clearEvents = () => {
@@ -132,13 +132,13 @@ function WebSocketTest() {
   return (
     <div className="websocket-test-container">
       <div className="test-header">
-        <h1>🔌 WebSocket Test Panel</h1>
+        <h1>WebSocket Test Panel</h1>
         <div className="status-badge">
           Status:{" "}
           <span
             className={isConnected ? "status-connected" : "status-disconnected"}
           >
-            {isConnected ? "🟢 CONNECTED" : "🔴 DISCONNECTED"}
+            {isConnected ? "CONNECTED" : "DISCONNECTED"}
           </span>
         </div>
       </div>
@@ -146,22 +146,22 @@ function WebSocketTest() {
       <div className="test-sections">
         {/* Connection Section */}
         <div className="test-section">
-          <h2>🔐 Autenticazione</h2>
+          <h2>Authentication</h2>
           <div className="form-group">
             <label>
-              Token JWT:
-              <small> (automaticamente da localStorage)</small>
+              JWT Token:
+              <small> (automatically from localStorage)</small>
             </label>
             <textarea
               value={manualToken}
               onChange={(e) => setManualToken(e.target.value)}
-              placeholder="Inserisci il token manualmente (oppure fai login)"
+              placeholder="Enter token manually (or log in)"
               rows={3}
               disabled={isActive}
             />
             {!isActive && (
               <button onClick={handleUpdateToken} className="btn-secondary">
-                Aggiorna Token
+                Update Token
               </button>
             )}
           </div>
@@ -172,11 +172,11 @@ function WebSocketTest() {
                 className="btn-primary"
                 disabled={!token}
               >
-                🚀 Connetti
+                Connect
               </button>
             ) : (
               <button onClick={handleDisconnect} className="btn-danger">
-                ⛔ Disconnetti
+                Disconnect
               </button>
             )}
           </div>
@@ -184,20 +184,20 @@ function WebSocketTest() {
 
         {/* Report Room Section */}
         <div className="test-section">
-          <h2>🏠 Report Room</h2>
+          <h2>Report Room</h2>
           <div className="form-group">
             <label>Report ID:</label>
             <input
               type="number"
               value={reportId}
               onChange={(e) => setReportId(e.target.value)}
-              placeholder="es. 123"
+              placeholder="e.g., 123"
               disabled={!isConnected}
             />
           </div>
           <div className="info-row">
             <strong>Current Room:</strong>{" "}
-            {currentReportId ? `report:${currentReportId}` : "Nessuno"}
+            {currentReportId ? `report:${currentReportId}` : "None"}
           </div>
           <div className="button-group">
             <button
@@ -205,14 +205,14 @@ function WebSocketTest() {
               className="btn-primary"
               disabled={!isConnected || !reportId}
             >
-              ➕ Join Report
+              Join Report
             </button>
             <button
               onClick={handleLeaveReport}
               className="btn-secondary"
               disabled={!isConnected || !currentReportId}
             >
-              ➖ Leave Report
+              Leave Report
             </button>
           </div>
         </div>
@@ -220,14 +220,14 @@ function WebSocketTest() {
         {/* Events Log Section */}
         <div className="test-section events-section">
           <div className="events-header">
-            <h2>📋 Event Log</h2>
+            <h2>Event Log</h2>
             <button onClick={clearEvents} className="btn-small">
-              🗑️ Clear
+              Clear
             </button>
           </div>
           <div className="events-list">
             {events.length === 0 ? (
-              <div className="no-events">Nessun evento registrato</div>
+              <div className="no-events">No events recorded</div>
             ) : (
               events.map((event) => (
                 <div
@@ -237,7 +237,7 @@ function WebSocketTest() {
                   <div className="event-header">
                     <span className="event-type">{event.type}</span>
                     <span className="event-time">
-                      {new Date(event.timestamp).toLocaleTimeString("it-IT")}
+                      {new Date(event.timestamp).toLocaleTimeString("en-US")}
                     </span>
                   </div>
                   <pre className="event-data">
@@ -252,52 +252,52 @@ function WebSocketTest() {
 
       {/* Instructions */}
       <div className="test-instructions">
-        <h3>📖 Istruzioni per il Test</h3>
+        <h3>Test Instructions</h3>
         <ol>
           <li>
-            <strong>Login:</strong> Fai login come utente interno (employee). Il
-            token verrà caricato automaticamente.
+            <strong>Login:</strong> Log in as an internal user (employee). The
+            token will be loaded automatically.
           </li>
           <li>
-            <strong>Connetti:</strong> Clicca "Connetti" per stabilire la
-            connessione WebSocket.
+            <strong>Connect:</strong> Click "Connect" to establish the WebSocket
+            connection.
           </li>
           <li>
-            <strong>Join Report:</strong> Inserisci un reportId valido e clicca
-            "Join Report" per entrare nella room.
+            <strong>Join Report:</strong> Enter a valid reportId and click "Join
+            Report" to join the room.
           </li>
           <li>
-            <strong>Test:</strong> Dal backend, crea un commento per quel
-            report. Dovresti vedere l'evento COMMENT_CREATED apparire nel log.
+            <strong>Test:</strong> From the backend, create a comment for that
+            report. You should see a COMMENT_CREATED event appear in the log.
           </li>
           <li>
-            <strong>Verifica:</strong> Controlla anche la console del browser
-            per i log dettagliati [WebSocket].
+            <strong>Verify:</strong> Also check the browser console for detailed
+            [WebSocket] logs.
           </li>
         </ol>
 
-        <h4>🧪 Test con curl (da terminale):</h4>
+        <h4>Test with curl (from terminal):</h4>
         <pre className="code-block">
-          {`# Esempio: creare un commento (sostituisci con endpoint reale)
+          {`# Example: create a comment (replace with real endpoint)
 curl -X POST http://localhost:3001/api/reports/{reportId}/comments \\
   -H "Authorization: Bearer YOUR_TOKEN" \\
   -H "Content-Type: application/json" \\
   -d '{"comment": "Test comment"}'`}
         </pre>
 
-        <h4>⚠️ Troubleshooting:</h4>
+        <h4>Troubleshooting:</h4>
         <ul>
           <li>
-            <strong>401 Unauthorized:</strong> Token non valido o utente non
-            interno
+            <strong>401 Unauthorized:</strong> Invalid token or not an internal
+            user
           </li>
           <li>
-            <strong>Nessun evento:</strong> Verifica di essere nella room
-            corretta (reportId giusto)
+            <strong>No events:</strong> Verify you are in the correct room
+            (correct reportId)
           </li>
           <li>
-            <strong>Connection error:</strong> Verifica che il backend sia in
-            esecuzione e che il WebSocket sia inizializzato
+            <strong>Connection error:</strong> Verify the backend is running and
+            the WebSocket is initialized
           </li>
         </ul>
       </div>

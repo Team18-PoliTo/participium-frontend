@@ -18,6 +18,7 @@ import OfficerPage from "./components/OfficerPage";
 import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/UserPage";
 import MaintainerPage from "./components/MaintainerPage";
+import WebSocketTest from "./components/WebSocketTest";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -177,6 +178,9 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              {/* WebSocket Test Page (for development/testing) */}
+              <Route path="/ws-test" element={<WebSocketTest />} />
 
               <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<Navigate replace to="/" />} />

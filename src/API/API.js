@@ -340,7 +340,7 @@ const uploadFile = async (formData, type = "report") => {
     const data = await request("api/files/upload", {
       method: "POST",
       body: formData,
-      contentType: null, 
+      contentType: null,
       customErrorMap: {
         400: "File validation failed",
         401: "Unauthorized",
@@ -417,8 +417,7 @@ const getPublicReports = async (bounds) => {
       defaultErrorMessage: "Failed to fetch public reports",
     });
     return data;
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching public reports by map area:", error);
     throw error;
   }

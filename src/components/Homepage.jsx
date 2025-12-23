@@ -100,9 +100,16 @@ function Homepage() {
               </p>
             </Col>
             <Col lg={6} className="hero-image">
-              <div className="image-placeholder">
+              <button
+                className="image-placeholder clickable-map"
+                onClick={() => navigate("/map")}
+              >
                 <img src="/image.png" alt="Turin Map" className="map-preview" />
-              </div>
+                <div className="map-overlay">
+                  <MapPin size={48} />
+                  <span>Explore the Map</span>
+                </div>
+              </button>
             </Col>
           </Row>
         </Container>

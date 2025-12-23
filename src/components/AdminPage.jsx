@@ -54,6 +54,12 @@ function AdminPage() {
           API.getAllCompanies(),
         ]);
 
+        fetchedUsers.sort((a, b) => {
+          if (a.role === "Unassigned" && b.role !== "Unassigned") return -1;
+          if (a.role !== "Unassigned" && b.role === "Unassigned") return 1;
+          return 0;
+        });
+
         const roleNameToExclude = roleMapping[1];
         const filteredUsers = roleNameToExclude
           ? fetchedUsers.filter((user) => user.role !== roleNameToExclude)
@@ -81,7 +87,7 @@ function AdminPage() {
 
   const handleCreateUser = async (newUser) => {
     const createdUser = await API.registerInternalUser(newUser);
-    setUsers((prevUsers) => [...prevUsers, createdUser]);
+    setUsers((prevUsers) => [ createdUser, ...prevUsers ]);
   };
 
   const handleOpenRoleModal = (user) => {

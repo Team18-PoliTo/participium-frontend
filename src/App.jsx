@@ -134,11 +134,7 @@ function App() {
               />
               <Route
                 path="/map"
-                element={
-                  <ProtectedRoute requireCitizen>
-                    <MapPage />
-                  </ProtectedRoute>
-                }
+                element={<MapPage />}
               />
 
               {/* Route per Admin */}

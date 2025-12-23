@@ -108,7 +108,7 @@ function NavHeader() {
               <>
                 {(citizenLoggedIn || userLoggedIn) && (
                   <div className="nav-auth-buttons">
-                    {citizenLoggedIn && location.pathname !== "/map" && (
+                    {!userLoggedIn && location.pathname !== "/map" && (
                       <Link className="nav-action-btn" to="/map">
                         <Map size={20} /> <span>Map</span>
                       </Link>
@@ -157,6 +157,11 @@ function NavHeader() {
                 )}
                 {!citizenLoggedIn && !userLoggedIn && (
                   <div className="nav-auth-buttons">
+                    {location.pathname !== "/map" && (
+                      <Link className="nav-action-btn" to="/map">
+                        <Map size={20} /> <span>Map</span>
+                      </Link>
+                    )}
                     <Link className="nav-action-btn" to="/login">
                       <LogIn size={20} /> <span>Login</span>
                     </Link>
@@ -176,7 +181,7 @@ function NavHeader() {
             <div className="mobile-menu-content">
               {citizenLoggedIn || userLoggedIn ? (
                 <>
-                  {citizenLoggedIn && location.pathname !== "/map" && (
+                  {!userLoggedIn && location.pathname !== "/map" && (
                     <Link
                       className="mobile-menu-item"
                       to="/map"
@@ -245,6 +250,15 @@ function NavHeader() {
                 </>
               ) : (
                 <>
+                  {location.pathname !== "/map" && (
+                    <Link
+                      className="mobile-menu-item"
+                      to="/map"
+                      onClick={closeMenu}
+                    >
+                      <Map size={20} className="me-2" /> Map
+                    </Link>
+                  )}
                   <Link
                     className="mobile-menu-item"
                     to="/login"

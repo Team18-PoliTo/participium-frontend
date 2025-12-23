@@ -20,12 +20,13 @@ import ReportForm from "./ReportForm";
 import ReportCard from "../Report/ReportCard";
 import ReportMapDescription from "../Report/ReportMapDescription";
 import InvalidLocationModal from "./InvalidLocationModal";
+import LoginRequiredModal from "./LoginRequiredModal";
 import ReportStatusModal from "../Report/ReportStatusModal";
 import GetBoundsLogger from "./GetBoundsLogger";
 import { MapClickHandler, SearchBar, MapResizer } from "./MapLogic";
 
 import { getAddressFromCoordinates } from "../../utils/geocoding";
-import { MobileContext } from "../../App";
+import { MobileContext, UserContext } from "../../App";
 import turinGeoJSON from "../../data/turin-boundaries.json";
 import {
   turinStyle,
@@ -96,10 +97,12 @@ MapInteractionHandler.propTypes = {
 
 function MapPage() {
   const { isMobile } = useContext(MobileContext);
+  const { citizenLoggedIn, userLoggedIn } = useContext(UserContext);
 
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null);
   const [showInvalidModal, setShowInvalidModal] = useState(false);
+  const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
 
   const [reports, setReports] = useState([]);
   const [visibleReports, setVisibleReports] = useState([]);
@@ -141,6 +144,12 @@ function MapPage() {
   const handleMapClick = useCallback(
     async (latlng, mapInstance) => {
       const activeMap = mapInstance || mapRef.current;
+
+      // Check if user is logged in
+      if (!citizenLoggedIn && !userLoggedIn) {
+        setShowLoginRequiredModal(true);
+        return;
+      }
 
       // Se non ci sono poligoni caricati, procedi senza controlli
       if (!turinPolygons || turinPolygons.length === 0) {
@@ -193,7 +202,7 @@ function MapPage() {
         setShowInvalidModal(true);
       }
     },
-    [isMobile, openFormAndCloseSidebar]
+    [isMobile, openFormAndCloseSidebar, citizenLoggedIn, userLoggedIn]
   ); // Dipendenze stabili
 
   const handleFormClose = useCallback(() => {
@@ -452,6 +461,10 @@ function MapPage() {
       <InvalidLocationModal
         showInvalidModal={showInvalidModal}
         setShowInvalidModal={setShowInvalidModal}
+      />
+      <LoginRequiredModal
+        show={showLoginRequiredModal}
+        onHide={() => setShowLoginRequiredModal(false)}
       />
       <ReportStatusModal
         show={showReportModal}

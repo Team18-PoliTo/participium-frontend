@@ -24,7 +24,7 @@ function GetBoundsLogger({ onReportsFetched }) {
       ];
 
       try {
-        const reports = await API.getReportsByMapArea(corners);
+        const reports = await API.getPublicReports(corners);
         if (onReportsFetched) {
           onReportsFetched(reports);
         }

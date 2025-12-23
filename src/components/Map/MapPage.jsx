@@ -1,5 +1,5 @@
 import { useState, useRef, useContext, useCallback } from "react";
-import PropTypes from "prop-types"; // Aggiungi questo import
+import PropTypes from "prop-types";
 import {
   MapContainer,
   TileLayer,
@@ -33,7 +33,6 @@ import {
   inverseMaskStyle,
   createPinIcon,
   createClusterCustomIcon,
-  getStatusColor,
 } from "../../utils/mapUtils";
 import "leaflet-geosearch/dist/geosearch.css";
 import "../styles/MapPage.css";
@@ -238,6 +237,12 @@ function MapPage() {
     setShowReportsSidebar((prev) => !prev);
   }, []);
 
+  // Helper per ottenere la classe CSS dello status in modo dinamico
+  const getStatusClass = (status) => {
+    if (!status) return "";
+    return `status-${status.replace(/\s+/g, "").toLowerCase()}`;
+  };
+
   return (
     <div className="map-page-wrapper">
       <MapContainer
@@ -303,6 +308,9 @@ function MapPage() {
               key={report.id}
               position={[report.location.latitude, report.location.longitude]}
               icon={createPinIcon(report.status)}
+              // IMPORTANTE: Passiamo lo status come prop affinché finisca nelle options del marker
+              // Questo permette a createClusterCustomIcon di leggere lo status dei figli.
+              status={report.status}
               eventHandlers={{
                 click: (e) => {
                   e.originalEvent.stopPropagation();
@@ -336,8 +344,9 @@ function MapPage() {
                 ×
               </button>
               <div
-                className="popup-status-badge"
-                style={{ backgroundColor: getStatusColor(selectedPin.status) }}
+                className={`popup-status-badge status-color-base ${getStatusClass(
+                  selectedPin.status
+                )}`}
               >
                 {selectedPin.status}
               </div>

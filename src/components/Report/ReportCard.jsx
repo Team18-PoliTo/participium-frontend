@@ -34,9 +34,13 @@ function ReportCard({
   }, [isVisible]);
 
   const getStatusBadge = (status) => {
+    const statusClass = status
+      ? status.replaceAll(/\s/g, "").toLowerCase()
+      : "";
+
     return (
       <Badge
-        className={`custom-status-badge status-${status.replaceAll(/\s/g, "").toLowerCase()}`}
+        className={`custom-status-badge status-color-base status-${statusClass}`}
       >
         {status}
       </Badge>

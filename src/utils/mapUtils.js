@@ -72,7 +72,7 @@ export const createClusterCustomIcon = function (cluster) {
 
   // 2. Determina il colore
   let clusterColor;
-  let textColor = "white";
+  const textColor = "white";
 
   // Se c'è un solo tipo di status in tutto il cluster, usiamo quel colore
   if (statuses.size === 1) {

@@ -333,7 +333,6 @@ const getAllCategories = async () => {
 
 const uploadFile = async (formData, type = "report") => {
   try {
-    // Add type parameter to FormData if not already present
     if (!formData.has("type")) {
       formData.append("type", type);
     }
@@ -341,7 +340,7 @@ const uploadFile = async (formData, type = "report") => {
     const data = await request("api/files/upload", {
       method: "POST",
       body: formData,
-      contentType: null, // Let browser set multipart/form-data with boundary
+      contentType: null, 
       customErrorMap: {
         400: "File validation failed",
         401: "Unauthorized",
@@ -405,38 +404,35 @@ const getCitizenReports = async () => {
   }
 };
 
-const getReportsByMapArea = async (bounds) => {
+const getPublicReports = async (bounds) => {
   try {
-    const data = await request("api/citizens/reports/map", {
+    const data = await request("api/reports/map", {
       method: "POST",
       body: {
         corners: bounds,
       },
       customErrorMap: {
-        400: "Validation error",
-        401: "Unauthorized",
-        403: "Forbidden",
+        400: "Error retrieving public reports",
       },
-      defaultErrorMessage: "Failed to fetch reports by map area",
+      defaultErrorMessage: "Failed to fetch public reports",
     });
     return data;
-  } catch (error) {
-    console.error("Error fetching reports by map area:", error);
+  }
+  catch (error) {
+    console.error("Error fetching public reports by map area:", error);
     throw error;
   }
 };
 
 const getReportMapDetails = async (reportId) => {
   try {
-    const data = await request(`api/citizens/reports/getById/${reportId}`, {
+    const data = await request(`api/reports/getById/${reportId}`, {
       method: "GET",
       customErrorMap: {
-        400: "Invalid report ID",
-        401: "Unauthorized",
-        403: "Forbidden",
+        400: "Error retrieving report map details, Invalid report ID",
         404: "Report not found",
       },
-      defaultErrorMessage: "Failed to fetch report details",
+      defaultErrorMessage: "Failed to fetch report map details",
     });
     return data;
   } catch (error) {
@@ -574,14 +570,14 @@ const API = {
   deleteTempFile,
   getAllReportsIsPending,
   getCitizenReports,
-  getReportsByMapArea,
-  getReportMapDetails,
   getReportsAssignedToMe,
   updateCitizenProfile,
   getAllCompanies,
   getCompaniesByCategory,
   delegateReportToCompany,
   updateReportStatus,
+  getPublicReports,
+  getReportMapDetails,
 };
 
 export default API;

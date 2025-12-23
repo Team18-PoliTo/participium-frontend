@@ -14,6 +14,11 @@ function ReportMapDescription({ show, onHide, report }) {
     onHide();
   };
 
+  const getStatusClass = (status) => {
+    if (!status) return "";
+    return `status-${status.replaceAll(/\s/g, "").toLowerCase()}`;
+  };
+
   if (!report) return null;
 
   return (
@@ -98,7 +103,11 @@ function ReportMapDescription({ show, onHide, report }) {
             </Col>
             <Col md={6}>
               <div className="report-map-desc-label">Status</div>
-              <div className="report-map-desc-text-display report-map-desc-status">
+              <div
+                className={`report-map-desc-text-display report-map-desc-status status-color-base ${getStatusClass(
+                  report.status
+                )}`}
+              >
                 <span>{report.status}</span>
               </div>
             </Col>

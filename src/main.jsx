@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { BrowserRouter } from "react-router";
+import "./components/styles/StatusColors.css";
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";

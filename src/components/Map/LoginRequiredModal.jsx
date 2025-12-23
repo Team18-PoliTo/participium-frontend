@@ -31,17 +31,22 @@ function LoginRequiredModal({ show, onHide }) {
         <p className="mb-0">Please login or create an account to continue.</p>
       </Modal.Body>
       <Modal.Footer>
-        <button className="login-required-btn secondary" onClick={handleLoginClick}>
+        <button
+          className="login-required-btn secondary"
+          onClick={handleLoginClick}
+        >
           Login
         </button>
-        <button className="login-required-btn primary" onClick={handleRegisterClick}>
+        <button
+          className="login-required-btn primary"
+          onClick={handleRegisterClick}
+        >
           Sign Up
         </button>
       </Modal.Footer>
     </Modal>
   );
 }
-
 
 LoginRequiredModal.propTypes = {
   show: PropTypes.bool.isRequired,

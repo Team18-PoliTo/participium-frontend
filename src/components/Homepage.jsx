@@ -100,7 +100,7 @@ function Homepage() {
               </p>
             </Col>
             <Col lg={6} className="hero-image">
-              <button 
+              <button
                 className="image-placeholder clickable-map"
                 onClick={() => navigate("/map")}
               >

@@ -132,10 +132,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/map"
-                element={<MapPage />}
-              />
+              <Route path="/map" element={<MapPage />} />
 
               {/* Route per Admin */}
               <Route

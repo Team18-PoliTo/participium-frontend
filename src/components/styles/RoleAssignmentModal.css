@@ -124,6 +124,18 @@
   transform: translateX(4px);
 }
 
+.role-option-highlighted {
+  background: linear-gradient(135deg, #fff5e6, #ffe4c4) !important;
+  border-color: rgba(238, 108, 77, 0.3) !important;
+  box-shadow: 0 2px 12px rgba(238, 108, 77, 0.15);
+}
+
+.role-option-highlighted:hover {
+  background: linear-gradient(135deg, #ffedd5, #ffd9ab) !important;
+  border-color: rgba(238, 108, 77, 0.4) !important;
+  transform: translateX(4px);
+}
+
 .role-icon {
   background: white;
   border-radius: 50%;

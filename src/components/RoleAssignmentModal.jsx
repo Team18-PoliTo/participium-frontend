@@ -70,7 +70,11 @@ function RoleAssignmentModal({
                 <button
                   key={role.id}
                   type="button"
-                  className="role-option"
+                  className={`role-option ${
+                    role.role.toLowerCase().includes('external maintainer')
+                      ? 'role-option-highlighted'
+                      : ''
+                  }`}
                   onClick={() => handleRoleSelect(role.id)}
                 >
                   <div className="role-icon">{getRoleIcon(role.role, 28)}</div>

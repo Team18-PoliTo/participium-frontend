@@ -121,7 +121,7 @@ function ReportManagementPage() {
         }
 
         // Check if the user has a technical role (Officer)
-        const isTechnicalOfficer = allowedOfficerRoles.includes(userRole);
+        const isTechnicalOfficer = allowedOfficerRoles.includes(userRole) && userRole !== "External Maintainer";
 
         if (userRole === "Public Relations Officer") {
             return (

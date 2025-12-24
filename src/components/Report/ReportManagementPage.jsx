@@ -320,6 +320,7 @@ MaintainerActionPanel.propTypes = {
   report: PropTypes.shape({
     id: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired,
+    explanation: PropTypes.string,
   }).isRequired,
   onSuccess: PropTypes.func.isRequired,
 };

@@ -263,15 +263,21 @@ function MaintainerActionPanel({ report, onSuccess }) {
           <label className="report-desc-label" htmlFor="technical-notes">
             Technical Notes
           </label>
-          <textarea
-            id="technical-notes"
-            className="form-control report-desc-textarea"
-            rows="4"
-            placeholder="Work details..."
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            disabled={submitting}
-          />
+          {report.status === "Resolved" ? (
+            <div className="report-desc-textarea p-2 bg-light">
+              {report.explanation || "No technical notes provided."}
+            </div>
+          ) : (
+            <textarea
+              id="technical-notes"
+              className="form-control report-desc-textarea"
+              rows="4"
+              placeholder="Work details..."
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              disabled={submitting}
+            />
+          )}
         </div>
         <div className="d-grid gap-2">
           {["Assigned", "Delegated", "Suspended"].includes(report.status) && (

@@ -19,6 +19,7 @@ import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/Citizen/UserPage";
 import MaintainerPage from "./components/InternalUsers/MaintainerPage";
 import WebSocketTest from "./components/WebSocketTest";
+import ReportManagementPage from "./components/Report/ReportManagementPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -58,123 +59,45 @@ function App() {
   useEffect(() => {
     const checkIfMobile = () => {
       const userAgent = navigator.userAgent.toLowerCase();
-      const mobileDevices =
-        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const mobileDevices = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
     };
-
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
-
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const userContextValue = useMemo(
-    () => ({
-      user,
-      setUser,
-      citizenLoggedIn,
-      setCitizenLoggedIn,
-      userLoggedIn,
-      setUserLoggedIn,
-      userRole,
-      setUserRole,
-    }),
-    [user, citizenLoggedIn, userLoggedIn, userRole]
-  );
-
-  const navbarContextValue = useMemo(
-    () => ({
-      navbarText,
-      setNavbarText,
-    }),
-    [navbarText]
-  );
-
-  const mobileContextValue = useMemo(
-    () => ({
-      isMobile,
-      setIsMobile,
-    }),
-    [isMobile]
-  );
-
-  if (isCheckingAuth) {
-    return <LoadingSpinner message="Checking authentication..." />;
-  }
+  const userContextValue = useMemo(() => ({
+    user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole,
+  }), [user, citizenLoggedIn, userLoggedIn, userRole]);
 
   return (
     <UserContext.Provider value={userContextValue}>
-      <NavbarTextContext.Provider value={navbarContextValue}>
-        <MobileContext.Provider value={mobileContextValue}>
+      <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
+        <MobileContext.Provider value={{ isMobile, setIsMobile }}>
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />
               <Route path="/register" element={<Registration />} />
               <Route path="/login" element={<Login />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute requireCitizen>
-                    <UserPage />
-                  </ProtectedRoute>
-                }
-              />
-              {/* Redirect basato sul ruolo */}
+              <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
-
-              {/* Route per Citizen */}
-              <Route
-                path="/how-it-works"
-                element={
-                  <ProtectedRoute requireCitizen>
-                    <HowItWorks />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/how-it-works" element={<ProtectedRoute requireCitizen><HowItWorks /></ProtectedRoute>} />
               <Route path="/map" element={<MapPage />} />
 
-              {/* Route per Admin */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute allowedRoles={["ADMIN"]}>
-                    <AdminPage />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/admin" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminPage /></ProtectedRoute>} />
+              <Route path="/pro" element={<ProtectedRoute allowedRoles={["Public Relations Officer"]}><PublicRelationsOfficer /></ProtectedRoute>} />
+              <Route path="/officer" element={<ProtectedRoute allowedRoles={allowedOfficerRoles}><OfficerPage /></ProtectedRoute>} />
+              <Route path="/maintainer" element={<ProtectedRoute allowedRoles={["External Maintainer"]}><MaintainerPage /></ProtectedRoute>} />
 
-              {/* Route per Public Relations Officer */}
-              <Route
-                path="/pro"
-                element={
-                  <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
-                    <PublicRelationsOfficer />
-                  </ProtectedRoute>
-                }
-              />
+              {/* ROTTA GESTIONE REPORT */}
+              <Route path="/reports/:id" element={
+                <ProtectedRoute allowedRoles={["Public Relations Officer", "External Maintainer", ...allowedOfficerRoles]}>
+                  <ReportManagementPage />
+                </ProtectedRoute>
+              } />
 
-              <Route
-                path="/officer"
-                element={
-                  <ProtectedRoute allowedRoles={allowedOfficerRoles}>
-                    <OfficerPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/maintainer"
-                element={
-                  <ProtectedRoute allowedRoles={["External Maintainer"]}>
-                    <MaintainerPage />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* WebSocket Test Page (for development/testing) */}
               <Route path="/ws-test" element={<WebSocketTest />} />
-
               <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Route>

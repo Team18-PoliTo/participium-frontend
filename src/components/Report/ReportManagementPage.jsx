@@ -1,0 +1,247 @@
+import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router";
+import { Container, Row, Col, Card, Badge, Button, Alert } from "react-bootstrap";
+import { ArrowLeft, Hammer, CheckCircle, PauseCircle } from "lucide-react";
+import API from "../../API/API";
+import { UserContext } from "../../App";
+import ReportInfo from "./ReportInfo";
+import ReportPROActions from "./ReportPROActions";
+import DelegationActions from "./DelegationActions";
+import LoadingSpinner from "../LoadingSpinner";
+import "../styles/ReportDescription.css";
+
+function ReportManagementPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { userRole } = useContext(UserContext);
+
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [successData, setSuccessData] = useState(null);
+
+  useEffect(() => {
+    const fetchReportDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Debugging: verifica l'ID ricevuto dal router
+        console.log("Fetching details for report ID:", id);
+        
+        const data = await API.getReportMapDetails(id);
+        
+        // Se API.js non lancia errore ma torna null (es. parse JSON fallito)
+        if (!data) {
+          throw new Error("Report non trovato.");
+        }
+
+        setReport(data);
+        setSelectedCategory(data.category || null);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message || "Impossibile caricare i dettagli del report.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchReportDetails();
+    }
+  }, [id]);
+
+  const handleUpdateSuccess = (updatedData) => {
+    setSuccessData(updatedData);
+    
+    // Aggiornamento ottimistico o basato sulla risposta completa
+    if (updatedData && updatedData.id) {
+      setReport(updatedData);
+      setSelectedCategory(updatedData.category);
+    } else if (updatedData && updatedData.status) {
+      setReport(prev => ({ ...prev, ...updatedData }));
+    }
+  };
+
+  if (loading) return <LoadingSpinner message="Recupero informazioni report..." />;
+  
+  if (error) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger" className="d-flex align-items-center justify-content-between shadow-sm">
+          <div>
+            <strong>Errore:</strong> {error}
+          </div>
+          <Button variant="outline-danger" size="sm" onClick={() => navigate(-1)}>
+            Torna alla Dashboard
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  if (!report) return null;
+
+  const renderActionPanel = () => {
+    if (successData) {
+      return (
+        <Card className="border-0 shadow-sm bg-success text-white">
+          <Card.Body className="text-center p-4">
+            <div className="mb-3">
+              <CheckCircle size={56} />
+            </div>
+            <h4 className="fw-bold">Operazione Completata</h4>
+            <p className="small">Lo stato del report è stato aggiornato con successo.</p>
+            <Button variant="light" className="rounded-pill mt-2 px-4 fw-bold" onClick={() => navigate(-1)}>
+              Chiudi e Torna Indietro
+            </Button>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    switch (userRole) {
+      case "Public Relations Officer":
+        return (
+          <Card className="border-0 shadow-sm p-3">
+            <h6 className="report-desc-label mb-3 text-uppercase">Revisione PRO</h6>
+            <ReportPROActions 
+              report={report} 
+              selectedCategory={selectedCategory} 
+              onSuccess={handleUpdateSuccess} 
+              onCancel={() => navigate(-1)} 
+            />
+          </Card>
+        );
+      case "Officer":
+        return (
+          <Card className="border-0 shadow-sm p-3">
+            <h6 className="report-desc-label mb-3 text-uppercase">Delega Tecnica</h6>
+            <DelegationActions 
+              report={report} 
+              onSuccess={handleUpdateSuccess} 
+              onCancel={() => navigate(-1)} 
+            />
+          </Card>
+        );
+      case "External Maintainer":
+        return (
+          <MaintainerActionPanel 
+            report={report} 
+            onSuccess={handleUpdateSuccess} 
+          />
+        );
+      default:
+        return (
+          <Alert variant="info" className="small shadow-sm">
+            Il tuo ruolo non dispone di azioni operative per questo report.
+          </Alert>
+        );
+    }
+  };
+
+  return (
+    <div className="report-management-page py-4 bg-light min-vh-100">
+      <Container>
+        <div className="mb-4 d-flex align-items-center justify-content-between">
+          <Button 
+            variant="link" 
+            onClick={() => navigate(-1)} 
+            className="text-decoration-none p-0 text-secondary d-flex align-items-center"
+          >
+            <ArrowLeft size={18} className="me-2" /> Torna alla Lista
+          </Button>
+          <div className="d-flex gap-2 align-items-center">
+            <Badge bg="dark" className="px-3 py-2 fs-6">Report ID: {report.id}</Badge>
+            <Badge 
+              bg={report.status === "Resolved" ? "success" : "warning"} 
+              className="px-3 py-2 fs-6"
+            >
+              {report.status}
+            </Badge>
+          </div>
+        </div>
+
+        <Row className="g-4">
+          <Col lg={8}>
+            <Card className="border-0 shadow-sm mb-4">
+              <Card.Body className="p-4">
+                <ReportInfo 
+                  report={report} 
+                  canEditCategory={userRole === "Public Relations Officer"}
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col lg={4}>
+            <div className="sticky-top" style={{ top: "20px" }}>
+              {renderActionPanel()}
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
+}
+
+function MaintainerActionPanel({ report, onSuccess }) {
+  const [note, setNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState(null);
+
+  const handleUpdateStatus = async (newStatus) => {
+    try {
+      setSubmitting(true);
+      setLocalError(null);
+      await API.updateReportStatus(report.id, newStatus, note);
+      onSuccess({ status: newStatus, message: `Stato aggiornato a ${newStatus}` });
+    } catch (err) {
+      setLocalError(err.message || "Errore durante l'aggiornamento.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Card className="border-0 shadow-sm">
+      <Card.Header className="bg-white fw-bold pt-3 border-0">Aggiornamento Intervento</Card.Header>
+      <Card.Body>
+        {localError && <Alert variant="danger" className="small py-2">{localError}</Alert>}
+        <div className="mb-3">
+          <label className="report-desc-label">Note Tecniche</label>
+          <textarea 
+            className="form-control report-desc-textarea" 
+            rows="4" 
+            placeholder="Dettagli sul lavoro..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            disabled={submitting}
+          />
+        </div>
+        <div className="d-grid gap-2">
+          {["Assigned", "Delegated", "Suspended"].includes(report.status) && (
+            <Button variant="warning" className="fw-bold py-2" onClick={() => handleUpdateStatus("In Progress")} disabled={submitting}>
+              <Hammer size={18} className="me-2" /> Inizia Lavori
+            </Button>
+          )}
+          {report.status === "In Progress" && (
+            <>
+              <Button variant="outline-warning" className="fw-bold py-2" onClick={() => handleUpdateStatus("Suspended")} disabled={submitting}>
+                <PauseCircle size={18} className="me-2" /> Sospendi
+              </Button>
+              <Button variant="success" className="fw-bold py-2 shadow-sm" onClick={() => handleUpdateStatus("Resolved")} disabled={submitting}>
+                <CheckCircle size={18} className="me-2" /> Risolto
+              </Button>
+            </>
+          )}
+        </div>
+      </Card.Body>
+    </Card>
+  );
+}
+
+export default ReportManagementPage;

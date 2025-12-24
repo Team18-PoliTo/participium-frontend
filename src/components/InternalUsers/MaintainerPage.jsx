@@ -1,5 +1,12 @@
 import { useState, useEffect, useContext, useCallback } from "react";
-import { Container, Alert, Dropdown, Card, Badge, Stack } from "react-bootstrap";
+import {
+  Container,
+  Alert,
+  Dropdown,
+  Card,
+  Badge,
+  Stack,
+} from "react-bootstrap";
 import { useNavigate } from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,8 +26,16 @@ function MaintainerPage() {
   const [error, setError] = useState(null);
 
   const {
-    filteredReports, startDate, setStartDate, endDate, setEndDate,
-    sortOrder, setSortOrder, statusFilter, setStatusFilter, resetFilters,
+    filteredReports,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    sortOrder,
+    setSortOrder,
+    statusFilter,
+    setStatusFilter,
+    resetFilters,
   } = useReportFilters(reports, { statusFilter: "All" });
 
   const fetchReports = useCallback(async () => {
@@ -72,24 +87,53 @@ function MaintainerPage() {
                     <Dropdown className="maintainer-custom-dropdown">
                       <Dropdown.Toggle>{statusFilter || "All"}</Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {["All", "Delegated", "Assigned", "In Progress", "Suspended", "Resolved"].map(s => (
-                          <Dropdown.Item key={s} onClick={() => setStatusFilter(s)}>{s}</Dropdown.Item>
+                        {[
+                          "All",
+                          "Delegated",
+                          "Assigned",
+                          "In Progress",
+                          "Suspended",
+                          "Resolved",
+                        ].map((s) => (
+                          <Dropdown.Item
+                            key={s}
+                            onClick={() => setStatusFilter(s)}
+                          >
+                            {s}
+                          </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
 
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">Start Date</label>
-                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" className="maintainer-date-picker-input w-100" />
+                    <label className="maintainer-filter-label">
+                      Start Date
+                    </label>
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="maintainer-date-picker-input w-100"
+                    />
                   </div>
 
                   <div className="mb-3">
                     <label className="maintainer-filter-label">End Date</label>
-                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" className="maintainer-date-picker-input w-100" />
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="maintainer-date-picker-input w-100"
+                    />
                   </div>
 
-                  <button className="maintainer-reset-btn w-100 mt-3" onClick={resetFilters}>Reset</button>
+                  <button
+                    className="maintainer-reset-btn w-100 mt-3"
+                    onClick={resetFilters}
+                  >
+                    Reset
+                  </button>
                 </div>
               </Card.Body>
             </Card>
@@ -98,7 +142,9 @@ function MaintainerPage() {
           <section className="maintainer-main">
             <Card className="maintainer-reports-card border-0">
               <Card.Body>
-                <h2 className="maintainer-reports-title mb-4">Tasks ({filteredReports.length})</h2>
+                <h2 className="maintainer-reports-title mb-4">
+                  Tasks ({filteredReports.length})
+                </h2>
                 <Stack gap={3}>
                   {filteredReports.length === 0 ? (
                     <div className="maintainer-empty-state py-5 text-center">
@@ -106,7 +152,11 @@ function MaintainerPage() {
                     </div>
                   ) : (
                     filteredReports.map((report) => (
-                      <ReportCard key={report.id} report={report} onClick={handleReportClick} />
+                      <ReportCard
+                        key={report.id}
+                        report={report}
+                        onClick={handleReportClick}
+                      />
                     ))
                   )}
                 </Stack>

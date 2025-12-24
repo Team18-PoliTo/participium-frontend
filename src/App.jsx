@@ -59,7 +59,8 @@ function App() {
   useEffect(() => {
     const checkIfMobile = () => {
       const userAgent = navigator.userAgent.toLowerCase();
-      const mobileDevices = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const mobileDevices =
+        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
     };
     checkIfMobile();
@@ -67,9 +68,19 @@ function App() {
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const userContextValue = useMemo(() => ({
-    user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole,
-  }), [user, citizenLoggedIn, userLoggedIn, userRole]);
+  const userContextValue = useMemo(
+    () => ({
+      user,
+      setUser,
+      citizenLoggedIn,
+      setCitizenLoggedIn,
+      userLoggedIn,
+      setUserLoggedIn,
+      userRole,
+      setUserRole,
+    }),
+    [user, citizenLoggedIn, userLoggedIn, userRole]
+  );
 
   // Se stiamo ancora controllando l'autenticazione, mostriamo uno spinner
   // Evitiamo che ProtectedRoute faccia redirect a /login prima del tempo
@@ -86,29 +97,94 @@ function App() {
               <Route path="/" element={<Homepage />} />
 
               {/* Se l'utente è loggato, non deve poter accedere a login/register */}
-              <Route path="/register" element={
-                (userLoggedIn || citizenLoggedIn) ? <Navigate replace to="/dashboard" /> : <Registration />
-              } />
-              <Route path="/login" element={
-                (userLoggedIn || citizenLoggedIn) ? <Navigate replace to="/dashboard" /> : <Login />
-              } />
+              <Route
+                path="/register"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Registration />
+                  )
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
 
-              <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute requireCitizen>
+                    <UserPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
-              <Route path="/how-it-works" element={<ProtectedRoute requireCitizen><HowItWorks /></ProtectedRoute>} />
+              <Route
+                path="/how-it-works"
+                element={
+                  <ProtectedRoute requireCitizen>
+                    <HowItWorks />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/map" element={<MapPage />} />
 
-              <Route path="/admin" element={<ProtectedRoute allowedRoles={["ADMIN"]}><AdminPage /></ProtectedRoute>} />
-              <Route path="/pro" element={<ProtectedRoute allowedRoles={["Public Relations Officer"]}><PublicRelationsOfficer /></ProtectedRoute>} />
-              <Route path="/officer" element={<ProtectedRoute allowedRoles={allowedOfficerRoles}><OfficerPage /></ProtectedRoute>} />
-              <Route path="/maintainer" element={<ProtectedRoute allowedRoles={["External Maintainer"]}><MaintainerPage /></ProtectedRoute>} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={["ADMIN"]}>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/pro"
+                element={
+                  <ProtectedRoute allowedRoles={["Public Relations Officer"]}>
+                    <PublicRelationsOfficer />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/officer"
+                element={
+                  <ProtectedRoute allowedRoles={allowedOfficerRoles}>
+                    <OfficerPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/maintainer"
+                element={
+                  <ProtectedRoute allowedRoles={["External Maintainer"]}>
+                    <MaintainerPage />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* ROTTA GESTIONE REPORT */}
-              <Route path="/reports/:id" element={
-                <ProtectedRoute allowedRoles={["Public Relations Officer", "External Maintainer", ...allowedOfficerRoles]}>
-                  <ReportManagementPage />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/reports/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "Public Relations Officer",
+                      "External Maintainer",
+                      ...allowedOfficerRoles,
+                    ]}
+                  >
+                    <ReportManagementPage />
+                  </ProtectedRoute>
+                }
+              />
 
               <Route path="/ws-test" element={<WebSocketTest />} />
               <Route path="/not-authorized" element={<NotAuthorized />} />

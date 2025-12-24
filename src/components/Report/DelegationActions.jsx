@@ -48,7 +48,7 @@ function DelegationActions({ report, onSuccess, onCancel }) {
       console.error("Delegation failed", err);
       setError(
         (err.message && typeof err.message === "string" ? err.message : "") ||
-        "Failed to delegate report. Please try again."
+          "Failed to delegate report. Please try again."
       );
     } finally {
       setSubmitting(false);
@@ -87,8 +87,8 @@ function DelegationActions({ report, onSuccess, onCancel }) {
           <span className="fw-medium">
             {selectedCompanyId
               ? companies.find(
-                (c) => c.id === Number.parseInt(selectedCompanyId)
-              )?.name || "Company Selected"
+                  (c) => c.id === Number.parseInt(selectedCompanyId)
+                )?.name || "Company Selected"
               : "Choose a company"}
           </span>
         </Dropdown.Toggle>

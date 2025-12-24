@@ -18,8 +18,16 @@ function OfficerPage() {
   const [error, setError] = useState(null);
 
   const {
-    filteredReports, startDate, setStartDate, endDate, setEndDate,
-    sortOrder, setSortOrder, statusFilter, setStatusFilter, resetFilters,
+    filteredReports,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    sortOrder,
+    setSortOrder,
+    statusFilter,
+    setStatusFilter,
+    resetFilters,
   } = useReportFilters(reports, { statusFilter: "All" });
 
   useEffect(() => {
@@ -50,7 +58,9 @@ function OfficerPage() {
           <div className="officer-headline-text">
             <Badge className="officer-eyebrow">{userRole}</Badge>
             <h1 className="officer-title">My Assigned Reports</h1>
-            <p className="officer-subtitle">Manage and track reports assigned to you</p>
+            <p className="officer-subtitle">
+              Manage and track reports assigned to you
+            </p>
           </div>
         </header>
 
@@ -66,8 +76,20 @@ function OfficerPage() {
                     <Dropdown className="officer-custom-dropdown">
                       <Dropdown.Toggle>{statusFilter}</Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {["All", "Assigned", "In Progress", "Suspended", "Resolved"].map(s => (
-                          <Dropdown.Item key={s} onClick={() => setStatusFilter(s)} active={statusFilter === s}>{s}</Dropdown.Item>
+                        {[
+                          "All",
+                          "Assigned",
+                          "In Progress",
+                          "Suspended",
+                          "Resolved",
+                        ].map((s) => (
+                          <Dropdown.Item
+                            key={s}
+                            onClick={() => setStatusFilter(s)}
+                            active={statusFilter === s}
+                          >
+                            {s}
+                          </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
                     </Dropdown>
@@ -75,13 +97,23 @@ function OfficerPage() {
 
                   <div className="mb-3">
                     <label className="officer-filter-label">Start Date</label>
-                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" className="officer-date-picker-input w-100" />
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="officer-date-picker-input w-100"
+                    />
                   </div>
 
                   {/* Filtro End Date ripristinato */}
                   <div className="mb-3">
                     <label className="officer-filter-label">End Date</label>
-                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" className="officer-date-picker-input w-100" />
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="officer-date-picker-input w-100"
+                    />
                   </div>
 
                   {/* Filtro Sort Order ripristinato */}
@@ -92,13 +124,22 @@ function OfficerPage() {
                         {sortOrder === "desc" ? "Newest First" : "Oldest First"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setSortOrder("desc")}>Newest First</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortOrder("asc")}>Oldest First</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortOrder("desc")}>
+                          Newest First
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortOrder("asc")}>
+                          Oldest First
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
 
-                  <button className="officer-reset-btn w-100" onClick={resetFilters}>Reset</button>
+                  <button
+                    className="officer-reset-btn w-100"
+                    onClick={resetFilters}
+                  >
+                    Reset
+                  </button>
                 </div>
               </Card.Body>
             </Card>
@@ -107,10 +148,16 @@ function OfficerPage() {
           <section className="officer-main">
             <Card className="officer-reports-card border-0">
               <Card.Body>
-                <h2 className="officer-reports-title mb-4">Assigned Tasks ({filteredReports.length})</h2>
+                <h2 className="officer-reports-title mb-4">
+                  Assigned Tasks ({filteredReports.length})
+                </h2>
                 <div className="officer-reports-list">
                   {filteredReports.map((report) => (
-                    <ReportCard key={report.id} report={report} onClick={handleReportClick} />
+                    <ReportCard
+                      key={report.id}
+                      report={report}
+                      onClick={handleReportClick}
+                    />
                   ))}
                 </div>
               </Card.Body>

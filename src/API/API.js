@@ -1,3 +1,5 @@
+import { use } from "react";
+
 const SERVER_URL = ""; // empty string to use proxy configured in vite.config.js
 
 /**
@@ -554,6 +556,65 @@ const updateReportStatus = async (reportId, status, note) => {
   }
 };
 
+const getReportsDelegatedByMe = async () => {
+  try {
+    const data = await request("api/internal/delegated-reports", {
+      method: "GET",
+      useAuth: true,
+      customErrorMap: {
+        401: "Unauthorized",
+        403: "Forbidden",
+      },
+      defaultErrorMessage: "Failed to fetch delegated reports",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching reports delegated by technical user:", error);
+    throw error;
+  }
+};
+
+const getReportComments = async (reportId) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/comments`, {
+      method: "GET",
+      useAuth: true,
+      customErrorMap: {
+        400: "Invalid report ID",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to fetch comments",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+const createComment = async (reportId, commentText) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/comments`, {
+      method: "POST",
+      useAuth: true,
+      body: { comment: commentText },
+      customErrorMap: {
+        400: "Invalid comment data",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to create comment",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -579,6 +640,9 @@ const API = {
   updateReportStatus,
   getPublicReports,
   getReportMapDetails,
+  getReportsDelegatedByMe,
+  getReportComments,
+  createComment,
 };
 
 export default API;

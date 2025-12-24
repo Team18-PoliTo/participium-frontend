@@ -16,6 +16,7 @@ import { UserContext } from "../../App";
 import ReportInfo from "./ReportInfo";
 import ReportPROActions from "./ReportPROActions";
 import DelegationActions from "./DelegationActions";
+import CommentsChat from "./CommentsChat";
 import LoadingSpinner from "../LoadingSpinner";
 import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles";
 import "../styles/ReportDescription.css";
@@ -137,7 +138,7 @@ function ReportManagementPage() {
           />
         </Card>
       );
-    } else if (isTechnicalOfficer) {
+    } else if (isTechnicalOfficer && report.status !== "Delegated") {
       return (
         <Card className="border-0 shadow-sm p-3">
           <h6 className="report-desc-label mb-3 text-uppercase">
@@ -219,6 +220,17 @@ function ReportManagementPage() {
           <Col lg={4}>
             <div className="sticky-top" style={{ top: "20px" }}>
               {renderActionPanel()}
+
+              {/* Internal Chat for Officers and Maintainers */}
+              {report.status !== "Assigned" && ((allowedOfficerRoles.includes(userRole) ||
+                userRole === "External Maintainer")) && (
+                <Card className="border-0 shadow-sm p-3 mt-3">
+                  <CommentsChat
+                    report={report}
+                    onSuccess={handleUpdateSuccess}
+                  />
+                </Card>
+              )}
             </div>
           </Col>
         </Row>

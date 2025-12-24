@@ -15,6 +15,7 @@ function OfficerPage() {
   const { userRole } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [delegatedReports, setDelegatedReports] = useState([]);
 
   const {
     filteredReports,
@@ -42,6 +43,22 @@ function OfficerPage() {
       }
     };
     fetchReports();
+  }, []);
+
+  useEffect(() => {
+    const fetchDelegatedReports = async () => {
+      try {
+        setLoading(true);
+        const data = await API.getReportsDelegatedByMe();
+        setDelegatedReports(Array.isArray(data) ? data : []);
+      }
+      catch {
+        console.error("Failed to load delegated reports.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDelegatedReports();
   }, []);
 
   const handleReportClick = (report) => {
@@ -181,6 +198,28 @@ function OfficerPage() {
                     </div>
                   ) : (
                     filteredReports.map((report) => (
+                      <ReportCard
+                        key={report.id}
+                        report={report}
+                        onClick={handleReportClick}
+                      />
+                    ))
+                  )}
+                </div>
+              </Card.Body>
+            </Card>
+            <Card className="officer-reports-card border-0">
+              <Card.Body>
+                <h2 className="officer-reports-title mb-4">
+                  Delegated Tasks ({delegatedReports.length})
+                </h2>
+                <div className="officer-reports-list">
+                  {delegatedReports.length === 0 ? (
+                    <div className="officer-empty-state py-5 text-center">
+                      <p className="officer-empty-message">No tasks found</p>
+                    </div>
+                  ) : (
+                    delegatedReports.map((report) => (
                       <ReportCard
                         key={report.id}
                         report={report}

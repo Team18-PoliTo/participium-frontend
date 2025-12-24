@@ -15,7 +15,6 @@ function OfficerPage() {
   const { userRole } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [_error, setError] = useState(null);
 
   const {
     filteredReports,
@@ -37,7 +36,7 @@ function OfficerPage() {
         const data = await API.getReportsAssignedToMe();
         setReports(Array.isArray(data) ? data : []);
       } catch {
-        setError("Failed to load your assigned reports.");
+        console.error("Failed to load your assigned reports.");
       } finally {
         setLoading(false);
       }
@@ -72,9 +71,9 @@ function OfficerPage() {
                 <span className="officer-filter-title">FILTER OPTIONS</span>
                 <div className="officer-filter-group">
                   <div className="mb-3">
-                    <label className="officer-filter-label">Status</label>
+                    <label className="officer-filter-label" htmlFor="officer-status-dropdown">Status</label>
                     <Dropdown className="officer-custom-dropdown">
-                      <Dropdown.Toggle>{statusFilter}</Dropdown.Toggle>
+                      <Dropdown.Toggle id="officer-status-dropdown">{statusFilter}</Dropdown.Toggle>
                       <Dropdown.Menu>
                         {[
                           "All",
@@ -96,8 +95,9 @@ function OfficerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="officer-filter-label">Start Date</label>
+                    <label className="officer-filter-label" htmlFor="officer-start-date">Start Date</label>
                     <DatePicker
+                      id="officer-start-date"
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
                       dateFormat="dd/MM/yyyy"
@@ -107,8 +107,9 @@ function OfficerPage() {
 
                   {/* Filtro End Date ripristinato */}
                   <div className="mb-3">
-                    <label className="officer-filter-label">End Date</label>
+                    <label className="officer-filter-label" htmlFor="officer-end-date">End Date</label>
                     <DatePicker
+                      id="officer-end-date"
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
                       dateFormat="dd/MM/yyyy"
@@ -118,9 +119,9 @@ function OfficerPage() {
 
                   {/* Filtro Sort Order ripristinato */}
                   <div className="mb-3">
-                    <label className="officer-filter-label">Sort Order</label>
+                    <label className="officer-filter-label" htmlFor="officer-sort-order">Sort Order</label>
                     <Dropdown className="officer-custom-dropdown">
-                      <Dropdown.Toggle>
+                      <Dropdown.Toggle id="officer-sort-order">
                         {sortOrder === "desc" ? "Newest First" : "Oldest First"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>

@@ -82,6 +82,19 @@ function App() {
     [user, citizenLoggedIn, userLoggedIn, userRole]
   );
 
+  const memoizedUserContextValue = useMemo(
+    () => userContextValue,
+    [userContextValue]
+  );
+  const memoizedNavbarContext = useMemo(
+    () => ({ navbarText, setNavbarText }),
+    [navbarText]
+  );
+  const memoizedMobileContext = useMemo(
+    () => ({ isMobile, setIsMobile }),
+    [isMobile]
+  );
+
   // Se stiamo ancora controllando l'autenticazione, mostriamo uno spinner
   // Evitiamo che ProtectedRoute faccia redirect a /login prima del tempo
   if (isCheckingAuth) {
@@ -89,9 +102,9 @@ function App() {
   }
 
   return (
-    <UserContext.Provider value={userContextValue}>
-      <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
-        <MobileContext.Provider value={{ isMobile, setIsMobile }}>
+    <UserContext.Provider value={memoizedUserContextValue}>
+      <NavbarTextContext.Provider value={memoizedNavbarContext}>
+        <MobileContext.Provider value={memoizedMobileContext}>
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />

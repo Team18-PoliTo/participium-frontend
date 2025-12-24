@@ -16,7 +16,6 @@ function MaintainerPage() {
   const { user } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [_error, setError] = useState(null);
 
   const {
     filteredReports,
@@ -24,8 +23,6 @@ function MaintainerPage() {
     setStartDate,
     endDate,
     setEndDate,
-    sortOrder: _sortOrder,
-    setSortOrder: _setSortOrder,
     statusFilter,
     setStatusFilter,
     resetFilters,
@@ -37,7 +34,7 @@ function MaintainerPage() {
       const data = await API.getReportsAssignedToMe();
       setReports(Array.isArray(data) ? data : []);
     } catch {
-      setError("Failed to load maintenance tasks.");
+      console.error("Failed to load maintenance tasks.");
     } finally {
       setLoading(false);
     }
@@ -76,9 +73,9 @@ function MaintainerPage() {
                 <span className="maintainer-filter-title">FILTERS</span>
                 <div className="maintainer-filter-group">
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">Status</label>
+                    <label className="maintainer-filter-label" htmlFor="status-dropdown">Status</label>
                     <Dropdown className="maintainer-custom-dropdown">
-                      <Dropdown.Toggle>{statusFilter || "All"}</Dropdown.Toggle>
+                      <Dropdown.Toggle id="status-dropdown">{statusFilter || "All"}</Dropdown.Toggle>
                       <Dropdown.Menu>
                         {[
                           "All",
@@ -100,10 +97,11 @@ function MaintainerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">
+                    <label className="maintainer-filter-label" htmlFor="maintainer-start-date">
                       Start Date
                     </label>
                     <DatePicker
+                      id="maintainer-start-date"
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
                       dateFormat="dd/MM/yyyy"
@@ -112,8 +110,9 @@ function MaintainerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="maintainer-filter-label">End Date</label>
+                    <label className="maintainer-filter-label" htmlFor="maintainer-end-date">End Date</label>
                     <DatePicker
+                      id="maintainer-end-date"
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
                       dateFormat="dd/MM/yyyy"

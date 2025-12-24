@@ -14,7 +14,6 @@ function PublicRelationsOfficer() {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [_error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
 
   const {
@@ -40,9 +39,8 @@ function PublicRelationsOfficer() {
         ]);
         setCategories(catData);
         setReports(repData);
-        setError(null);
       } catch {
-        setError("Failed to load dashboard data.");
+        console.error("Failed to load dashboard data.");
       } finally {
         setLoading(false);
       }
@@ -77,7 +75,7 @@ function PublicRelationsOfficer() {
                 <span className="pro-filter-title">FILTER OPTIONS</span>
                 <div className="pro-filter-group">
                   <div className="mb-3">
-                    <label className="pro-filter-label">Category</label>
+                    <label className="pro-filter-label" htmlFor="category-dropdown">Category</label>
                     <Dropdown className="pro-custom-dropdown">
                       <Dropdown.Toggle id="category-dropdown">
                         <div className="d-flex align-items-center gap-2">
@@ -110,8 +108,9 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label">Start Date</label>
+                    <label className="pro-filter-label" htmlFor="pro-start-date">Start Date</label>
                     <DatePicker
+                      id="pro-start-date"
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
                       dateFormat="dd/MM/yyyy"
@@ -122,8 +121,9 @@ function PublicRelationsOfficer() {
 
                   {/* Filtro End Date ripristinato */}
                   <div className="mb-3">
-                    <label className="pro-filter-label">End Date</label>
+                    <label className="pro-filter-label" htmlFor="pro-end-date">End Date</label>
                     <DatePicker
+                      id="pro-end-date"
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
                       dateFormat="dd/MM/yyyy"
@@ -133,9 +133,9 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label">Sort Order</label>
+                    <label className="pro-filter-label" htmlFor="pro-sort-order">Sort Order</label>
                     <Dropdown className="pro-custom-dropdown">
-                      <Dropdown.Toggle>
+                      <Dropdown.Toggle id="pro-sort-order">
                         {sortOrder === "desc" ? "Newest First" : "Oldest First"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>

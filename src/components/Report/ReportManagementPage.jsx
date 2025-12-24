@@ -247,8 +247,9 @@ function MaintainerActionPanel({ report, onSuccess }) {
           </Alert>
         )}
         <div className="mb-3">
-          <label className="report-desc-label">Technical Notes</label>
+          <label className="report-desc-label" htmlFor="technical-notes">Technical Notes</label>
           <textarea
+            id="technical-notes"
             className="form-control report-desc-textarea"
             rows="4"
             placeholder="Work details..."

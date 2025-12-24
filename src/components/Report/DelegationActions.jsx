@@ -41,8 +41,8 @@ function DelegationActions({ report, onSuccess, onCancel }) {
         report.id,
         selectedCompanyId
       );
-      const { assignedTo: _assignedTo, ...responseWithoutAssignedTo } =
-        response;
+      // eslint-disable-next-line no-unused-vars
+      const { assignedTo, ...responseWithoutAssignedTo } = response;
       onSuccess(responseWithoutAssignedTo);
     } catch (err) {
       console.error("Delegation failed", err);

@@ -73,9 +73,16 @@ function MaintainerPage() {
                 <span className="maintainer-filter-title">FILTERS</span>
                 <div className="maintainer-filter-group">
                   <div className="mb-3">
-                    <label className="maintainer-filter-label" htmlFor="status-dropdown">Status</label>
+                    <label
+                      className="maintainer-filter-label"
+                      htmlFor="status-dropdown"
+                    >
+                      Status
+                    </label>
                     <Dropdown className="maintainer-custom-dropdown">
-                      <Dropdown.Toggle id="status-dropdown">{statusFilter || "All"}</Dropdown.Toggle>
+                      <Dropdown.Toggle id="status-dropdown">
+                        {statusFilter || "All"}
+                      </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {[
                           "All",
@@ -97,7 +104,10 @@ function MaintainerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="maintainer-filter-label" htmlFor="maintainer-start-date">
+                    <label
+                      className="maintainer-filter-label"
+                      htmlFor="maintainer-start-date"
+                    >
                       Start Date
                     </label>
                     <DatePicker
@@ -110,7 +120,12 @@ function MaintainerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="maintainer-filter-label" htmlFor="maintainer-end-date">End Date</label>
+                    <label
+                      className="maintainer-filter-label"
+                      htmlFor="maintainer-end-date"
+                    >
+                      End Date
+                    </label>
                     <DatePicker
                       id="maintainer-end-date"
                       selected={endDate}

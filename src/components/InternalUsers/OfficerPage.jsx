@@ -71,9 +71,16 @@ function OfficerPage() {
                 <span className="officer-filter-title">FILTER OPTIONS</span>
                 <div className="officer-filter-group">
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="officer-status-dropdown">Status</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-status-dropdown"
+                    >
+                      Status
+                    </label>
                     <Dropdown className="officer-custom-dropdown">
-                      <Dropdown.Toggle id="officer-status-dropdown">{statusFilter}</Dropdown.Toggle>
+                      <Dropdown.Toggle id="officer-status-dropdown">
+                        {statusFilter}
+                      </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {[
                           "All",
@@ -95,7 +102,12 @@ function OfficerPage() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="officer-start-date">Start Date</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-start-date"
+                    >
+                      Start Date
+                    </label>
                     <DatePicker
                       id="officer-start-date"
                       selected={startDate}
@@ -107,7 +119,12 @@ function OfficerPage() {
 
                   {/* Filtro End Date ripristinato */}
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="officer-end-date">End Date</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-end-date"
+                    >
+                      End Date
+                    </label>
                     <DatePicker
                       id="officer-end-date"
                       selected={endDate}
@@ -119,7 +136,12 @@ function OfficerPage() {
 
                   {/* Filtro Sort Order ripristinato */}
                   <div className="mb-3">
-                    <label className="officer-filter-label" htmlFor="officer-sort-order">Sort Order</label>
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-sort-order"
+                    >
+                      Sort Order
+                    </label>
                     <Dropdown className="officer-custom-dropdown">
                       <Dropdown.Toggle id="officer-sort-order">
                         {sortOrder === "desc" ? "Newest First" : "Oldest First"}

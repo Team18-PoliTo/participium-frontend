@@ -75,7 +75,12 @@ function PublicRelationsOfficer() {
                 <span className="pro-filter-title">FILTER OPTIONS</span>
                 <div className="pro-filter-group">
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="category-dropdown">Category</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="category-dropdown"
+                    >
+                      Category
+                    </label>
                     <Dropdown className="pro-custom-dropdown">
                       <Dropdown.Toggle id="category-dropdown">
                         <div className="d-flex align-items-center gap-2">
@@ -108,7 +113,12 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="pro-start-date">Start Date</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="pro-start-date"
+                    >
+                      Start Date
+                    </label>
                     <DatePicker
                       id="pro-start-date"
                       selected={startDate}
@@ -121,7 +131,9 @@ function PublicRelationsOfficer() {
 
                   {/* Filtro End Date ripristinato */}
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="pro-end-date">End Date</label>
+                    <label className="pro-filter-label" htmlFor="pro-end-date">
+                      End Date
+                    </label>
                     <DatePicker
                       id="pro-end-date"
                       selected={endDate}
@@ -133,7 +145,12 @@ function PublicRelationsOfficer() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="pro-filter-label" htmlFor="pro-sort-order">Sort Order</label>
+                    <label
+                      className="pro-filter-label"
+                      htmlFor="pro-sort-order"
+                    >
+                      Sort Order
+                    </label>
                     <Dropdown className="pro-custom-dropdown">
                       <Dropdown.Toggle id="pro-sort-order">
                         {sortOrder === "desc" ? "Newest First" : "Oldest First"}

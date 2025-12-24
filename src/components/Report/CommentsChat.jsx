@@ -7,20 +7,24 @@ import { UserContext } from "../../App";
 import { useReportComments } from "../../ws";
 import "../styles/CommentsChat.css";
 
-function CommentsChat({ report, onSuccess }) {
+function CommentsChat({ report }) {
   const { user } = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [wsError, setWsError] = useState(null);
   const messagesContainerRef = useRef(null);
 
+  // Token validation and management
   const token = localStorage.getItem("authToken")
     ? JSON.parse(localStorage.getItem("authToken"))
     : null;
 
-  // WebSocket hook for real-time updates
+  const isTokenValid = token && typeof token === "string" && token.length > 0;
+
+  // WebSocket hook for real-time updates with error handling
   const { isConnected } = useReportComments(
     report.id,
     (newCommentData) => {
@@ -35,13 +39,25 @@ function CommentsChat({ report, onSuccess }) {
       // Scroll to bottom when new comment arrives
       setTimeout(() => scrollToBottom(), 100);
     },
-    token
+    isTokenValid ? token : null
   );
+
+  // Monitor WebSocket connection status
+  useEffect(() => {
+    if (!isTokenValid) {
+      setWsError("Authentication token is missing or invalid");
+    } else if (!isConnected && !loading) {
+      setWsError("Real-time updates unavailable. Comments will still work.");
+    } else {
+      setWsError(null);
+    }
+  }, [isConnected, isTokenValid, loading]);
 
   // Scroll to bottom helper
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   };
 
@@ -59,7 +75,7 @@ function CommentsChat({ report, onSuccess }) {
         console.error("Failed to fetch comments:", err);
         setError(
           err.message ||
-          "Failed to load comments. Please refresh the page to try again."
+            "Failed to load comments. Please refresh the page to try again."
         );
       } finally {
         setLoading(false);
@@ -167,6 +183,13 @@ function CommentsChat({ report, onSuccess }) {
         </Alert>
       )}
 
+      {/* WebSocket Warning */}
+      {wsError && !isConnected && (
+        <Alert variant="warning" className="py-2 small">
+          {wsError}
+        </Alert>
+      )}
+
       {/* Messages Container */}
       <div
         ref={messagesContainerRef}
@@ -187,7 +210,8 @@ function CommentsChat({ report, onSuccess }) {
           </div>
         ) : (
           comments.map((comment) => {
-            const isOwnComment = Number(comment.commentOwner_id) === Number(user.profile.id);
+            const isOwnComment =
+              Number(comment.commentOwner_id) === Number(user.profile.id);
             return (
               <div
                 key={comment.id}
@@ -224,11 +248,9 @@ function CommentsChat({ report, onSuccess }) {
                         opacity: 0.8,
                       }}
                     >
-                      {user.profile.role === "External Maintainer" ? (
-                        `Officer`
-                      ) : (
-                        `Maintainer`
-                      )}
+                      {user.profile.role === "External Maintainer"
+                        ? `Officer`
+                        : `Maintainer`}
                     </div>
                   )}
                   <div className="comment-text" style={{ fontSize: "0.95rem" }}>
@@ -292,7 +314,6 @@ CommentsChat.propTypes = {
   report: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
-  onSuccess: PropTypes.func,
 };
 
 export default CommentsChat;

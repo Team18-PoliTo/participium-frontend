@@ -51,8 +51,7 @@ function OfficerPage() {
         setLoading(true);
         const data = await API.getReportsDelegatedByMe();
         setDelegatedReports(Array.isArray(data) ? data : []);
-      }
-      catch {
+      } catch {
         console.error("Failed to load delegated reports.");
       } finally {
         setLoading(false);

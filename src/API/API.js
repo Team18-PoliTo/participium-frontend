@@ -1,5 +1,3 @@
-import { use } from "react";
-
 const SERVER_URL = ""; // empty string to use proxy configured in vite.config.js
 
 /**

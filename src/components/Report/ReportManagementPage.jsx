@@ -222,15 +222,16 @@ function ReportManagementPage() {
               {renderActionPanel()}
 
               {/* Internal Chat for Officers and Maintainers */}
-              {report.status !== "Assigned" && ((allowedOfficerRoles.includes(userRole) ||
-                userRole === "External Maintainer")) && (
-                <Card className="border-0 shadow-sm p-3 mt-3">
-                  <CommentsChat
-                    report={report}
-                    onSuccess={handleUpdateSuccess}
-                  />
-                </Card>
-              )}
+              {report.status !== "Assigned" &&
+                (allowedOfficerRoles.includes(userRole) ||
+                  userRole === "External Maintainer") && (
+                  <Card className="border-0 shadow-sm p-3 mt-3">
+                    <CommentsChat
+                      report={report}
+                      onSuccess={handleUpdateSuccess}
+                    />
+                  </Card>
+                )}
             </div>
           </Col>
         </Row>

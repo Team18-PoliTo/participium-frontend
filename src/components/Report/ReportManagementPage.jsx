@@ -186,7 +186,7 @@ function ReportManagementPage() {
         <div className="mb-4 d-flex align-items-center justify-content-between">
           <Button
             variant="link"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/dashboard")}
             className="text-decoration-none p-0 text-secondary d-flex align-items-center"
           >
             <ArrowLeft size={18} className="me-2" /> Back to List

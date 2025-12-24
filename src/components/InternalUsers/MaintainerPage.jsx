@@ -23,6 +23,8 @@ function MaintainerPage() {
     setStartDate,
     endDate,
     setEndDate,
+    sortOrder,
+    setSortOrder,
     statusFilter,
     setStatusFilter,
     resetFilters,
@@ -95,6 +97,7 @@ function MaintainerPage() {
                           <Dropdown.Item
                             key={s}
                             onClick={() => setStatusFilter(s)}
+                            active={statusFilter === s}
                           >
                             {s}
                           </Dropdown.Item>
@@ -133,6 +136,34 @@ function MaintainerPage() {
                       dateFormat="dd/MM/yyyy"
                       className="maintainer-date-picker-input w-100"
                     />
+                  </div>
+
+                  <div className="mb-3">
+                    <label
+                      className="maintainer-filter-label"
+                      htmlFor="maintainer-sort-order"
+                    >
+                      Sort Order
+                    </label>
+                    <Dropdown className="maintainer-custom-dropdown">
+                      <Dropdown.Toggle id="maintainer-sort-order">
+                        {sortOrder === "desc" ? "Newest First" : "Oldest First"}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          onClick={() => setSortOrder("desc")}
+                          active={sortOrder === "desc"}
+                        >
+                          Newest First
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => setSortOrder("asc")}
+                          active={sortOrder === "asc"}
+                        >
+                          Oldest First
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </div>
 
                   <button

@@ -401,3 +401,34 @@
   background: #10b981 !important;
   border: none !important;
 }
+
+/* --- STATUS BADGES --- */
+.badge.status-badge {
+  color: white !important;
+  border: none !important;
+}
+
+.badge.status-badge-resolved {
+  background-color: #10b981 !important;
+}
+
+.badge.status-badge-in-progress {
+  background-color: #fbbf24 !important;
+  color: #000 !important;
+}
+
+.badge.status-badge-suspended {
+  background-color: #f97316 !important;
+}
+
+.badge.status-badge-delegated {
+  background-color: #9333ea !important;
+}
+
+.badge.status-badge-assigned {
+  background-color: #3b82f6 !important;
+}
+
+.badge.status-badge-default {
+  background-color: #6b7280 !important;
+}

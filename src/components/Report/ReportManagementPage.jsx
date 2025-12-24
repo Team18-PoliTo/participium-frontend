@@ -17,7 +17,7 @@ import ReportInfo from "./ReportInfo";
 import ReportPROActions from "./ReportPROActions";
 import DelegationActions from "./DelegationActions";
 import LoadingSpinner from "../LoadingSpinner";
-import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles"; // Aggiunto import per ruoli tecnici
+import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles";
 import "../styles/ReportDescription.css";
 
 function ReportManagementPage() {
@@ -61,10 +61,10 @@ function ReportManagementPage() {
   const handleUpdateSuccess = (updatedData) => {
     setSuccessData(updatedData);
 
-    if (updatedData && updatedData.id) {
+    if (updatedData?.id) {
       setReport(updatedData);
       setSelectedCategory(updatedData.category);
-    } else if (updatedData && updatedData.status) {
+    } else if (updatedData?.status) {
       setReport((prev) => ({ ...prev, ...updatedData }));
     }
   };
@@ -167,6 +167,18 @@ function ReportManagementPage() {
     }
   };
 
+  const getStatusBadgeClass = (status) => {
+    const statusMap = {
+      Resolved: "status-badge-resolved",
+      "In Progress": "status-badge-in-progress",
+      Suspended: "status-badge-suspended",
+      Delegated: "status-badge-delegated",
+      Assigned: "status-badge-assigned",
+    };
+
+    return `status-badge ${statusMap[status] || "status-badge-default"}`;
+  };
+
   return (
     <div className="report-management-page py-4 bg-light min-vh-100">
       <Container>
@@ -183,8 +195,7 @@ function ReportManagementPage() {
               Report ID: {report.id}
             </Badge>
             <Badge
-              bg={report.status === "Resolved" ? "success" : "warning"}
-              className="px-3 py-2 fs-6"
+              className={`px-3 py-2 fs-6 ${getStatusBadgeClass(report.status)}`}
             >
               {report.status}
             </Badge>

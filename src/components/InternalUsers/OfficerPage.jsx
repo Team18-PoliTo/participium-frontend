@@ -175,13 +175,19 @@ function OfficerPage() {
                   Assigned Tasks ({filteredReports.length})
                 </h2>
                 <div className="officer-reports-list">
-                  {filteredReports.map((report) => (
-                    <ReportCard
-                      key={report.id}
-                      report={report}
-                      onClick={handleReportClick}
-                    />
-                  ))}
+                  {filteredReports.length === 0 ? (
+                    <div className="officer-empty-state py-5 text-center">
+                      <p className="officer-empty-message">No tasks found</p>
+                    </div>
+                  ) : (
+                    filteredReports.map((report) => (
+                      <ReportCard
+                        key={report.id}
+                        report={report}
+                        onClick={handleReportClick}
+                      />
+                    ))
+                  )}
                 </div>
               </Card.Body>
             </Card>

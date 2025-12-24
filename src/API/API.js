@@ -84,7 +84,7 @@ const request = async (endpoint, options = {}) => {
       contentType === "application/json" ? JSON.stringify(body) : body;
   }
 
-  const safeEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const safeEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const response = await fetch(`${SERVER_URL}${safeEndpoint}`, config);
 
   if (response.ok) {

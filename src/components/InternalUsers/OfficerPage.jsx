@@ -54,6 +54,7 @@ function OfficerPage() {
           </div>
         </header>
 
+        {/* Layout corretto per rispettare la Grid definita in OfficerPage.css */}
         <div className="officer-layout">
           <aside className="officer-sidebar">
             <Card className="officer-filter-card shadow-sm">
@@ -71,10 +72,32 @@ function OfficerPage() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
+
                   <div className="mb-3">
                     <label className="officer-filter-label">Start Date</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" className="officer-date-picker-input w-100" />
                   </div>
+
+                  {/* Filtro End Date ripristinato */}
+                  <div className="mb-3">
+                    <label className="officer-filter-label">End Date</label>
+                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" className="officer-date-picker-input w-100" />
+                  </div>
+
+                  {/* Filtro Sort Order ripristinato */}
+                  <div className="mb-3">
+                    <label className="officer-filter-label">Sort Order</label>
+                    <Dropdown className="officer-custom-dropdown">
+                      <Dropdown.Toggle>
+                        {sortOrder === "desc" ? "Newest First" : "Oldest First"}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => setSortOrder("desc")}>Newest First</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortOrder("asc")}>Oldest First</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+
                   <button className="officer-reset-btn w-100" onClick={resetFilters}>Reset</button>
                 </div>
               </Card.Body>

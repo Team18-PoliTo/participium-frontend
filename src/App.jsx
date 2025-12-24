@@ -71,6 +71,12 @@ function App() {
     user, setUser, citizenLoggedIn, setCitizenLoggedIn, userLoggedIn, setUserLoggedIn, userRole, setUserRole,
   }), [user, citizenLoggedIn, userLoggedIn, userRole]);
 
+  // Se stiamo ancora controllando l'autenticazione, mostriamo uno spinner
+  // Evitiamo che ProtectedRoute faccia redirect a /login prima del tempo
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <UserContext.Provider value={userContextValue}>
       <NavbarTextContext.Provider value={{ navbarText, setNavbarText }}>
@@ -78,8 +84,15 @@ function App() {
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />
-              <Route path="/register" element={<Registration />} />
-              <Route path="/login" element={<Login />} />
+
+              {/* Se l'utente è loggato, non deve poter accedere a login/register */}
+              <Route path="/register" element={
+                (userLoggedIn || citizenLoggedIn) ? <Navigate replace to="/dashboard" /> : <Registration />
+              } />
+              <Route path="/login" element={
+                (userLoggedIn || citizenLoggedIn) ? <Navigate replace to="/dashboard" /> : <Login />
+              } />
+
               <Route path="/profile" element={<ProtectedRoute requireCitizen><UserPage /></ProtectedRoute>} />
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
               <Route path="/how-it-works" element={<ProtectedRoute requireCitizen><HowItWorks /></ProtectedRoute>} />

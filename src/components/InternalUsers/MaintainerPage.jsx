@@ -78,6 +78,17 @@ function MaintainerPage() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
+
+                  <div className="mb-3">
+                    <label className="maintainer-filter-label">Start Date</label>
+                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" className="maintainer-date-picker-input w-100" />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="maintainer-filter-label">End Date</label>
+                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" className="maintainer-date-picker-input w-100" />
+                  </div>
+
                   <button className="maintainer-reset-btn w-100 mt-3" onClick={resetFilters}>Reset</button>
                 </div>
               </Card.Body>
@@ -89,9 +100,15 @@ function MaintainerPage() {
               <Card.Body>
                 <h2 className="maintainer-reports-title mb-4">Tasks ({filteredReports.length})</h2>
                 <Stack gap={3}>
-                  {filteredReports.map((report) => (
-                    <ReportCard key={report.id} report={report} onClick={handleReportClick} />
-                  ))}
+                  {filteredReports.length === 0 ? (
+                    <div className="maintainer-empty-state py-5 text-center">
+                      <p className="maintainer-empty-message">No tasks found</p>
+                    </div>
+                  ) : (
+                    filteredReports.map((report) => (
+                      <ReportCard key={report.id} report={report} onClick={handleReportClick} />
+                    ))
+                  )}
                 </Stack>
               </Card.Body>
             </Card>

@@ -60,6 +60,7 @@ function PublicRelationsOfficer() {
           </div>
         </header>
 
+        {/* Uso dei tag semantici per rispettare la CSS Grid definita in PublicRelationsOfficer.css */}
         <div className="pro-layout">
           <aside className="pro-sidebar">
             <Card className="pro-filter-card shadow-sm">
@@ -90,10 +91,18 @@ function PublicRelationsOfficer() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
+
                   <div className="mb-3">
                     <label className="pro-filter-label">Start Date</label>
                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" placeholderText="Select Date" className="pro-custom-date-picker-input w-100" />
                   </div>
+
+                  {/* Filtro End Date ripristinato */}
+                  <div className="mb-3">
+                    <label className="pro-filter-label">End Date</label>
+                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" placeholderText="End Date" className="pro-custom-date-picker-input w-100" />
+                  </div>
+
                   <div className="mb-3">
                     <label className="pro-filter-label">Sort Order</label>
                     <Dropdown className="pro-custom-dropdown">
@@ -106,6 +115,7 @@ function PublicRelationsOfficer() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
+
                   <button className="pro-reset-filters-btn w-100" onClick={resetFilters}>
                     Reset Filters
                   </button>

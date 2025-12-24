@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Alert, Dropdown, Card, Badge } from "react-bootstrap";
+import { Container, Dropdown, Card, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -15,7 +15,7 @@ function OfficerPage() {
   const { userRole } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [_error, setError] = useState(null);
 
   const {
     filteredReports,
@@ -36,7 +36,7 @@ function OfficerPage() {
         setLoading(true);
         const data = await API.getReportsAssignedToMe();
         setReports(Array.isArray(data) ? data : []);
-      } catch (err) {
+      } catch {
         setError("Failed to load your assigned reports.");
       } finally {
         setLoading(false);

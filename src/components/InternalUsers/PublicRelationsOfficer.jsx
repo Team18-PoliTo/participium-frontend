@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Container,
   Stack,
-  Alert,
   Dropdown,
   Card,
   Badge,
@@ -21,7 +20,7 @@ function PublicRelationsOfficer() {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [_error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
 
   const {
@@ -48,7 +47,7 @@ function PublicRelationsOfficer() {
         setCategories(catData);
         setReports(repData);
         setError(null);
-      } catch (err) {
+      } catch {
         setError("Failed to load dashboard data.");
       } finally {
         setLoading(false);

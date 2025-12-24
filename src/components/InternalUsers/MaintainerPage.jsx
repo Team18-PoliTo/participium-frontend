@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import {
   Container,
-  Alert,
   Dropdown,
   Card,
   Badge,
@@ -23,7 +22,7 @@ function MaintainerPage() {
   const { user } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [_error, setError] = useState(null);
 
   const {
     filteredReports,
@@ -31,8 +30,8 @@ function MaintainerPage() {
     setStartDate,
     endDate,
     setEndDate,
-    sortOrder,
-    setSortOrder,
+    sortOrder: _sortOrder,
+    setSortOrder: _setSortOrder,
     statusFilter,
     setStatusFilter,
     resetFilters,
@@ -43,7 +42,7 @@ function MaintainerPage() {
       setLoading(true);
       const data = await API.getReportsAssignedToMe();
       setReports(Array.isArray(data) ? data : []);
-    } catch (err) {
+    } catch {
       setError("Failed to load maintenance tasks.");
     } finally {
       setLoading(false);

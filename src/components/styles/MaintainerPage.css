@@ -180,6 +180,14 @@
   border-color: rgba(61, 90, 128, 0.3) !important;
 }
 
+.maintainer-custom-dropdown .dropdown-toggle:focus,
+.maintainer-custom-dropdown .dropdown-toggle:active,
+.maintainer-custom-dropdown .dropdown-toggle.show {
+  background: #ffffff !important;
+  border-color: #ee6c4d !important;
+  box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.1) !important;
+}
+
 .maintainer-custom-dropdown .dropdown-menu {
   background: #ffffff;
   border: 1px solid rgba(41, 65, 92, 0.15);
@@ -195,13 +203,23 @@
 .maintainer-custom-dropdown .dropdown-item {
   color: #1f2a37;
   font-size: 14px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
   padding: 10px 12px;
   border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+
+.maintainer-custom-dropdown .dropdown-item:hover {
+  background: linear-gradient(135deg, #f8fbff, #f0f7fc);
+  color: #1f2a37;
 }
 
 .maintainer-custom-dropdown .dropdown-item.active {
   background: linear-gradient(135deg, #ee6c4d, #f6906f);
   color: #ffffff !important;
+  font-weight: 600;
 }
 
 /* Date Picker */

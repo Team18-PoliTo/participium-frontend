@@ -105,7 +105,7 @@ function ReportPROActions({ report, selectedCategory, onSuccess, onCancel }) {
       {/* Action Buttons */}
       <div className="d-flex justify-content-between">
         <Button
-          variant="secondary"
+          variant="outline-secondary"
           onClick={onCancel}
           className="report-desc-btn-cancel"
           disabled={submitting}

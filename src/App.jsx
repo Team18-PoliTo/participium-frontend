@@ -19,6 +19,7 @@ import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
 import UserPage from "./components/Citizen/UserPage";
 import MaintainerPage from "./components/InternalUsers/MaintainerPage";
 import WebSocketTest from "./components/WebSocketTest";
+import ReportManagementPage from "./components/Report/ReportManagementPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -62,10 +63,8 @@ function App() {
         /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
     };
-
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
-
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
@@ -83,35 +82,55 @@ function App() {
     [user, citizenLoggedIn, userLoggedIn, userRole]
   );
 
-  const navbarContextValue = useMemo(
-    () => ({
-      navbarText,
-      setNavbarText,
-    }),
+  const memoizedUserContextValue = useMemo(
+    () => userContextValue,
+    [userContextValue]
+  );
+  const memoizedNavbarContext = useMemo(
+    () => ({ navbarText, setNavbarText }),
     [navbarText]
   );
-
-  const mobileContextValue = useMemo(
-    () => ({
-      isMobile,
-      setIsMobile,
-    }),
+  const memoizedMobileContext = useMemo(
+    () => ({ isMobile, setIsMobile }),
     [isMobile]
   );
 
+  // Se stiamo ancora controllando l'autenticazione, mostriamo uno spinner
+  // Evitiamo che ProtectedRoute faccia redirect a /login prima del tempo
   if (isCheckingAuth) {
-    return <LoadingSpinner message="Checking authentication..." />;
+    return <LoadingSpinner />;
   }
 
   return (
-    <UserContext.Provider value={userContextValue}>
-      <NavbarTextContext.Provider value={navbarContextValue}>
-        <MobileContext.Provider value={mobileContextValue}>
+    <UserContext.Provider value={memoizedUserContextValue}>
+      <NavbarTextContext.Provider value={memoizedNavbarContext}>
+        <MobileContext.Provider value={memoizedMobileContext}>
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />
-              <Route path="/register" element={<Registration />} />
-              <Route path="/login" element={<Login />} />
+
+              {/* Se l'utente è loggato, non deve poter accedere a login/register */}
+              <Route
+                path="/register"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Registration />
+                  )
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+
               <Route
                 path="/profile"
                 element={
@@ -120,10 +139,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              {/* Redirect basato sul ruolo */}
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
-
-              {/* Route per Citizen */}
               <Route
                 path="/how-it-works"
                 element={
@@ -134,7 +150,6 @@ function App() {
               />
               <Route path="/map" element={<MapPage />} />
 
-              {/* Route per Admin */}
               <Route
                 path="/admin"
                 element={
@@ -143,8 +158,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              {/* Route per Public Relations Officer */}
               <Route
                 path="/pro"
                 element={
@@ -153,7 +166,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/officer"
                 element={
@@ -162,7 +174,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/maintainer"
                 element={
@@ -172,9 +183,23 @@ function App() {
                 }
               />
 
-              {/* WebSocket Test Page (for development/testing) */}
-              <Route path="/ws-test" element={<WebSocketTest />} />
+              {/* ROTTA GESTIONE REPORT */}
+              <Route
+                path="/reports/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "Public Relations Officer",
+                      "External Maintainer",
+                      ...allowedOfficerRoles,
+                    ]}
+                  >
+                    <ReportManagementPage />
+                  </ProtectedRoute>
+                }
+              />
 
+              <Route path="/ws-test" element={<WebSocketTest />} />
               <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Route>

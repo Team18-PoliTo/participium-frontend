@@ -41,8 +41,8 @@ function DelegationActions({ report, onSuccess, onCancel }) {
         report.id,
         selectedCompanyId
       );
-      const { assignedTo: _assignedTo, ...responseWithoutAssignedTo } =
-        response;
+      // eslint-disable-next-line no-unused-vars
+      const { assignedTo, ...responseWithoutAssignedTo } = response;
       onSuccess(responseWithoutAssignedTo);
     } catch (err) {
       console.error("Delegation failed", err);
@@ -114,6 +114,7 @@ function DelegationActions({ report, onSuccess, onCancel }) {
 
       <div className="d-flex justify-content-between mt-4">
         <Button
+          variant="outline-secondary"
           className="report-desc-btn-cancel"
           onClick={onCancel}
           disabled={submitting}

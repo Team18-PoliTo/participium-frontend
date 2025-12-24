@@ -1,28 +1,21 @@
 import { useState, useEffect, useContext } from "react";
-import { Container, Alert, Dropdown, Card, Badge } from "react-bootstrap";
+import { Container, Dropdown, Card, Badge } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReportCard from "../Report/ReportCard";
-import ReportDescriptionModal from "../Report/ReportDescriptionModal";
-import DelegationActions from "../Report/DelegationActions";
 import LoadingSpinner from "../LoadingSpinner";
 import "../styles/OfficerPage.css";
 import { UserContext } from "../../App";
 import API from "../../API/API";
 import useReportFilters from "../../utils/useReportFilters";
 
-const renderDelegationActions = (props) => <DelegationActions {...props} />;
-
 function OfficerPage() {
+  const navigate = useNavigate();
   const { userRole } = useContext(UserContext);
-
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedReport, setSelectedReport] = useState(null);
-  const [showModal, setShowModal] = useState(false);
 
-  // Uso del custom hook per i filtri
   const {
     filteredReports,
     startDate,
@@ -38,22 +31,12 @@ function OfficerPage() {
 
   useEffect(() => {
     const fetchReports = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const reports = await API.getReportsAssignedToMe();
-        const normalize = (r) => {
-          if (!r) return [];
-          if (Array.isArray(r)) return r;
-          return [];
-        };
-        setReports(normalize(reports));
-      } catch (err) {
-        console.error("Error fetching reports:", err);
-        setError(
-          "Failed to load your assigned reports. Please try again later."
-        );
-        setReports([]);
+        setLoading(true);
+        const data = await API.getReportsAssignedToMe();
+        setReports(Array.isArray(data) ? data : []);
+      } catch {
+        console.error("Failed to load your assigned reports.");
       } finally {
         setLoading(false);
       }
@@ -62,31 +45,14 @@ function OfficerPage() {
   }, []);
 
   const handleReportClick = (report) => {
-    setSelectedReport(report);
-    setShowModal(true);
+    navigate(`/reports/${report.id}`);
   };
 
-  const handleReportUpdated = (reportId) => {
-    setReports((prevReports) => prevReports.filter((r) => r.id !== reportId));
-    // setShowModal(false); // Removed to allow modal to show success message
-  };
-
-  if (loading) {
-    return <LoadingSpinner message="Loading reports..." />;
-  }
-
-  if (error) {
-    return (
-      <Container className="mt-4">
-        <Alert variant="danger">{error}</Alert>
-      </Container>
-    );
-  }
+  if (loading) return <LoadingSpinner message="Loading reports..." />;
 
   return (
     <div className="officer-board">
       <Container fluid className="officer-content-wrapper">
-        {/* Header Section */}
         <header className="officer-headline">
           <div className="officer-headline-text">
             <Badge className="officer-eyebrow">{userRole}</Badge>
@@ -97,77 +63,40 @@ function OfficerPage() {
           </div>
         </header>
 
+        {/* Layout corretto per rispettare la Grid definita in OfficerPage.css */}
         <div className="officer-layout">
-          {/* Filter Sidebar */}
           <aside className="officer-sidebar">
-            <Card className="officer-filter-card">
+            <Card className="officer-filter-card shadow-sm">
               <Card.Body>
                 <span className="officer-filter-title">FILTER OPTIONS</span>
                 <div className="officer-filter-group">
                   <div className="mb-3">
                     <label
                       className="officer-filter-label"
-                      htmlFor="start-date-picker"
+                      htmlFor="officer-status-dropdown"
                     >
-                      Start Date
-                    </label>
-                    <DatePicker
-                      id="start-date-picker"
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Select Date"
-                      className="officer-date-picker-input"
-                      wrapperClassName="w-100"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label
-                      className="officer-filter-label"
-                      htmlFor="end-date-picker"
-                    >
-                      End Date
-                    </label>
-                    <DatePicker
-                      id="end-date-picker"
-                      selected={endDate}
-                      onChange={(date) => setEndDate(date)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Select Date"
-                      className="officer-date-picker-input"
-                      wrapperClassName="w-100"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label
-                      className="officer-filter-label"
-                      htmlFor="sort-dropdown"
-                    >
-                      Sort by Date
+                      Status
                     </label>
                     <Dropdown className="officer-custom-dropdown">
-                      <Dropdown.Toggle id="sort-dropdown">
-                        <span>
-                          {sortOrder === "desc"
-                            ? "Newest First"
-                            : "Oldest First"}
-                        </span>
+                      <Dropdown.Toggle id="officer-status-dropdown">
+                        {statusFilter}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item
-                          onClick={() => setSortOrder("desc")}
-                          active={sortOrder === "desc"}
-                        >
-                          Newest First
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => setSortOrder("asc")}
-                          active={sortOrder === "asc"}
-                        >
-                          Oldest First
-                        </Dropdown.Item>
+                        {[
+                          "All",
+                          "Assigned",
+                          "In Progress",
+                          "Suspended",
+                          "Resolved",
+                        ].map((s) => (
+                          <Dropdown.Item
+                            key={s}
+                            onClick={() => setStatusFilter(s)}
+                            active={statusFilter === s}
+                          >
+                            {s}
+                          </Dropdown.Item>
+                        ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -175,44 +104,54 @@ function OfficerPage() {
                   <div className="mb-3">
                     <label
                       className="officer-filter-label"
-                      htmlFor="status-dropdown"
+                      htmlFor="officer-start-date"
                     >
-                      Status
+                      Start Date
+                    </label>
+                    <DatePicker
+                      id="officer-start-date"
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="officer-date-picker-input w-100"
+                    />
+                  </div>
+
+                  {/* Filtro End Date ripristinato */}
+                  <div className="mb-3">
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-end-date"
+                    >
+                      End Date
+                    </label>
+                    <DatePicker
+                      id="officer-end-date"
+                      selected={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      dateFormat="dd/MM/yyyy"
+                      className="officer-date-picker-input w-100"
+                    />
+                  </div>
+
+                  {/* Filtro Sort Order ripristinato */}
+                  <div className="mb-3">
+                    <label
+                      className="officer-filter-label"
+                      htmlFor="officer-sort-order"
+                    >
+                      Sort Order
                     </label>
                     <Dropdown className="officer-custom-dropdown">
-                      <Dropdown.Toggle id="status-dropdown">
-                        <span>{statusFilter}</span>
+                      <Dropdown.Toggle id="officer-sort-order">
+                        {sortOrder === "desc" ? "Newest First" : "Oldest First"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item
-                          onClick={() => setStatusFilter("All")}
-                          active={statusFilter === "All"}
-                        >
-                          All
+                        <Dropdown.Item onClick={() => setSortOrder("desc")}>
+                          Newest First
                         </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => setStatusFilter("Assigned")}
-                          active={statusFilter === "Assigned"}
-                        >
-                          Assigned
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => setStatusFilter("In Progress")}
-                          active={statusFilter === "In Progress"}
-                        >
-                          In Progress
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => setStatusFilter("Suspended")}
-                          active={statusFilter === "Suspended"}
-                        >
-                          Suspended
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => setStatusFilter("Resolved")}
-                          active={statusFilter === "Resolved"}
-                        >
-                          Resolved
+                        <Dropdown.Item onClick={() => setSortOrder("asc")}>
+                          Oldest First
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
@@ -222,64 +161,39 @@ function OfficerPage() {
                     className="officer-reset-btn w-100"
                     onClick={resetFilters}
                   >
-                    <i className="bi bi-arrow-counterclockwise me-2"></i> Reset
-                    Filters
+                    Reset
                   </button>
                 </div>
               </Card.Body>
             </Card>
           </aside>
 
-          {/* Main Content */}
           <section className="officer-main">
-            <Card className="officer-reports-card">
+            <Card className="officer-reports-card border-0">
               <Card.Body>
-                <div className="officer-reports-header">
-                  <div>
-                    <h2 className="officer-reports-title">Assigned Reports</h2>
-                    <p className="officer-reports-count">
-                      Showing{" "}
-                      <Badge bg="secondary" className="officer-count-badge">
-                        {filteredReports.length}
-                      </Badge>{" "}
-                      report{filteredReports.length === 1 ? "" : "s"}
-                    </p>
-                  </div>
-                </div>
-
-                {filteredReports.length === 0 ? (
-                  <div className="officer-empty-state">
-                    <i className="bi bi-inbox officer-empty-icon"></i>
-                    <p className="officer-empty-message">No reports found</p>
-                    <p className="officer-empty-hint">
-                      Try adjusting your filters or check back later.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="officer-reports-list">
-                    {filteredReports.map((report) => (
+                <h2 className="officer-reports-title mb-4">
+                  Assigned Tasks ({filteredReports.length})
+                </h2>
+                <div className="officer-reports-list">
+                  {filteredReports.length === 0 ? (
+                    <div className="officer-empty-state py-5 text-center">
+                      <p className="officer-empty-message">No tasks found</p>
+                    </div>
+                  ) : (
+                    filteredReports.map((report) => (
                       <ReportCard
                         key={report.id}
                         report={report}
                         onClick={handleReportClick}
                       />
-                    ))}
-                  </div>
-                )}
+                    ))
+                  )}
+                </div>
               </Card.Body>
             </Card>
           </section>
         </div>
       </Container>
-
-      {/* Modal for Report Description */}
-      <ReportDescriptionModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        report={selectedReport}
-        onReportUpdated={handleReportUpdated}
-        actionsRenderer={renderDelegationActions}
-      />
     </div>
   );
 }

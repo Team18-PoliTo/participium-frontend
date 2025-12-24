@@ -1,4 +1,4 @@
-const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
+const SERVER_URL = ""; // empty string to use proxy configured in vite.config.js
 
 /**
  * Helper to get the auth token from local storage
@@ -55,7 +55,8 @@ const parseSuccessResponse = async (response) => {
   try {
     const text = await response.text();
     return text ? JSON.parse(text) : null;
-  } catch {
+  } catch (err) {
+    console.error("Failed to parse success response as JSON:", err);
     return null;
   }
 };
@@ -83,7 +84,8 @@ const request = async (endpoint, options = {}) => {
       contentType === "application/json" ? JSON.stringify(body) : body;
   }
 
-  const response = await fetch(`${SERVER_URL}${endpoint}`, config);
+  const safeEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const response = await fetch(`${SERVER_URL}${safeEndpoint}`, config);
 
   if (response.ok) {
     return await parseSuccessResponse(response);

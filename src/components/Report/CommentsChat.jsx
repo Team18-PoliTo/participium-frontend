@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { Button, Form, Alert, Spinner } from "react-bootstrap";
+import { Form, Alert, Spinner } from "react-bootstrap";
 import { MessageCircle, Send } from "lucide-react";
 import PropTypes from "prop-types";
 import API from "../../API/API";
 import { UserContext } from "../../App";
 import { useReportComments } from "../../ws";
+import "../styles/CommentsChat.css";
 
 function CommentsChat({ report, onSuccess }) {
   const { user } = useContext(UserContext);
@@ -58,7 +59,7 @@ function CommentsChat({ report, onSuccess }) {
         console.error("Failed to fetch comments:", err);
         setError(
           err.message ||
-            "Failed to load comments. Please refresh the page to try again."
+          "Failed to load comments. Please refresh the page to try again."
         );
       } finally {
         setLoading(false);
@@ -223,7 +224,11 @@ function CommentsChat({ report, onSuccess }) {
                         opacity: 0.8,
                       }}
                     >
-                      Officer/Maintainer
+                      {user.profile.role === "External Maintainer" ? (
+                        `Officer`
+                      ) : (
+                        `Maintainer`
+                      )}
                     </div>
                   )}
                   <div className="comment-text" style={{ fontSize: "0.95rem" }}>
@@ -248,8 +253,8 @@ function CommentsChat({ report, onSuccess }) {
       </div>
 
       {/* Input Form */}
-      <Form onSubmit={handleSendComment}>
-        <div className="d-flex gap-2 align-items-end">
+      <Form onSubmit={handleSendComment} className="mt-auto">
+        <div className="chat-input-wrapper">
           <Form.Control
             as="textarea"
             rows={1}
@@ -262,40 +267,21 @@ function CommentsChat({ report, onSuccess }) {
                 handleSendComment(e);
               }
             }}
-            className="report-desc-textarea"
+            className="chat-textarea"
             disabled={submitting}
-            style={{
-              borderRadius: "20px",
-              padding: "0.5rem 1rem",
-              resize: "none",
-              maxHeight: "120px",
-              overflowY: "auto",
-            }}
           />
-          <Button
+          <button
             type="submit"
+            className="chat-send-btn"
             disabled={submitting || !newComment.trim()}
-            style={{
-              borderRadius: "50%",
-              width: "42px",
-              height: "42px",
-              minWidth: "42px",
-              minHeight: "42px",
-              padding: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              backgroundColor: "#3d5a80",
-              borderColor: "#3d5a80",
-            }}
+            title="Send message"
           >
             {submitting ? (
               <Spinner as="span" animation="border" size="sm" />
             ) : (
-              <Send size={18} />
+              <Send size={16} strokeWidth={2} />
             )}
-          </Button>
+          </button>
         </div>
       </Form>
     </div>

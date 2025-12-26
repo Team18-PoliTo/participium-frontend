@@ -139,7 +139,22 @@ function MapPage() {
     setShowForm(true);
   }, [showReportsSidebar]);
 
-  // Gestione Click Mappa
+  /**
+   * Gestione Ricerca Indirizzo: sposta solo la mappa per permettere l'esplorazione
+   */
+  const handleSearchLocation = useCallback((latlng, mapInstance) => {
+    const activeMap = mapInstance || mapRef.current;
+    if (activeMap) {
+      activeMap.flyTo([latlng.lat, latlng.lng], 17, {
+        animate: true,
+        duration: 1.5,
+      });
+    }
+  }, []);
+
+  /**
+   * Gestione Click Manuale Mappa: avvia il flusso di creazione report
+   */
   const handleMapClick = useCallback(
     async (latlng, mapInstance) => {
       const activeMap = mapInstance || mapRef.current;
@@ -175,19 +190,16 @@ function MapPage() {
         openFormAndCloseSidebar();
 
         if (activeMap) {
-          // --- LOGICA ANIMAZIONE  ---
+          // --- LOGICA ANIMAZIONE PER CREAZIONE REPORT ---
           const targetZoom = 17;
-
           const xOffsetPixels = isMobile ? 0 : 280;
           const yOffsetPixels = isMobile ? -150 : 0;
 
           const currentPoint = activeMap.project([lat, lng], targetZoom);
-
           const targetPoint = currentPoint.subtract([
             xOffsetPixels,
             yOffsetPixels,
           ]);
-
           const targetLatLng = activeMap.unproject(targetPoint, targetZoom);
 
           activeMap.flyTo(targetLatLng, targetZoom, {
@@ -202,7 +214,7 @@ function MapPage() {
       }
     },
     [isMobile, openFormAndCloseSidebar, citizenLoggedIn, userLoggedIn]
-  ); // Dipendenze stabili
+  );
 
   const handleFormClose = useCallback(() => {
     setShowForm(false);
@@ -291,7 +303,9 @@ function MapPage() {
         <MapInteractionHandler closePopup={() => setSelectedPin(null)} />
 
         <SearchBar
-          onLocationSelected={(latlng, map) => handleMapClick(latlng, map)}
+          onLocationSelected={(latlng, map) =>
+            handleSearchLocation(latlng, map)
+          }
         />
         <MapClickHandler onMapClick={(latlng) => handleMapClick(latlng)} />
 
@@ -308,8 +322,6 @@ function MapPage() {
               key={report.id}
               position={[report.location.latitude, report.location.longitude]}
               icon={createPinIcon(report.status)}
-              // IMPORTANTE: Passiamo lo status come prop affinché finisca nelle options del marker
-              // Questo permette a createClusterCustomIcon di leggere lo status dei figli.
               status={report.status}
               eventHandlers={{
                 click: (e) => {

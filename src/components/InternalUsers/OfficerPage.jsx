@@ -3,6 +3,7 @@ import { Container, Dropdown, Card, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import ReportCard from "../Report/ReportCard";
 import LoadingSpinner from "../LoadingSpinner";
 import "../styles/OfficerPage.css";
@@ -15,6 +16,8 @@ function OfficerPage() {
   const { userRole } = useContext(UserContext);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [delegatedReports, setDelegatedReports] = useState([]);
+  const [isDelegatedOpen, setIsDelegatedOpen] = useState(false);
 
   const {
     filteredReports,
@@ -42,6 +45,21 @@ function OfficerPage() {
       }
     };
     fetchReports();
+  }, []);
+
+  useEffect(() => {
+    const fetchDelegatedReports = async () => {
+      try {
+        setLoading(true);
+        const data = await API.getReportsDelegatedByMe();
+        setDelegatedReports(Array.isArray(data) ? data : []);
+      } catch {
+        console.error("Failed to load delegated reports.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDelegatedReports();
   }, []);
 
   const handleReportClick = (report) => {
@@ -188,6 +206,49 @@ function OfficerPage() {
                       />
                     ))
                   )}
+                </div>
+              </Card.Body>
+            </Card>
+            <Card className="officer-reports-card border-0">
+              <Card.Body>
+                <button
+                  onClick={() => setIsDelegatedOpen(!isDelegatedOpen)}
+                  className="officer-collapsible-toggle"
+                >
+                  <h2 className="officer-reports-title mb-0">
+                    Delegated Tasks ({delegatedReports.length})
+                  </h2>
+                  {isDelegatedOpen ? (
+                    <ChevronUp
+                      size={24}
+                      className="text-muted officer-chevron-icon"
+                    />
+                  ) : (
+                    <ChevronDown
+                      size={24}
+                      className="text-muted officer-chevron-icon"
+                    />
+                  )}
+                </button>
+
+                <div
+                  className={`officer-collapsible-content ${isDelegatedOpen ? "open" : "closed"}`}
+                >
+                  <div className="officer-reports-list mt-4">
+                    {delegatedReports.length === 0 ? (
+                      <div className="officer-empty-state py-5 text-center">
+                        <p className="officer-empty-message">No tasks found</p>
+                      </div>
+                    ) : (
+                      delegatedReports.map((report) => (
+                        <ReportCard
+                          key={report.id}
+                          report={report}
+                          onClick={handleReportClick}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
               </Card.Body>
             </Card>

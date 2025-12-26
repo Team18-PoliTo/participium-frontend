@@ -352,6 +352,29 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 300px;
+  padding-top: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+.officer-reports-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.officer-reports-list::-webkit-scrollbar-track {
+  background: rgba(61, 90, 128, 0.05);
+  border-radius: 10px;
+}
+
+.officer-reports-list::-webkit-scrollbar-thumb {
+  background: rgba(61, 90, 128, 0.2);
+  border-radius: 10px;
+}
+
+.officer-reports-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(61, 90, 128, 0.35);
 }
 
 /* ========================================
@@ -577,4 +600,45 @@
   .officer-reports-list {
     gap: 8px;
   }
+}
+
+/* ========================================
+   Collapsible Section Styles
+   ======================================== */
+
+.officer-collapsible-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.officer-collapsible-toggle:focus {
+  outline: none;
+}
+
+.officer-collapsible-toggle:hover .officer-reports-title {
+  color: #3d5a80;
+}
+
+.officer-chevron-icon {
+  transition: transform 0.3s ease;
+}
+
+.officer-collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.officer-collapsible-content.closed {
+  max-height: 0;
+}
+
+.officer-collapsible-content.open {
+  max-height: 2000px;
 }

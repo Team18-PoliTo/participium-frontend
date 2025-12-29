@@ -85,8 +85,20 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
               Please enter the code below to verify your email address.
             </p>
 
-            {error && <Alert variant="danger">{error}</Alert>}
-            {resendMessage && <Alert variant="success">{resendMessage}</Alert>}
+            {error && (
+              <Alert variant="danger" dismissible onClose={() => setError("")}>
+                {error}
+              </Alert>
+            )}
+            {resendMessage && (
+              <Alert
+                variant="success"
+                dismissible
+                onClose={() => setResendMessage("")}
+              >
+                {resendMessage}
+              </Alert>
+            )}
 
             <Form onSubmit={handleVerify}>
               <Form.Group className="mb-3" controlId="verificationCode">

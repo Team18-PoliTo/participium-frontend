@@ -67,6 +67,18 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
     onClose();
   };
 
+  const getResendButtonText = () => {
+    if (resendLoading) {
+      return "Sending...";
+    }
+    if (resendCooldown > 0) {
+      const minutes = Math.floor(resendCooldown / 60);
+      const seconds = String(resendCooldown % 60).padStart(2, "0");
+      return `Resend Code (${minutes}:${seconds})`;
+    }
+    return "Resend Code";
+  };
+
   return (
     <Modal
       show={isOpen}
@@ -153,11 +165,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
                 disabled={resendLoading || resendCooldown > 0}
                 className="resend-btn"
               >
-                {resendLoading
-                  ? "Sending..."
-                  : resendCooldown > 0
-                    ? `Resend Code (${Math.floor(resendCooldown / 60)}:${String(resendCooldown % 60).padStart(2, "0")})`
-                    : "Resend Code"}
+                {getResendButtonText()}
               </Button>
               <p className="resend-info">
                 You can request a new code after 2 minutes (max 3 per hour).

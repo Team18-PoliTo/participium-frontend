@@ -121,7 +121,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
                         </Form>
 
                         <div className="resend-section">
-                            <p className="resend-text">Didn&apos;t receive the code?</p>
+                            <p className="resend-text">Didn't receive the code?</p>
                             <Button
                                 variant="link"
                                 onClick={handleResend}

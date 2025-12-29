@@ -1,6 +1,6 @@
 import "./styles/Homepage.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { MapPin, FileText, CheckCircle, Users, ArrowDown } from "lucide-react";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
@@ -190,6 +190,17 @@ function Homepage() {
           >
             {citizenLoggedIn ? "Go to the Map" : "Sign Up for Free"}
           </Button>
+
+          {/* Legal Links */}
+          <div className="homepage-legal-links">
+            <Link to="/privacy" className="legal-link">
+              Privacy Policy
+            </Link>
+            <span className="legal-separator">•</span>
+            <Link to="/terms" className="legal-link">
+              Terms of Service
+            </Link>
+          </div>
         </Container>
       </section>
 

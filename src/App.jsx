@@ -5,6 +5,8 @@ import API from "./API/API";
 import DefaultLayout from "./components/Layout/DefaultLayout";
 import Login from "./components/Auth/Login";
 import Registration from "./components/Auth/Registration";
+import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
+import TermsOfService from "./components/Legal/TermsOfService";
 import AdminPage from "./components/Admin/AdminPage";
 import MapPage from "./components/Map/MapPage";
 import NotAuthorized from "./components/Routes/NotAuthorized";
@@ -130,6 +132,10 @@ function App() {
                   )
                 }
               />
+
+              {/* Legal Pages - accessible to everyone */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
 
               <Route
                 path="/profile"

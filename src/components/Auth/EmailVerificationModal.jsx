@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import API from "../../API/API";
@@ -11,6 +11,17 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
   const [success, setSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => {
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -39,6 +50,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
     try {
       await API.resendVerificationCode({ email });
       setResendMessage("Verification code sent successfully!");
+      setResendCooldown(120); // 2 minuti di cooldown
     } catch (err) {
       setError(err.message || "Failed to resend code. Please try again.");
     } finally {
@@ -51,6 +63,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
     setError("");
     setSuccess(false);
     setResendMessage("");
+    setResendCooldown(0);
     onClose();
   };
 
@@ -137,10 +150,14 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
               <Button
                 variant="link"
                 onClick={handleResend}
-                disabled={resendLoading}
+                disabled={resendLoading || resendCooldown > 0}
                 className="resend-btn"
               >
-                {resendLoading ? "Sending..." : "Resend Code"}
+                {resendLoading
+                  ? "Sending..."
+                  : resendCooldown > 0
+                    ? `Resend Code (${Math.floor(resendCooldown / 60)}:${String(resendCooldown % 60).padStart(2, "0")})`
+                    : "Resend Code"}
               </Button>
               <p className="resend-info">
                 You can request a new code after 2 minutes (max 3 per hour).

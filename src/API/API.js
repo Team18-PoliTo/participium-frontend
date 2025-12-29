@@ -130,6 +130,7 @@ const performLogin = async (endpoint, credentials) => {
     customErrorMap: {
       400: "Email and password are required",
       401: "Invalid email or password",
+      403: "EMAIL_NOT_VERIFIED",
     },
     defaultErrorMessage: "Login failed",
   });

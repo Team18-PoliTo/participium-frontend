@@ -21,6 +21,8 @@ function Login() {
 
   const [errorModalShow, setErrorModalShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successModalShow, setSuccessModalShow] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [verificationModalShow, setVerificationModalShow] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
@@ -68,8 +70,8 @@ function Login() {
     // After verification, close modal and show success message
     setVerificationModalShow(false);
     // User can try to login again
-    setErrorMessage("Email verified! Please login again.");
-    setErrorModalShow(true);
+    setSuccessMessage("Email verified! Please login again.");
+    setSuccessModalShow(true);
   };
 
   return (
@@ -141,6 +143,14 @@ function Login() {
         onClose={() => setErrorModalShow(false)}
         title="Login error"
         message={errorMessage}
+      />
+
+      {/* Modale successo */}
+      <ErrorModal
+        isOpen={successModalShow}
+        onClose={() => setSuccessModalShow(false)}
+        title="Success"
+        message={successMessage}
       />
 
       {/* Modale verifica email */}

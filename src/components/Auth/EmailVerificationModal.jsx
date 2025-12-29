@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import API from "../../API/API";
@@ -11,6 +11,17 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
   const [success, setSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => {
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -39,6 +50,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
     try {
       await API.resendVerificationCode({ email });
       setResendMessage("Verification code sent successfully!");
+      setResendCooldown(120); // 2 minuti di cooldown
     } catch (err) {
       setError(err.message || "Failed to resend code. Please try again.");
     } finally {
@@ -51,7 +63,20 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
     setError("");
     setSuccess(false);
     setResendMessage("");
+    setResendCooldown(0);
     onClose();
+  };
+
+  const getResendButtonText = () => {
+    if (resendLoading) {
+      return "Sending...";
+    }
+    if (resendCooldown > 0) {
+      const minutes = Math.floor(resendCooldown / 60);
+      const seconds = String(resendCooldown % 60).padStart(2, "0");
+      return `Resend Code (${minutes}:${seconds})`;
+    }
+    return "Resend Code";
   };
 
   return (
@@ -85,8 +110,20 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
               Please enter the code below to verify your email address.
             </p>
 
-            {error && <Alert variant="danger">{error}</Alert>}
-            {resendMessage && <Alert variant="success">{resendMessage}</Alert>}
+            {error && (
+              <Alert variant="danger" dismissible onClose={() => setError("")}>
+                {error}
+              </Alert>
+            )}
+            {resendMessage && (
+              <Alert
+                variant="success"
+                dismissible
+                onClose={() => setResendMessage("")}
+              >
+                {resendMessage}
+              </Alert>
+            )}
 
             <Form onSubmit={handleVerify}>
               <Form.Group className="mb-3" controlId="verificationCode">
@@ -125,10 +162,10 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerified }) => {
               <Button
                 variant="link"
                 onClick={handleResend}
-                disabled={resendLoading}
+                disabled={resendLoading || resendCooldown > 0}
                 className="resend-btn"
               >
-                {resendLoading ? "Sending..." : "Resend Code"}
+                {getResendButtonText()}
               </Button>
               <p className="resend-info">
                 You can request a new code after 2 minutes (max 3 per hour).

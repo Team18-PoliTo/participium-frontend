@@ -51,8 +51,10 @@ function Login() {
       }
     } catch (error) {
       // Check if error is EMAIL_NOT_VERIFIED
-      if (error.message === "EMAIL_NOT_VERIFIED" ||
-        error.message.includes("verify your email")) {
+      if (
+        error.message === "EMAIL_NOT_VERIFIED" ||
+        error.message.includes("verify your email")
+      ) {
         setUserEmail(credentials.email);
         setVerificationModalShow(true);
       } else {

@@ -613,6 +613,44 @@ const createComment = async (reportId, commentText) => {
   }
 };
 
+const verifyEmail = async ({ email, code }) => {
+  try {
+    const data = await request("api/email-verification/verify", {
+      method: "POST",
+      useAuth: false,
+      body: { email, code },
+      customErrorMap: {
+        400: "Invalid or expired verification code",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Email verification failed",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    throw error;
+  }
+};
+
+const resendVerificationCode = async ({ email }) => {
+  try {
+    const data = await request("api/email-verification/resend", {
+      method: "POST",
+      useAuth: false,
+      body: { email },
+      customErrorMap: {
+        400: "Unable to resend verification code",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Failed to resend verification code",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error resending verification code:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -641,6 +679,8 @@ const API = {
   getReportsDelegatedByMe,
   getReportComments,
   createComment,
+  verifyEmail,
+  resendVerificationCode,
 };
 
 export default API;

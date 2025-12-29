@@ -2,6 +2,7 @@ import { useState, useActionState, useContext } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
 import { RegistrationSuccessfulModal } from "./AuthModals";
+import EmailVerificationModal from "./EmailVerificationModal";
 import { UserContext } from "../../App";
 import API from "../../API/API";
 import ErrorModal from "../ErrorModal";
@@ -20,6 +21,8 @@ function Registration() {
   const [errorModalShow, setErrorModalShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successModalShow, setSuccessModalShow] = useState(false);
+  const [verificationModalShow, setVerificationModalShow] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -35,10 +38,25 @@ function Registration() {
       // Register the citizen
       const citizen = await API.registerCitizen(credentials);
 
-      // Automatically login after registration
+      // Store email for verification modal
+      setRegisteredEmail(credentials.email);
+
+      // Show verification modal instead of auto-login
+      setVerificationModalShow(true);
+
+      return { ...prevState, citizen };
+    } catch (error) {
+      setErrorMessage(error.message);
+      setErrorModalShow(true);
+    }
+  }
+
+  const handleVerificationComplete = async () => {
+    // After verification, try to login automatically
+    try {
       await API.loginCitizen({
-        email: credentials.email,
-        password: credentials.password,
+        email: registeredEmail,
+        password: document.querySelector('input[name="password"]')?.value || "",
       });
 
       // Get user info and update context
@@ -48,13 +66,11 @@ function Registration() {
 
       // Navigate to how it works page
       navigate("/how-it-works");
-
-      return { ...prevState, citizen };
-    } catch (error) {
-      setErrorMessage(error.message);
-      setErrorModalShow(true);
+    } catch {
+      // If auto-login fails, just redirect to login page
+      navigate("/login");
     }
-  }
+  };
 
   return (
     <div className="registration-wrapper">
@@ -135,6 +151,17 @@ function Registration() {
         onClose={() => setErrorModalShow(false)}
         title="Registration error"
         message={errorMessage}
+      />
+
+      {/* Modale verifica email */}
+      <EmailVerificationModal
+        isOpen={verificationModalShow}
+        onClose={() => {
+          setVerificationModalShow(false);
+          navigate("/login");
+        }}
+        email={registeredEmail}
+        onVerified={handleVerificationComplete}
       />
 
       {/* Modale successo */}

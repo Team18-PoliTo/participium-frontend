@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router";
 import { UserContext } from "../../App";
 import API from "../../API/API";
 import ErrorModal from "../ErrorModal";
+import EmailVerificationModal from "./EmailVerificationModal";
 
 function Login() {
   const [, formAction, isPending] = useActionState(loginFunction, {
@@ -20,6 +21,8 @@ function Login() {
 
   const [errorModalShow, setErrorModalShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [verificationModalShow, setVerificationModalShow] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -47,10 +50,25 @@ function Login() {
         return { ...prevState, citizen, token };
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setErrorModalShow(true);
+      // Check if error is EMAIL_NOT_VERIFIED
+      if (error.message === "EMAIL_NOT_VERIFIED" ||
+        error.message.includes("verify your email")) {
+        setUserEmail(credentials.email);
+        setVerificationModalShow(true);
+      } else {
+        setErrorMessage(error.message);
+        setErrorModalShow(true);
+      }
     }
   }
+
+  const handleVerificationComplete = async () => {
+    // After verification, close modal and show success message
+    setVerificationModalShow(false);
+    // User can try to login again
+    setErrorMessage("Email verified! Please login again.");
+    setErrorModalShow(true);
+  };
 
   return (
     <div className="login-wrapper">
@@ -121,6 +139,14 @@ function Login() {
         onClose={() => setErrorModalShow(false)}
         title="Login error"
         message={errorMessage}
+      />
+
+      {/* Modale verifica email */}
+      <EmailVerificationModal
+        isOpen={verificationModalShow}
+        onClose={() => setVerificationModalShow(false)}
+        email={userEmail}
+        onVerified={handleVerificationComplete}
       />
     </div>
   );

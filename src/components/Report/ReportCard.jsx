@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Card, Badge } from "react-bootstrap";
 import { getCategoryIcon } from "../../constants/categoryIcons";
 import "../styles/ReportCard.css";
-import { MapPin, User } from "lucide-react";
+import { MapPin, User, UserX } from "lucide-react";
 
 function ReportCard({
   report,
@@ -47,6 +47,27 @@ function ReportCard({
     );
   };
 
+  const getDisplayName = () => {
+    if (!showUser) return report.address;
+
+    if (
+      report.citizenName === "Anonymous" &&
+      report.citizenLastName === "Anonymous"
+    ) {
+      return "Anonymous";
+    }
+
+    return `${report.citizenName} ${report.citizenLastName}`;
+  };
+
+  const isAnonymous = () => {
+    return (
+      showUser &&
+      report.citizenName === "Anonymous" &&
+      report.citizenLastName === "Anonymous"
+    );
+  };
+
   return (
     <Card
       ref={cardRef}
@@ -65,13 +86,10 @@ function ReportCard({
 
           <div className="report-card-subtitle">
             {!showUser && <MapPin size={12} />}
-            {showUser && <User size={12} />}
+            {showUser &&
+              (isAnonymous() ? <UserX size={12} /> : <User size={12} />)}
 
-            <span className="text-truncate">
-              {showUser
-                ? `${report.citizenName} ${report.citizenLastName}`
-                : report.address}
-            </span>
+            <span className="text-truncate">{getDisplayName()}</span>
           </div>
 
           <div className="report-card-category">{report.category.name}</div>

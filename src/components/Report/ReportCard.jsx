@@ -47,6 +47,16 @@ function ReportCard({
     );
   };
 
+  const getDisplayName = () => {
+    if (!showUser) return report.address;
+    
+    if (report.citizenName === "Anonymous" && report.citizenLastName === "Anonymous") {
+      return "Anonymous";
+    }
+    
+    return `${report.citizenName} ${report.citizenLastName}`;
+  };
+
   return (
     <Card
       ref={cardRef}
@@ -68,9 +78,7 @@ function ReportCard({
             {showUser && <User size={12} />}
 
             <span className="text-truncate">
-              {showUser
-                ? `${report.citizenName} ${report.citizenLastName}`
-                : report.address}
+              {getDisplayName()}
             </span>
           </div>
 

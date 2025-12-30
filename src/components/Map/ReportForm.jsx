@@ -14,6 +14,7 @@ import {
   Send,
   AlertTriangle,
   Wrench,
+  UserX,
 } from "lucide-react";
 
 function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
@@ -27,6 +28,7 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
   const [loading, setLoading] = useState(false);
   const [citizenId, setCitizenId] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const uploadedPhotosRef = useRef(uploadedPhotos);
 
@@ -187,6 +189,7 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
     try {
       // Prepare report data according to API specification
       const reportData = {
+        isAnonymous,
         title,
         description,
         categoryId: Number.parseInt(categoryId), // Ensure categoryId is a number
@@ -262,6 +265,30 @@ function ReportForm({ position, onFormSubmit: _onFormSubmit, onReportResult }) {
           )}
         </div>
       </div>
+
+      {/* Anonymous toggle */}
+      <Form.Group className="report-form__group">
+        <div className="report-form__anonymous-toggle">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <Form.Label className="report-form__label mb-1">
+                <UserX size={18} className="text-primary-blue me-2" />
+                Submit Anonymously
+              </Form.Label>
+              <div className="report-form__helper-text">
+                Your name will not be visible to other users
+              </div>
+            </div>
+            <Form.Check
+              type="switch"
+              id="anonymous-switch"
+              checked={isAnonymous}
+              onChange={(e) => setIsAnonymous(e.target.checked)}
+              className="custom-switch"
+            />
+          </div>
+        </div>
+      </Form.Group>
 
       {/* Title input field */}
       <Form.Group className="report-form__group" controlId="formTitle">

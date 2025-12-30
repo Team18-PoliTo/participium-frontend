@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Dropdown, Modal } from "react-bootstrap";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { MapPin } from "lucide-react";
+import { MapPin, UserX } from "lucide-react";
 import { getCategoryIcon } from "../../constants/categoryIcons";
 import "leaflet/dist/leaflet.css";
 import "../styles/ReportDescription.css";
@@ -52,6 +52,12 @@ function ReportInfo({
             <span>{report.citizenLastName || "N/A"}</span>
           </div>
         </div>
+        {report.isAnonymous && (
+          <div className="report-desc-anonymous-badge mt-2">
+            <UserX size={16} />
+            <span>Anonymous Report</span>
+          </div>
+        )}
       </div>
 
       {/* Title */}
@@ -236,6 +242,7 @@ ReportInfo.propTypes = {
     title: PropTypes.string,
     description: PropTypes.string,
     address: PropTypes.string,
+    isAnonymous: PropTypes.bool,
     location: PropTypes.shape({
       latitude: PropTypes.number,
       longitude: PropTypes.number,

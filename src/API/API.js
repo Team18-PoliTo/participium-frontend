@@ -278,6 +278,7 @@ const getAllRoles = async () => {
 
 const addNewReport = async (reportData) => {
   const requestBody = {
+    isAnonymous: reportData.isAnonymous,
     title: reportData.title,
     description: reportData.description,
     categoryId: reportData.categoryId,

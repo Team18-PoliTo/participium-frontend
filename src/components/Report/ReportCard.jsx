@@ -49,18 +49,23 @@ function ReportCard({
 
   const getDisplayName = () => {
     if (!showUser) return report.address;
-    
-    if (report.citizenName === "Anonymous" && report.citizenLastName === "Anonymous") {
+
+    if (
+      report.citizenName === "Anonymous" &&
+      report.citizenLastName === "Anonymous"
+    ) {
       return "Anonymous";
     }
-    
+
     return `${report.citizenName} ${report.citizenLastName}`;
   };
 
   const isAnonymous = () => {
-    return showUser && 
-           report.citizenName === "Anonymous" && 
-           report.citizenLastName === "Anonymous";
+    return (
+      showUser &&
+      report.citizenName === "Anonymous" &&
+      report.citizenLastName === "Anonymous"
+    );
   };
 
   return (
@@ -81,11 +86,10 @@ function ReportCard({
 
           <div className="report-card-subtitle">
             {!showUser && <MapPin size={12} />}
-            {showUser && (isAnonymous() ? <UserX size={12} /> : <User size={12} />)}
+            {showUser &&
+              (isAnonymous() ? <UserX size={12} /> : <User size={12} />)}
 
-            <span className="text-truncate">
-              {getDisplayName()}
-            </span>
+            <span className="text-truncate">{getDisplayName()}</span>
           </div>
 
           <div className="report-card-category">{report.category.name}</div>

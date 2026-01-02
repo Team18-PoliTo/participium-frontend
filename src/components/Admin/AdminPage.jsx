@@ -38,7 +38,8 @@ function AdminPage() {
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [selectedUserForDetails, setSelectedUserForDetails] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isConfirmDisableModalOpen, setIsConfirmDisableModalOpen] = useState(false);
+  const [isConfirmDisableModalOpen, setIsConfirmDisableModalOpen] =
+    useState(false);
   const [userToDisable, setUserToDisable] = useState(null);
 
   const fetchRolesData = async () => {
@@ -212,7 +213,7 @@ function AdminPage() {
   };
 
   const handleDisableUser = (userId) => {
-    const user = users.find(u => u.id === userId);
+    const user = users.find((u) => u.id === userId);
     setUserToDisable(user);
     handleCloseDetailsModal();
     setIsConfirmDisableModalOpen(true);
@@ -227,7 +228,7 @@ function AdminPage() {
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === userToDisable.id
-            ? { ...user, status: 'DEACTIVATED', isActive: false }
+            ? { ...user, status: "DEACTIVATED", isActive: false }
             : user
         )
       );
@@ -307,8 +308,9 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${selectedFilter.has(role.id) ? "legend-chip-active" : ""
-                        }`}
+                      className={`legend-chip ${
+                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                      }`}
                       onClick={() => handleFilterClick(role.id)}
                       style={{ cursor: "pointer" }}
                     >

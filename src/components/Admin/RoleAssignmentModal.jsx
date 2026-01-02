@@ -19,13 +19,18 @@ function RoleAssignmentModal({
 
   useEffect(() => {
     if (isOpen && user && user.roles) {
-      const currentRoleIds = user.roles.map(role => role.id);
+      const currentRoleIds = user.roles.map((role) => role.id);
       setSelectedRoleIds(currentRoleIds);
     }
   }, [isOpen, user]);
 
   const isUserUnsigned = () => {
-    return user.roles && user.roles.length === 1 && (user.roles[0].name?.toLowerCase() === 'unsigned' || user.roles[0].name?.toLowerCase() === 'unassigned');
+    return (
+      user.roles &&
+      user.roles.length === 1 &&
+      (user.roles[0].name?.toLowerCase() === "unsigned" ||
+        user.roles[0].name?.toLowerCase() === "unassigned")
+    );
   };
 
   const isTechnicalRole = (roleName) => {
@@ -33,7 +38,9 @@ function RoleAssignmentModal({
   };
 
   const isExternalMaintainer = (role) => {
-    return role.id === 28 || role.role.toLowerCase().includes("external maintainer");
+    return (
+      role.id === 28 || role.role.toLowerCase().includes("external maintainer")
+    );
   };
 
   const handleRoleSelect = (role) => {
@@ -79,9 +86,10 @@ function RoleAssignmentModal({
 
   const handleRemoveAllRoles = () => {
     // Trova il ruolo "unsigned" negli availableRoles
-    const unsignedRole = availableRoles.find(role =>
-      role.role?.toLowerCase() === 'unsigned' ||
-      role.role?.toLowerCase() === 'unassigned'
+    const unsignedRole = availableRoles.find(
+      (role) =>
+        role.role?.toLowerCase() === "unsigned" ||
+        role.role?.toLowerCase() === "unassigned"
     );
 
     if (unsignedRole) {
@@ -135,8 +143,7 @@ function RoleAssignmentModal({
           <p className="role-modal-subtitle">
             {isUserUnsigned()
               ? `Select role for ${user.firstName} ${user.lastName}`
-              : `Update or reset roles for ${user.firstName} ${user.lastName}`
-            }
+              : `Update or reset roles for ${user.firstName} ${user.lastName}`}
           </p>
           <div className="role-options">
             {availableRoles
@@ -149,15 +156,16 @@ function RoleAssignmentModal({
                   <button
                     key={role.id}
                     type="button"
-                    className={`role-option ${isExternal ? "role-option-highlighted" : ""
-                      } ${isSelected ? "selected-role" : ""}`}
+                    className={`role-option ${
+                      isExternal ? "role-option-highlighted" : ""
+                    } ${isSelected ? "selected-role" : ""}`}
                     onClick={() => handleRoleSelect(role)}
                     style={
                       isSelected
                         ? {
-                          borderColor: "#0d6efd",
-                          backgroundColor: "rgba(13, 110, 253, 0.1)",
-                        }
+                            borderColor: "#0d6efd",
+                            backgroundColor: "rgba(13, 110, 253, 0.1)",
+                          }
                         : {}
                     }
                   >

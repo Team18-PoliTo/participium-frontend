@@ -9,21 +9,25 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
 
   // Helper function to check if user has only "unsigned" role
   const isUserUnsigned = () => {
-    return user.roles && user.roles.length === 1 &&
-      (user.roles[0].name?.toLowerCase() === 'unsigned' ||
-        user.roles[0].name?.toLowerCase() === 'unassigned');
+    return (
+      user.roles &&
+      user.roles.length === 1 &&
+      (user.roles[0].name?.toLowerCase() === "unsigned" ||
+        user.roles[0].name?.toLowerCase() === "unassigned")
+    );
   };
 
   // Helper function to check if user has technical roles
   const hasTechnicalRoles = () => {
-    return user.roles && user.roles.some(role =>
-      allowedOfficerRoles.includes(role.name)
+    return (
+      user.roles &&
+      user.roles.some((role) => allowedOfficerRoles.includes(role.name))
     );
   };
 
   // Helper function to check if user is disabled
   const isUserDisabled = () => {
-    return user.status === 'DEACTIVATED'
+    return user.status === "DEACTIVATED";
   };
 
   // Decides which icon to show
@@ -46,7 +50,9 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
   };
 
   return (
-    <div className={`user-card ${isUserDisabled() ? 'user-card-disabled' : ''}`}>
+    <div
+      className={`user-card ${isUserDisabled() ? "user-card-disabled" : ""}`}
+    >
       <button className="user-card-main-action" onClick={onClick} type="button">
         <div className="user-icon">{getRoleIcon(iconName, 28)}</div>
         <div className="user-info">
@@ -56,7 +62,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
               {isUserDisabled() && (
                 <span
                   className="badge bg-secondary ms-2"
-                  style={{ fontSize: '10px', padding: '2px 8px' }}
+                  style={{ fontSize: "10px", padding: "2px 8px" }}
                 >
                   DISABLED
                 </span>

@@ -229,7 +229,7 @@ const updateInternalUserRole = async (
   name,
   surname,
   email,
-  roleIds, 
+  roleIds,
   companyId = null
 ) => {
   try {
@@ -239,7 +239,7 @@ const updateInternalUserRole = async (
       newEmail: email,
       newFirstName: name,
       newLastName: surname,
-      roleIds: rolesArray, 
+      roleIds: rolesArray,
     };
 
     if (companyId !== null && companyId !== undefined) {
@@ -658,7 +658,7 @@ const resendVerificationCode = async ({ email }) => {
 const disableInternalUser = async (userId) => {
   try {
     await request(`api/admin/internal-users/${userId}`, {
-      method: "DELETE", 
+      method: "DELETE",
       customErrorMap: {
         400: "Invalid user ID",
         403: "Attempted to delete own account",

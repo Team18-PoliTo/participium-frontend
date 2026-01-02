@@ -10,7 +10,7 @@ function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
   const isMultiRole = hasRoles && user.roles.length > 1;
 
   const isUserDisabled = () => {
-    return user.status === 'DEACTIVATED'
+    return user.status === "DEACTIVATED";
   };
 
   let iconName = "Unassigned";
@@ -76,7 +76,7 @@ function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
           <button
             className="role-modal-btn role-modal-btn-secondary"
             onClick={() => onDisableUser(user.id)}
-            style={{ color: '#dc3545' }}
+            style={{ color: "#dc3545" }}
           >
             <i className="bi bi-x-circle"></i> Disable User
           </button>

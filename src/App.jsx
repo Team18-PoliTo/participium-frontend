@@ -32,7 +32,7 @@ function App() {
   const [citizenLoggedIn, setCitizenLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState(null); //Array of roles
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -43,7 +43,7 @@ function App() {
       if (user.kind === "citizen") {
         setCitizenLoggedIn(true);
       } else {
-        setUserRole(user.profile.role);
+        setUserRole(user.profile.roles.map((r) => r.name));
         setUserLoggedIn(true);
       }
     } catch (err) {

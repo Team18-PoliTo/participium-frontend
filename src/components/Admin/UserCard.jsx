@@ -2,34 +2,45 @@ import PropTypes from "prop-types";
 import "../styles/UserCard.css";
 import { getRoleIcon } from "../../constants/roleIcons";
 
-function UserCard({ user, availableRoles, onOpenRoleModal }) {
-  const currentRoleObj = availableRoles?.find((r) => r.role === user.role);
-  const currentRoleId = currentRoleObj?.id;
-  const isUnassigned = currentRoleId === 0;
+function UserCard({ user, onOpenRoleModal }) {
+  const hasRoles = user.roles && user.roles.length > 0;
+  const isMultiRole = hasRoles && user.roles.length > 1;
+
+  // Decides which icon to show
+  let iconName = "Unassigned";
+  if (isMultiRole) {
+    iconName = "Multiple";
+  } else if (hasRoles) {
+    iconName = user.roles[0].name;
+  }
+
+  // Render role pill content
+  const renderRolePill = () => {
+    if (!hasRoles) {
+      return <span className="user-role-pill unassigned">Unassigned</span>;
+    }
+    if (isMultiRole) {
+      return <span className="user-role-pill">{user.roles.length} Roles</span>;
+    }
+    return <span className="user-role-pill">{user.roles[0].name}</span>;
+  };
 
   return (
     <div className="user-card">
-      <div className="user-icon">{getRoleIcon(user.role, 28)}</div>
+      <div className="user-icon">{getRoleIcon(iconName, 28)}</div>
       <div className="user-info">
         <div className="user-info-main">
           <span className="user-full-name">
             {user.firstName} {user.lastName}
           </span>
-          <span
-            className={`user-role-pill ${
-              !user.role || isUnassigned ? "unassigned" : ""
-            }`}
-          >
-            {user.role || "Unassigned"}
-          </span>
+          <div className="user-roles-container">{renderRolePill()}</div>
         </div>
         <p className="user-email">{user.email}</p>
       </div>
-      {isUnassigned && (
-        <button className="user-add-btn" onClick={() => onOpenRoleModal(user)}>
-          <div className="plus-icon"></div>
-        </button>
-      )}
+      {/* Show add button to allow adding roles */}
+      <button className="user-add-btn" onClick={() => onOpenRoleModal(user)}>
+        <div className="plus-icon"></div>
+      </button>
     </div>
   );
 }
@@ -39,14 +50,13 @@ UserCard.propTypes = {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    role: PropTypes.string,
+    roles: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+      })
+    ),
   }).isRequired,
-  availableRoles: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-    })
-  ),
   onOpenRoleModal: PropTypes.func.isRequired,
 };
 

@@ -19,6 +19,7 @@ import {
   Laptop,
   Siren,
   Wind,
+  Layers,
 } from "lucide-react";
 
 export const ROLE_ICONS = {
@@ -43,6 +44,7 @@ export const ROLE_ICONS = {
   "Emergency Response Liaison": Siren,
   "Noise and Air Quality Technician": Wind,
   "External Maintainer": HardHat,
+  Multiple: Layers,
 };
 
 export const getRoleIcon = (role, size, color) => {

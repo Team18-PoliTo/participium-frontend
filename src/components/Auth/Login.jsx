@@ -39,7 +39,7 @@ function Login() {
           await API.loginInternalUser(credentials);
         const user = await API.getUserInfo();
         setUser(user);
-        setUserRole(user.profile.role);
+        setUserRole(user.profile.roles.map((r) => r.name));
         setUserLoggedIn(true);
         navigate("/dashboard"); // Cambiato da '/admin' a '/dashboard'
         return { ...prevState, internalUser, token };

@@ -73,7 +73,7 @@ function OfficerPage() {
       <Container fluid className="officer-content-wrapper">
         <header className="officer-headline">
           <div className="officer-headline-text">
-            <Badge className="officer-eyebrow">{userRole}</Badge>
+            <Badge className="officer-eyebrow">{userRole?.join(", ")}</Badge>
             <h1 className="officer-title">My Assigned Reports</h1>
             <p className="officer-subtitle">
               Manage and track reports assigned to you

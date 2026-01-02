@@ -55,15 +55,18 @@ function AdminPage() {
         ]);
 
         fetchedUsers.sort((a, b) => {
-          if (a.role === "Unassigned" && b.role !== "Unassigned") return -1;
-          if (a.role !== "Unassigned" && b.role === "Unassigned") return 1;
+          const aUnassigned = !a.roles || a.roles.length === 0;
+          const bUnassigned = !b.roles || b.roles.length === 0;
+          if (aUnassigned && !bUnassigned) return -1;
+          if (!aUnassigned && bUnassigned) return 1;
           return 0;
         });
 
-        const roleNameToExclude = roleMapping[1];
-        const filteredUsers = roleNameToExclude
-          ? fetchedUsers.filter((user) => user.role !== roleNameToExclude)
-          : fetchedUsers;
+        // Exclude users with role ID 1 (Admin) from the list if needed
+        // Assuming we filter based on if they have the ADMIN role
+        const filteredUsers = fetchedUsers.filter(
+          (user) => !user.roles.some((r) => r.id === 1)
+        );
 
         setUsers(filteredUsers);
         setCompanies(fetchedCompanies);
@@ -101,14 +104,15 @@ function AdminPage() {
   };
 
   const filteredUsers = users.filter((user) => {
-    // Filtra per ruolo (multi-select)
-    const userRoleId = Object.keys(roleMapping).find(
-      (id) => roleMapping[id] === user.role
-    );
+    // Filter by role (multi-select)
+    // user.roles is an array of { id, name, ... }
+    // selectedFilter is a Set of role IDs
     const roleMatch =
-      selectedFilter.size === 0 ? true : selectedFilter.has(Number(userRoleId));
+      selectedFilter.size === 0
+        ? true
+        : user.roles?.some((r) => selectedFilter.has(r.id));
 
-    // Filtra per email
+    // Filter by email
     const emailMatch = user.email
       .toLowerCase()
       .includes(searchEmail.toLowerCase());

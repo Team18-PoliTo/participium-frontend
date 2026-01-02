@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Form,
   Card,
@@ -11,8 +11,19 @@ import "../styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
 import RoleAssignmentModal from "./RoleAssignmentModal";
+import UserDetailsModal from "./UserDetailsModal";
 import API from "../../API/API";
 import { getRoleIcon } from "../../constants/roleIcons";
+
+const isNotAdmin = (user) => !user.roles.some((r) => r.id === 1);
+
+const compareUserRoles = (a, b) => {
+  const aUnassigned = !a.roles || a.roles.length === 0;
+  const bUnassigned = !b.roles || b.roles.length === 0;
+  if (aUnassigned && !bUnassigned) return -1;
+  if (!aUnassigned && bUnassigned) return 1;
+  return 0;
+};
 
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(new Set());
@@ -24,61 +35,51 @@ function AdminPage() {
   const [searchEmail, setSearchEmail] = useState("");
   const [selectedUserForRole, setSelectedUserForRole] = useState(null);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [selectedUserForDetails, setSelectedUserForDetails] = useState(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+  const fetchRolesData = async () => {
+    try {
+      const fetchedRoles = await API.getAllRoles();
+      const mapping = {};
+      for (const role of fetchedRoles) {
+        mapping[role.id] = role.role;
+      }
+      setRoleMapping(mapping);
+      const filtered = fetchedRoles.filter((role) => role.id !== 1);
+      setVisibleRoles(filtered);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const fetchedRoles = await API.getAllRoles();
+    fetchRolesData();
+  }, []);
 
-        const mapping = {};
-        for (const role of fetchedRoles) {
-          mapping[role.id] = role.role;
-        }
-        setRoleMapping(mapping);
+  const fetchMainData = useCallback(async () => {
+    try {
+      const [fetchedUsers, fetchedCompanies] = await Promise.all([
+        API.getAllInternalUsers(),
+        API.getAllCompanies(),
+      ]);
 
-        const filtered = fetchedRoles.filter((role) => role.id !== 1);
-        setVisibleRoles(filtered);
-      } catch (error) {
-        console.error("Error fetching roles:", error);
-      }
-    };
+      fetchedUsers.sort(compareUserRoles);
 
-    fetchRoles();
+      const filteredUsers = fetchedUsers.filter(isNotAdmin);
+
+      setUsers(filteredUsers);
+      setCompanies(fetchedCompanies);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [fetchedUsers, fetchedCompanies] = await Promise.all([
-          API.getAllInternalUsers(),
-          API.getAllCompanies(),
-        ]);
-
-        fetchedUsers.sort((a, b) => {
-          const aUnassigned = !a.roles || a.roles.length === 0;
-          const bUnassigned = !b.roles || b.roles.length === 0;
-          if (aUnassigned && !bUnassigned) return -1;
-          if (!aUnassigned && bUnassigned) return 1;
-          return 0;
-        });
-
-        // Exclude users with role ID 1 (Admin) from the list if needed
-        // Assuming we filter based on if they have the ADMIN role
-        const filteredUsers = fetchedUsers.filter(
-          (user) => !user.roles.some((r) => r.id === 1)
-        );
-
-        setUsers(filteredUsers);
-        setCompanies(fetchedCompanies);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     if (Object.keys(roleMapping).length > 0) {
-      fetchData();
+      fetchMainData();
     }
-  }, [roleMapping]);
+  }, [roleMapping, fetchMainData]);
 
   const handleOpenSetUpModal = () => {
     setIsSetUpModalOpen(true);
@@ -101,6 +102,16 @@ function AdminPage() {
   const handleCloseRoleModal = () => {
     setIsRoleModalOpen(false);
     setSelectedUserForRole(null);
+  };
+
+  const handleOpenDetailsModal = (user) => {
+    setSelectedUserForDetails(user);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setSelectedUserForDetails(null);
   };
 
   const filteredUsers = users.filter((user) => {
@@ -271,6 +282,7 @@ function AdminPage() {
                         user={user}
                         availableRoles={visibleRoles}
                         onOpenRoleModal={handleOpenRoleModal}
+                        onClick={() => handleOpenDetailsModal(user)}
                       />
                     ))}
                   </div>
@@ -293,6 +305,13 @@ function AdminPage() {
           onAssignRole={handleAssignRole}
           availableRoles={visibleRoles}
           companies={companies}
+        />
+      )}
+      {selectedUserForDetails && (
+        <UserDetailsModal
+          user={selectedUserForDetails}
+          isOpen={isDetailsModalOpen}
+          onClose={handleCloseDetailsModal}
         />
       )}
     </div>

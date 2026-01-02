@@ -123,12 +123,10 @@ function ReportManagementPage() {
 
     // Check if the user has a technical role (Officer)
     // Check if user has any officer role that is NOT External Maintainer
-    const isTechnicalOfficer =
-      userRole &&
-      userRole.some(
-        (role) =>
-          allowedOfficerRoles.includes(role) && role !== "External Maintainer"
-      );
+    const isTechnicalOfficer = userRole?.some(
+      (role) =>
+        allowedOfficerRoles.includes(role) && role !== "External Maintainer"
+    );
 
     if (userRole.includes("Public Relations Officer")) {
       return (

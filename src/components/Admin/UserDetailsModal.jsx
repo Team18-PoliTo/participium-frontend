@@ -3,11 +3,15 @@ import { Modal, Badge } from "react-bootstrap";
 import { getRoleIcon } from "../../constants/roleIcons";
 import "../styles/RoleAssignmentModal.css"; // Reuse styling or create new if needed
 
-function UserDetailsModal({ user, isOpen, onClose }) {
+function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
   if (!user) return null;
 
   const hasRoles = user.roles && user.roles.length > 0;
   const isMultiRole = hasRoles && user.roles.length > 1;
+  
+  const isUserDisabled = () => {
+    return user.status === 'DEACTIVATED'
+  };
 
   let iconName = "Unassigned";
   if (isMultiRole) {
@@ -66,6 +70,19 @@ function UserDetailsModal({ user, isOpen, onClose }) {
         </div>
       </div>
 
+      {/* Solo mostra il pulsante disable se l'utente non è già disabilitato */}
+      {!isUserDisabled() && (
+        <div className="mt-4 d-flex justify-content-end">
+          <button
+            className="role-modal-btn role-modal-btn-secondary"
+            onClick={() => onDisableUser(user.id)}
+            style={{ color: '#dc3545' }}
+          >
+            <i className="bi bi-x-circle"></i> Disable User
+          </button>
+        </div>
+      )}
+
       <div className="mt-4 pt-3 border-top">
         <div className="d-flex justify-content-between text-muted small">
           <span>ID: {user.id}</span>
@@ -83,6 +100,7 @@ UserDetailsModal.propTypes = {
     lastName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     status: PropTypes.string,
+    isActive: PropTypes.bool,
     roles: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
@@ -92,6 +110,7 @@ UserDetailsModal.propTypes = {
   }),
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onDisableUser: PropTypes.func.isRequired,
 };
 
 export default UserDetailsModal;

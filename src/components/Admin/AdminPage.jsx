@@ -12,6 +12,7 @@ import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
 import RoleAssignmentModal from "./RoleAssignmentModal";
 import UserDetailsModal from "./UserDetailsModal";
+import ConfirmationModal from "../ConfirmationModal";
 import API from "../../API/API";
 import { getRoleIcon } from "../../constants/roleIcons";
 
@@ -37,6 +38,8 @@ function AdminPage() {
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [selectedUserForDetails, setSelectedUserForDetails] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isConfirmDisableModalOpen, setIsConfirmDisableModalOpen] = useState(false);
+  const [userToDisable, setUserToDisable] = useState(null);
 
   const fetchRolesData = async () => {
     try {
@@ -176,6 +179,76 @@ function AdminPage() {
     }
   };
 
+  const handleRemoveRoles = async (userId) => {
+    try {
+      const currentUser = users.find((user) => user.id === userId);
+      if (!currentUser) {
+        console.error("User not found");
+        return;
+      }
+
+      const updatedUser = await API.updateInternalUserRole(
+        userId,
+        currentUser.firstName,
+        currentUser.lastName,
+        currentUser.email,
+        [], 
+        null
+      );
+
+      setSelectedFilter(new Set());
+      setSearchEmail("");
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...currentUser, ...updatedUser } : user
+        )
+      );
+
+      handleCloseRoleModal();
+    } catch (error) {
+      console.error("Error removing roles:", error);
+    }
+  };
+
+  const handleDisableUser = (userId) => {
+    const user = users.find(u => u.id === userId);
+    setUserToDisable(user);
+    handleCloseDetailsModal();
+    setIsConfirmDisableModalOpen(true);
+  };
+
+  const confirmDisableUser = async () => {
+    if (!userToDisable) return;
+    
+    try {
+      await API.disableInternalUser(userToDisable.id);
+
+      setUsers((prevUsers) => 
+        prevUsers.map((user) => 
+          user.id === userToDisable.id 
+            ? { ...user, status: 'DEACTIVATED', isActive: false }
+            : user
+        )
+      );
+      
+      setIsConfirmDisableModalOpen(false);
+      setUserToDisable(null);
+    } catch (error) {
+      console.error("Error disabling user:", error);
+      alert("Error disabling user. Please try again.");
+    }
+  };
+
+  const handleCloseConfirmDisableModal = () => {
+    setIsConfirmDisableModalOpen(false);
+    if (userToDisable) {
+      setSelectedUserForDetails(userToDisable);
+      setIsDetailsModalOpen(true);
+    }
+    setUserToDisable(null);
+  };
+
   return (
     <div className="admin-board">
       <Container fluid className="admin-content-wrapper">
@@ -303,6 +376,7 @@ function AdminPage() {
           isOpen={isRoleModalOpen}
           onClose={handleCloseRoleModal}
           onAssignRole={handleAssignRole}
+          onRemoveRoles={handleRemoveRoles}
           availableRoles={visibleRoles}
           companies={companies}
         />
@@ -312,8 +386,19 @@ function AdminPage() {
           user={selectedUserForDetails}
           isOpen={isDetailsModalOpen}
           onClose={handleCloseDetailsModal}
+          onDisableUser={handleDisableUser}
         />
       )}
+      <ConfirmationModal
+        isOpen={isConfirmDisableModalOpen}
+        onClose={handleCloseConfirmDisableModal}
+        onConfirm={confirmDisableUser}
+        title="Disable User"
+        message={`Are you sure you want to disable ${userToDisable?.firstName} ${userToDisable?.lastName}? The user will no longer be able to access the system.`}
+        confirmText="Disable User"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

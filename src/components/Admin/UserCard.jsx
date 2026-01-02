@@ -1,10 +1,30 @@
 import PropTypes from "prop-types";
 import "../styles/UserCard.css";
 import { getRoleIcon } from "../../constants/roleIcons";
+import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles";
 
 function UserCard({ user, onOpenRoleModal, onClick }) {
   const hasRoles = user.roles && user.roles.length > 0;
   const isMultiRole = hasRoles && user.roles.length > 1;
+
+  // Helper function to check if user has only "unsigned" role
+  const isUserUnsigned = () => {
+    return user.roles && user.roles.length === 1 && 
+           (user.roles[0].name?.toLowerCase() === 'unsigned' || 
+            user.roles[0].name?.toLowerCase() === 'unassigned');
+  };
+
+  // Helper function to check if user has technical roles
+  const hasTechnicalRoles = () => {
+    return user.roles && user.roles.some(role => 
+      allowedOfficerRoles.includes(role.name)
+    );
+  };
+
+  // Helper function to check if user is disabled
+  const isUserDisabled = () => {
+    return user.status === 'DEACTIVATED' 
+  };
 
   // Decides which icon to show
   let iconName = "Unassigned";
@@ -26,31 +46,55 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
   };
 
   return (
-    <div className="user-card">
+    <div className={`user-card ${isUserDisabled() ? 'user-card-disabled' : ''}`}>
       <button className="user-card-main-action" onClick={onClick} type="button">
         <div className="user-icon">{getRoleIcon(iconName, 28)}</div>
         <div className="user-info">
           <div className="user-info-main">
             <span className="user-full-name">
               {user.firstName} {user.lastName}
+              {isUserDisabled() && (
+                <span 
+                  className="badge bg-secondary ms-2" 
+                  style={{ fontSize: '10px', padding: '2px 8px' }}
+                >
+                  DISABLED
+                </span>
+              )}
             </span>
             <div className="user-roles-container">{renderRolePill()}</div>
           </div>
           <p className="user-email">{user.email}</p>
         </div>
       </button>
-      {/* Show add button to allow adding roles */}
-      <button
-        className="user-add-btn"
-        type="button"
-        style={{ padding: 0 }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpenRoleModal(user);
-        }}
-      >
-        <div className="plus-icon"></div>
-      </button>
+      {/* Show different buttons based on user role type - only if user is not disabled */}
+      {!isUserDisabled() && (
+        <button
+          className="user-add-btn"
+          type="button"
+          style={{ padding: 0 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isUserUnsigned() || hasTechnicalRoles()) {
+              onOpenRoleModal(user);
+            } else {
+              onClick();
+            }
+          }}
+        >
+          {isUserUnsigned() ? (
+            <div className="plus-icon"></div>
+          ) : hasTechnicalRoles() ? (
+            <div className="edit-icon">
+              <i className="bi bi-pencil"></i>
+            </div>
+          ) : (
+            <div className="info-icon">
+              <i className="bi bi-info-lg"></i>
+            </div>
+          )}
+        </button>
+      )}
     </div>
   );
 }
@@ -60,6 +104,8 @@ UserCard.propTypes = {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
+    status: PropTypes.string,
+    isActive: PropTypes.bool,
     roles: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,

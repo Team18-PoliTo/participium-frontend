@@ -73,7 +73,17 @@ function OfficerPage() {
       <Container fluid className="officer-content-wrapper">
         <header className="officer-headline">
           <div className="officer-headline-text">
-            <Badge className="officer-eyebrow">{userRole?.join(", ")}</Badge>
+            <div className="d-flex flex-wrap gap-2 mb-2">
+              {userRole?.map((role, index) => (
+                <Badge 
+                  key={index} 
+                  className="officer-eyebrow"
+                  bg={index % 2 === 0 ? "primary" : "secondary"}
+                >
+                  {role}
+                </Badge>
+              ))}
+            </div>
             <h1 className="officer-title">My Assigned Reports</h1>
             <p className="officer-subtitle">
               Manage and track reports assigned to you

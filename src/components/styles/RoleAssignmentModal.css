@@ -157,3 +157,82 @@
   font-weight: 600;
   flex: 1;
 }
+
+/* Custom styled buttons for role modal */
+.role-modal-btn {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.role-modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.role-modal-btn-primary {
+  background: linear-gradient(135deg, #ee6c4d, #f6906f);
+  color: white;
+  box-shadow: 0 4px 12px rgba(238, 108, 77, 0.25);
+}
+
+.role-modal-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f6906f, #ee6c4d);
+  box-shadow: 0 6px 16px rgba(238, 108, 77, 0.35);
+  transform: translateY(-2px);
+}
+
+.role-modal-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(238, 108, 77, 0.3);
+}
+
+.role-modal-btn-secondary {
+  background: linear-gradient(135deg, #f8fbff, #f0f7fc);
+  color: #5d6c82;
+  border: 1px solid rgba(93, 108, 130, 0.2);
+  box-shadow: 0 2px 8px rgba(93, 108, 130, 0.08);
+}
+
+.role-modal-btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #eef6fc, #e5f1f9);
+  color: #4a5568;
+  border-color: rgba(93, 108, 130, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 108, 130, 0.12);
+}
+
+.role-modal-btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #e5f1f9, #dce8f4);
+}
+
+.role-modal-btn-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
+}
+
+.role-modal-btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  box-shadow: 0 6px 16px rgba(220, 53, 69, 0.35);
+  transform: translateY(-2px);
+}
+
+.role-modal-btn-danger:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}

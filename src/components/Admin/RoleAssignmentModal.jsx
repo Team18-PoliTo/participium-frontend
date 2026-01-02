@@ -79,11 +79,11 @@ function RoleAssignmentModal({
 
   const handleRemoveAllRoles = () => {
     // Trova il ruolo "unsigned" negli availableRoles
-    const unsignedRole = availableRoles.find(role => 
-      role.role?.toLowerCase() === 'unsigned' || 
+    const unsignedRole = availableRoles.find(role =>
+      role.role?.toLowerCase() === 'unsigned' ||
       role.role?.toLowerCase() === 'unassigned'
     );
-    
+
     if (unsignedRole) {
       // Assegna il ruolo unsigned
       onAssignRole(user.id, [unsignedRole.id]);

@@ -192,7 +192,7 @@ function AdminPage() {
         currentUser.firstName,
         currentUser.lastName,
         currentUser.email,
-        [], 
+        [],
         null
       );
 
@@ -220,18 +220,18 @@ function AdminPage() {
 
   const confirmDisableUser = async () => {
     if (!userToDisable) return;
-    
+
     try {
       await API.disableInternalUser(userToDisable.id);
 
-      setUsers((prevUsers) => 
-        prevUsers.map((user) => 
-          user.id === userToDisable.id 
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userToDisable.id
             ? { ...user, status: 'DEACTIVATED', isActive: false }
             : user
         )
       );
-      
+
       setIsConfirmDisableModalOpen(false);
       setUserToDisable(null);
     } catch (error) {
@@ -307,9 +307,8 @@ function AdminPage() {
                     <Badge
                       key={role.id}
                       bg="light"
-                      className={`legend-chip ${
-                        selectedFilter.has(role.id) ? "legend-chip-active" : ""
-                      }`}
+                      className={`legend-chip ${selectedFilter.has(role.id) ? "legend-chip-active" : ""
+                        }`}
                       onClick={() => handleFilterClick(role.id)}
                       style={{ cursor: "pointer" }}
                     >

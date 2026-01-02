@@ -65,7 +65,11 @@
 }
 
 .user-card-disabled .user-role-pill {
-  background: linear-gradient(135deg, rgba(108, 117, 125, 0.1), rgba(108, 117, 125, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(108, 117, 125, 0.1),
+    rgba(108, 117, 125, 0.05)
+  );
   color: #6c757d;
 }
 

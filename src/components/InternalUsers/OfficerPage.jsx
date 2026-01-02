@@ -75,8 +75,8 @@ function OfficerPage() {
           <div className="officer-headline-text">
             <div className="d-flex flex-wrap gap-2 mb-2">
               {userRole?.map((role, index) => (
-                <Badge 
-                  key={index} 
+                <Badge
+                  key={index}
                   className="officer-eyebrow"
                   bg={index % 2 === 0 ? "primary" : "secondary"}
                 >

@@ -8,7 +8,7 @@ function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
 
   const hasRoles = user.roles && user.roles.length > 0;
   const isMultiRole = hasRoles && user.roles.length > 1;
-  
+
   const isUserDisabled = () => {
     return user.status === 'DEACTIVATED'
   };

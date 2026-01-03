@@ -19,7 +19,7 @@ const getUpdatedTechnicalRoles = (prevIds, roleId, availableRoles) => {
   // If the previous selection contained non-technical roles, clear them
   const hasNonTech = prevIds.some((id) => {
     const r = availableRoles.find((ar) => ar.id === id);
-    return r && !isTechnicalRole(r.role);
+    return r && (!isTechnicalRole(r.role) || isExternalMaintainer(r));
   });
 
   if (hasNonTech) {
@@ -66,21 +66,13 @@ function RoleAssignmentModal({
     const isExternal = isExternalMaintainer(role);
     const isAdminOrPRO = !isTech && !isExternal;
 
-    if (isExternal) {
+    if (isExternal || isAdminOrPRO) {
       if (selectedRoleIds.includes(role.id)) {
         // Toggle off if already selected
         setSelectedRoleIds([]);
       } else {
-        // External Maintainer is exclusive and has a second step
-        setSelectedRoleIds([role.id]);
-        setStep("company");
-      }
-    } else if (isAdminOrPRO) {
-      if (selectedRoleIds.includes(role.id)) {
-        // Toggle off if already selected
-        setSelectedRoleIds([]);
-      } else {
-        // Admin or PRO are exclusive single selections
+        // External Maintainer, Admin or PRO are exclusive single selections
+        // Clear any existing selections since they're mutually exclusive
         setSelectedRoleIds([role.id]);
       }
     } else {

@@ -5,6 +5,35 @@ import { getRoleIcon } from "../../constants/roleIcons";
 import { useState, useEffect } from "react";
 import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles";
 
+const isTechnicalRole = (roleName) => {
+  return allowedOfficerRoles.includes(roleName);
+};
+
+const isExternalMaintainer = (role) => {
+  return (
+    role.id === 28 || role.role.toLowerCase().includes("external maintainer")
+  );
+};
+
+const getUpdatedTechnicalRoles = (prevIds, roleId, availableRoles) => {
+  // If the previous selection contained non-technical roles, clear them
+  const hasNonTech = prevIds.some((id) => {
+    const r = availableRoles.find((ar) => ar.id === id);
+    return r && !isTechnicalRole(r.role);
+  });
+
+  if (hasNonTech) {
+    return [roleId];
+  }
+
+  // Toggle selection
+  if (prevIds.includes(roleId)) {
+    return prevIds.filter((id) => id !== roleId);
+  } else {
+    return [...prevIds, roleId];
+  }
+};
+
 function RoleAssignmentModal({
   user,
   isOpen,
@@ -18,7 +47,7 @@ function RoleAssignmentModal({
   const [step, setStep] = useState("role");
 
   useEffect(() => {
-    if (isOpen && user && user.roles) {
+    if (isOpen && user?.roles) {
       const currentRoleIds = user.roles.map((role) => role.id);
       setSelectedRoleIds(currentRoleIds);
     }
@@ -26,20 +55,9 @@ function RoleAssignmentModal({
 
   const isUserUnsigned = () => {
     return (
-      user.roles &&
-      user.roles.length === 1 &&
+      user.roles?.length === 1 &&
       (user.roles[0].name?.toLowerCase() === "unsigned" ||
         user.roles[0].name?.toLowerCase() === "unassigned")
-    );
-  };
-
-  const isTechnicalRole = (roleName) => {
-    return allowedOfficerRoles.includes(roleName);
-  };
-
-  const isExternalMaintainer = (role) => {
-    return (
-      role.id === 28 || role.role.toLowerCase().includes("external maintainer")
     );
   };
 
@@ -49,39 +67,46 @@ function RoleAssignmentModal({
     const isAdminOrPRO = !isTech && !isExternal;
 
     if (isExternal) {
-      // External Maintainer is exclusive and has a second step
-      setSelectedRoleIds([role.id]);
-      setStep("company");
+      if (selectedRoleIds.includes(role.id)) {
+        // Toggle off if already selected
+        setSelectedRoleIds([]);
+      } else {
+        // External Maintainer is exclusive and has a second step
+        setSelectedRoleIds([role.id]);
+        setStep("company");
+      }
     } else if (isAdminOrPRO) {
-      // Admin or PRO are exclusive single selections
-      setSelectedRoleIds([role.id]);
+      if (selectedRoleIds.includes(role.id)) {
+        // Toggle off if already selected
+        setSelectedRoleIds([]);
+      } else {
+        // Admin or PRO are exclusive single selections
+        setSelectedRoleIds([role.id]);
+      }
     } else {
       // Technical roles: Multi-select logic
-      setSelectedRoleIds((prevIds) => {
-        // If the previous selection contained non-technical roles, clear them
-        const hasNonTech = prevIds.some((id) => {
-          const r = availableRoles.find((ar) => ar.id === id);
-          return r && !isTechnicalRole(r.role);
-        });
-
-        if (hasNonTech) {
-          return [role.id];
-        }
-
-        // Toggle selection
-        if (prevIds.includes(role.id)) {
-          return prevIds.filter((id) => id !== role.id);
-        } else {
-          return [...prevIds, role.id];
-        }
-      });
+      setSelectedRoleIds((prevIds) =>
+        getUpdatedTechnicalRoles(prevIds, role.id, availableRoles)
+      );
     }
   };
 
   const handleConfirmRoles = () => {
-    if (selectedRoleIds.length === 0) return;
-    onAssignRole(user.id, selectedRoleIds);
-    resetAndClose();
+    // Check if External Maintainer is selected
+    const hasExternal = selectedRoleIds.some((id) => {
+      const role = availableRoles.find((r) => r.id === id);
+      return role && isExternalMaintainer(role);
+    });
+
+    if (hasExternal) {
+      setStep("company");
+    } else {
+      // If no roles selected, send [0]
+      const rolesToAssign =
+        selectedRoleIds.length === 0 ? [0] : selectedRoleIds;
+      onAssignRole(user.id, rolesToAssign);
+      resetAndClose();
+    }
   };
 
   const handleRemoveAllRoles = () => {
@@ -188,7 +213,6 @@ function RoleAssignmentModal({
               // Se l'utente ha ruolo unsigned, mostra solo Add Role
               <button
                 className="role-modal-btn role-modal-btn-primary"
-                disabled={selectedRoleIds.length === 0}
                 onClick={handleConfirmRoles}
               >
                 <i className="bi bi-plus-circle"></i>Add Role
@@ -204,7 +228,6 @@ function RoleAssignmentModal({
                 </button>
                 <button
                   className="role-modal-btn role-modal-btn-primary"
-                  disabled={selectedRoleIds.length === 0}
                   onClick={handleConfirmRoles}
                 >
                   <i className="bi bi-check-circle"></i>Save

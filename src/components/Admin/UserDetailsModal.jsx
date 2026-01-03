@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Modal, Badge } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { getRoleIcon } from "../../constants/roleIcons";
 import "../styles/RoleAssignmentModal.css"; // Reuse styling or create new if needed
 
@@ -37,7 +37,7 @@ function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
       <h2 className="role-modal-title mb-4">User Details</h2>
 
       <div className="d-flex align-items-center mb-4">
-        <div className="me-3">{getRoleIcon(iconName, 48)}</div>
+        <div className="userdetails-icon me-3">{getRoleIcon(iconName, 28)}</div>
         <div>
           <h4 className="mb-1 fw-bold">
             {user.firstName} {user.lastName}
@@ -53,16 +53,14 @@ function UserDetailsModal({ user, isOpen, onClose, onDisableUser }) {
         <div className="d-flex flex-wrap gap-2">
           {user.roles && user.roles.length > 0 ? (
             user.roles.map((role) => (
-              <Badge
+              <span
                 key={role.id}
-                bg="light"
-                text="dark"
-                className="d-flex align-items-center px-3 py-2 border"
-                style={{ fontSize: "0.9rem", gap: "8px" }}
+                className="userdetails-role-pill d-flex align-items-center"
+                style={{ gap: "8px" }}
               >
                 {getRoleIcon(role.name, 18)}
                 {role.name}
-              </Badge>
+              </span>
             ))
           ) : (
             <span className="text-muted fst-italic">No roles assigned</span>

@@ -1,25 +1,10 @@
 import PropTypes from "prop-types";
 import "../styles/UserCard.css";
 import { getRoleIcon } from "../../constants/roleIcons";
-import { allowedOfficerRoles } from "../../constants/allowedOfficerRoles";
 
 function UserCard({ user, onOpenRoleModal, onClick }) {
   const hasRoles = user.roles && user.roles.length > 0;
   const isMultiRole = hasRoles && user.roles.length > 1;
-
-  // Helper function to check if user has only "unsigned" role
-  const isUserUnsigned = () => {
-    return (
-      user.roles?.length === 1 &&
-      (user.roles[0].name?.toLowerCase() === "unsigned" ||
-        user.roles[0].name?.toLowerCase() === "unassigned")
-    );
-  };
-
-  // Helper function to check if user has technical roles
-  const hasTechnicalRoles = () => {
-    return user.roles?.some((role) => allowedOfficerRoles.includes(role.name));
-  };
 
   // Helper function to check if user is disabled
   const isUserDisabled = () => {
@@ -47,21 +32,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
 
   // Render action button icon
   const renderActionIcon = () => {
-    if (isUserUnsigned()) {
-      return <div className="plus-icon"></div>;
-    }
-    if (hasTechnicalRoles()) {
-      return (
-        <div className="edit-icon">
-          <i className="bi bi-pencil"></i>
-        </div>
-      );
-    }
-    return (
-      <div className="info-icon">
-        <i className="bi bi-info-lg"></i>
-      </div>
-    );
+    return <div className="plus-icon"></div>;
   };
 
   return (
@@ -96,11 +67,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
           style={{ padding: 0 }}
           onClick={(e) => {
             e.stopPropagation();
-            if (isUserUnsigned() || hasTechnicalRoles()) {
-              onOpenRoleModal(user);
-            } else {
-              onClick();
-            }
+            onOpenRoleModal(user);
           }}
         >
           {renderActionIcon()}

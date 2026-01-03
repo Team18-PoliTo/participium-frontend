@@ -18,6 +18,7 @@ function NavHeader() {
     setUserLoggedIn,
     setUserRole,
     user,
+    userRole,
   } = useContext(UserContext);
   const { isMobile } = useContext(MobileContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -139,7 +140,7 @@ function NavHeader() {
                             className="nav-user-avatar"
                           />
                         ) : (
-                          getRoleIcon(user.profile.role, 20)
+                          getRoleIcon(userRole, 20)
                         )}
                         <span>
                           {displayName} {displayLastName}

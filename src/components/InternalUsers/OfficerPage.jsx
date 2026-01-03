@@ -10,6 +10,7 @@ import "../styles/OfficerPage.css";
 import { UserContext } from "../../App";
 import API from "../../API/API";
 import useReportFilters from "../../utils/useReportFilters";
+import { getRoleIcon } from "../../constants/roleIcons";
 
 function OfficerPage() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function OfficerPage() {
   const [loading, setLoading] = useState(true);
   const [delegatedReports, setDelegatedReports] = useState([]);
   const [isDelegatedOpen, setIsDelegatedOpen] = useState(false);
+  const [isRolesExpanded, setIsRolesExpanded] = useState(false);
 
   const {
     filteredReports,
@@ -66,6 +68,52 @@ function OfficerPage() {
     navigate(`/reports/${report.id}`);
   };
 
+  const renderRoleBadges = () => {
+    if (!userRole || userRole.length === 0) {
+      return null;
+    }
+
+    if (userRole.length === 1) {
+      return (
+        <Badge className="officer-eyebrow" bg="primary">
+          {userRole[0]}
+        </Badge>
+      );
+    }
+
+    return (
+      <>
+        <Badge
+          className="officer-eyebrow d-flex align-items-center gap-2"
+          bg="primary"
+          style={{ cursor: "pointer" }}
+          onClick={() => setIsRolesExpanded(!isRolesExpanded)}
+        >
+          {getRoleIcon(userRole, 18, "white")}
+          <span>Multiple Roles ({userRole.length})</span>
+          {isRolesExpanded ? (
+            <ChevronUp size={16} />
+          ) : (
+            <ChevronDown size={16} />
+          )}
+        </Badge>
+        {isRolesExpanded && (
+          <div className="d-flex flex-wrap gap-2 w-100 mt-2">
+            {userRole.map((role, index) => (
+              <Badge
+                key={role}
+                className="officer-eyebrow"
+                bg={index % 2 === 0 ? "secondary" : "info"}
+              >
+                {role}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </>
+    );
+  };
+
   if (loading) return <LoadingSpinner message="Loading reports..." />;
 
   return (
@@ -74,15 +122,7 @@ function OfficerPage() {
         <header className="officer-headline">
           <div className="officer-headline-text">
             <div className="d-flex flex-wrap gap-2 mb-2">
-              {userRole?.map((role, index) => (
-                <Badge
-                  key={index}
-                  className="officer-eyebrow"
-                  bg={index % 2 === 0 ? "primary" : "secondary"}
-                >
-                  {role}
-                </Badge>
-              ))}
+              {renderRoleBadges()}
             </div>
             <h1 className="officer-title">My Assigned Reports</h1>
             <p className="officer-subtitle">

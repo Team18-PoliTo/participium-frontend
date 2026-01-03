@@ -10,8 +10,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
   // Helper function to check if user has only "unsigned" role
   const isUserUnsigned = () => {
     return (
-      user.roles &&
-      user.roles.length === 1 &&
+      user.roles?.length === 1 &&
       (user.roles[0].name?.toLowerCase() === "unsigned" ||
         user.roles[0].name?.toLowerCase() === "unassigned")
     );
@@ -19,10 +18,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
 
   // Helper function to check if user has technical roles
   const hasTechnicalRoles = () => {
-    return (
-      user.roles &&
-      user.roles.some((role) => allowedOfficerRoles.includes(role.name))
-    );
+    return user.roles?.some((role) => allowedOfficerRoles.includes(role.name));
   };
 
   // Helper function to check if user is disabled
@@ -47,6 +43,25 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
       return <span className="user-role-pill">{user.roles.length} ROLES</span>;
     }
     return <span className="user-role-pill">{user.roles[0].name}</span>;
+  };
+
+  // Render action button icon
+  const renderActionIcon = () => {
+    if (isUserUnsigned()) {
+      return <div className="plus-icon"></div>;
+    }
+    if (hasTechnicalRoles()) {
+      return (
+        <div className="edit-icon">
+          <i className="bi bi-pencil"></i>
+        </div>
+      );
+    }
+    return (
+      <div className="info-icon">
+        <i className="bi bi-info-lg"></i>
+      </div>
+    );
   };
 
   return (
@@ -88,17 +103,7 @@ function UserCard({ user, onOpenRoleModal, onClick }) {
             }
           }}
         >
-          {isUserUnsigned() ? (
-            <div className="plus-icon"></div>
-          ) : hasTechnicalRoles() ? (
-            <div className="edit-icon">
-              <i className="bi bi-pencil"></i>
-            </div>
-          ) : (
-            <div className="info-icon">
-              <i className="bi bi-info-lg"></i>
-            </div>
-          )}
+          {renderActionIcon()}
         </button>
       )}
     </div>

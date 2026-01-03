@@ -48,6 +48,16 @@ export const ROLE_ICONS = {
 };
 
 export const getRoleIcon = (role, size, color) => {
+  if (Array.isArray(role)) {
+    if (role.length > 1) {
+      return <Layers size={size} color={color} />;
+    }
+    if (role.length === 1) {
+      const IconComponent = ROLE_ICONS[role[0]] || UserX;
+      return <IconComponent size={size} color={color} />;
+    }
+    return <UserX size={size} color={color} />;
+  }
   const IconComponent = ROLE_ICONS[role] || UserX;
   return <IconComponent size={size} color={color} />;
 };

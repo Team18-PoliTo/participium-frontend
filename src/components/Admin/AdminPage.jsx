@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Form,
   Card,
@@ -11,8 +11,20 @@ import "../styles/AdminPage.css";
 import SetUpUserModal from "./SetUpUserModal";
 import UserCard from "./UserCard";
 import RoleAssignmentModal from "./RoleAssignmentModal";
+import UserDetailsModal from "./UserDetailsModal";
+import ConfirmationModal from "../ConfirmationModal";
 import API from "../../API/API";
 import { getRoleIcon } from "../../constants/roleIcons";
+
+const isNotAdmin = (user) => !user.roles.some((r) => r.id === 1);
+
+const compareUserRoles = (a, b) => {
+  const aUnassigned = !a.roles || a.roles.length === 0;
+  const bUnassigned = !b.roles || b.roles.length === 0;
+  if (aUnassigned && !bUnassigned) return -1;
+  if (!aUnassigned && bUnassigned) return 1;
+  return 0;
+};
 
 function AdminPage() {
   const [selectedFilter, setSelectedFilter] = useState(new Set());
@@ -24,58 +36,54 @@ function AdminPage() {
   const [searchEmail, setSearchEmail] = useState("");
   const [selectedUserForRole, setSelectedUserForRole] = useState(null);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [selectedUserForDetails, setSelectedUserForDetails] = useState(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isConfirmDisableModalOpen, setIsConfirmDisableModalOpen] =
+    useState(false);
+  const [userToDisable, setUserToDisable] = useState(null);
+
+  const fetchRolesData = async () => {
+    try {
+      const fetchedRoles = await API.getAllRoles();
+      const mapping = {};
+      for (const role of fetchedRoles) {
+        mapping[role.id] = role.role;
+      }
+      setRoleMapping(mapping);
+      const filtered = fetchedRoles.filter((role) => role.id !== 1);
+      setVisibleRoles(filtered);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const fetchedRoles = await API.getAllRoles();
+    fetchRolesData();
+  }, []);
 
-        const mapping = {};
-        for (const role of fetchedRoles) {
-          mapping[role.id] = role.role;
-        }
-        setRoleMapping(mapping);
+  const fetchMainData = useCallback(async () => {
+    try {
+      const [fetchedUsers, fetchedCompanies] = await Promise.all([
+        API.getAllInternalUsers(),
+        API.getAllCompanies(),
+      ]);
 
-        const filtered = fetchedRoles.filter((role) => role.id !== 1);
-        setVisibleRoles(filtered);
-      } catch (error) {
-        console.error("Error fetching roles:", error);
-      }
-    };
+      fetchedUsers.sort(compareUserRoles);
 
-    fetchRoles();
+      const filteredUsers = fetchedUsers.filter(isNotAdmin);
+
+      setUsers(filteredUsers);
+      setCompanies(fetchedCompanies);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [fetchedUsers, fetchedCompanies] = await Promise.all([
-          API.getAllInternalUsers(),
-          API.getAllCompanies(),
-        ]);
-
-        fetchedUsers.sort((a, b) => {
-          if (a.role === "Unassigned" && b.role !== "Unassigned") return -1;
-          if (a.role !== "Unassigned" && b.role === "Unassigned") return 1;
-          return 0;
-        });
-
-        const roleNameToExclude = roleMapping[1];
-        const filteredUsers = roleNameToExclude
-          ? fetchedUsers.filter((user) => user.role !== roleNameToExclude)
-          : fetchedUsers;
-
-        setUsers(filteredUsers);
-        setCompanies(fetchedCompanies);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     if (Object.keys(roleMapping).length > 0) {
-      fetchData();
+      fetchMainData();
     }
-  }, [roleMapping]);
+  }, [roleMapping, fetchMainData]);
 
   const handleOpenSetUpModal = () => {
     setIsSetUpModalOpen(true);
@@ -100,15 +108,26 @@ function AdminPage() {
     setSelectedUserForRole(null);
   };
 
-  const filteredUsers = users.filter((user) => {
-    // Filtra per ruolo (multi-select)
-    const userRoleId = Object.keys(roleMapping).find(
-      (id) => roleMapping[id] === user.role
-    );
-    const roleMatch =
-      selectedFilter.size === 0 ? true : selectedFilter.has(Number(userRoleId));
+  const handleOpenDetailsModal = (user) => {
+    setSelectedUserForDetails(user);
+    setIsDetailsModalOpen(true);
+  };
 
-    // Filtra per email
+  const handleCloseDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setSelectedUserForDetails(null);
+  };
+
+  const filteredUsers = users.filter((user) => {
+    // Filter by role (multi-select)
+    // user.roles is an array of { id, name, ... }
+    // selectedFilter is a Set of role IDs
+    const roleMatch =
+      selectedFilter.size === 0
+        ? true
+        : user.roles?.some((r) => selectedFilter.has(r.id));
+
+    // Filter by email
     const emailMatch = user.email
       .toLowerCase()
       .includes(searchEmail.toLowerCase());
@@ -159,6 +178,76 @@ function AdminPage() {
     } catch (error) {
       console.error("Error assigning role:", error);
     }
+  };
+
+  const handleRemoveRoles = async (userId) => {
+    try {
+      const currentUser = users.find((user) => user.id === userId);
+      if (!currentUser) {
+        console.error("User not found");
+        return;
+      }
+
+      const updatedUser = await API.updateInternalUserRole(
+        userId,
+        currentUser.firstName,
+        currentUser.lastName,
+        currentUser.email,
+        [],
+        null
+      );
+
+      setSelectedFilter(new Set());
+      setSearchEmail("");
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...currentUser, ...updatedUser } : user
+        )
+      );
+
+      handleCloseRoleModal();
+    } catch (error) {
+      console.error("Error removing roles:", error);
+    }
+  };
+
+  const handleDisableUser = (userId) => {
+    const user = users.find((u) => u.id === userId);
+    setUserToDisable(user);
+    handleCloseDetailsModal();
+    setIsConfirmDisableModalOpen(true);
+  };
+
+  const confirmDisableUser = async () => {
+    if (!userToDisable) return;
+
+    try {
+      await API.disableInternalUser(userToDisable.id);
+
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userToDisable.id
+            ? { ...user, status: "DEACTIVATED", isActive: false }
+            : user
+        )
+      );
+
+      setIsConfirmDisableModalOpen(false);
+      setUserToDisable(null);
+    } catch (error) {
+      console.error("Error disabling user:", error);
+      alert("Error disabling user. Please try again.");
+    }
+  };
+
+  const handleCloseConfirmDisableModal = () => {
+    setIsConfirmDisableModalOpen(false);
+    if (userToDisable) {
+      setSelectedUserForDetails(userToDisable);
+      setIsDetailsModalOpen(true);
+    }
+    setUserToDisable(null);
   };
 
   return (
@@ -267,6 +356,7 @@ function AdminPage() {
                         user={user}
                         availableRoles={visibleRoles}
                         onOpenRoleModal={handleOpenRoleModal}
+                        onClick={() => handleOpenDetailsModal(user)}
                       />
                     ))}
                   </div>
@@ -287,10 +377,29 @@ function AdminPage() {
           isOpen={isRoleModalOpen}
           onClose={handleCloseRoleModal}
           onAssignRole={handleAssignRole}
+          onRemoveRoles={handleRemoveRoles}
           availableRoles={visibleRoles}
           companies={companies}
         />
       )}
+      {selectedUserForDetails && (
+        <UserDetailsModal
+          user={selectedUserForDetails}
+          isOpen={isDetailsModalOpen}
+          onClose={handleCloseDetailsModal}
+          onDisableUser={handleDisableUser}
+        />
+      )}
+      <ConfirmationModal
+        isOpen={isConfirmDisableModalOpen}
+        onClose={handleCloseConfirmDisableModal}
+        onConfirm={confirmDisableUser}
+        title="Disable User"
+        message={`Are you sure you want to disable ${userToDisable?.firstName} ${userToDisable?.lastName}? The user will no longer be able to access the system.`}
+        confirmText="Disable User"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

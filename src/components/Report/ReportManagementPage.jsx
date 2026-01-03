@@ -122,11 +122,13 @@ function ReportManagementPage() {
     }
 
     // Check if the user has a technical role (Officer)
-    const isTechnicalOfficer =
-      allowedOfficerRoles.includes(userRole) &&
-      userRole !== "External Maintainer";
+    // Check if user has any officer role that is NOT External Maintainer
+    const isTechnicalOfficer = userRole?.some(
+      (role) =>
+        allowedOfficerRoles.includes(role) && role !== "External Maintainer"
+    );
 
-    if (userRole === "Public Relations Officer") {
+    if (userRole.includes("Public Relations Officer")) {
       return (
         <Card className="border-0 shadow-sm p-3">
           <h6 className="report-desc-label mb-3 text-uppercase">PRO Review</h6>
@@ -151,7 +153,7 @@ function ReportManagementPage() {
           />
         </Card>
       );
-    } else if (userRole === "External Maintainer") {
+    } else if (userRole.includes("External Maintainer")) {
       return (
         <MaintainerActionPanel
           report={report}
@@ -161,8 +163,8 @@ function ReportManagementPage() {
     } else {
       return (
         <Alert variant="info" className="small shadow-sm">
-          Your role ({userRole}) does not have operational actions for this
-          report.
+          Your role ({userRole.join(", ")}) does not have operational actions
+          for this report.
         </Alert>
       );
     }
@@ -209,7 +211,9 @@ function ReportManagementPage() {
               <Card.Body className="p-4">
                 <ReportInfo
                   report={report}
-                  canEditCategory={userRole === "Public Relations Officer"}
+                  canEditCategory={userRole.includes(
+                    "Public Relations Officer"
+                  )}
                   selectedCategory={selectedCategory}
                   setSelectedCategory={setSelectedCategory}
                 />
@@ -223,8 +227,8 @@ function ReportManagementPage() {
 
               {/* Internal Chat for Officers and Maintainers */}
               {report.status !== "Assigned" &&
-                (allowedOfficerRoles.includes(userRole) ||
-                  userRole === "External Maintainer") && (
+                (userRole.some((r) => allowedOfficerRoles.includes(r)) ||
+                  userRole.includes("External Maintainer")) && (
                   <Card className="border-0 shadow-sm p-3 mt-3">
                     <CommentsChat
                       report={report}

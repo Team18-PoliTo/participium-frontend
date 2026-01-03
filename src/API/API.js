@@ -229,19 +229,21 @@ const updateInternalUserRole = async (
   name,
   surname,
   email,
-  role,
+  roleIds,
   companyId = null
 ) => {
   try {
+    const rolesArray = Array.isArray(roleIds) ? roleIds : [roleIds];
+
     const body = {
       newEmail: email,
       newFirstName: name,
       newLastName: surname,
-      newRoleId: role,
+      roleIds: rolesArray,
     };
 
     if (companyId !== null && companyId !== undefined) {
-      body.newCompanyId = companyId;
+      body.companyId = companyId;
     }
 
     const data = await request(`api/admin/internal-users/${id}`, {
@@ -653,6 +655,24 @@ const resendVerificationCode = async ({ email }) => {
   }
 };
 
+const disableInternalUser = async (userId) => {
+  try {
+    await request(`api/admin/internal-users/${userId}`, {
+      method: "DELETE",
+      customErrorMap: {
+        400: "Invalid user ID",
+        403: "Attempted to delete own account",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Failed to delete internal user",
+    });
+    return true;
+  } catch (error) {
+    console.error("Error deleting internal user:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -683,6 +703,7 @@ const API = {
   createComment,
   verifyEmail,
   resendVerificationCode,
+  disableInternalUser,
 };
 
 export default API;

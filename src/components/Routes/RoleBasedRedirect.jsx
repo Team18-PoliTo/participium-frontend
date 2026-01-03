@@ -10,20 +10,20 @@ function RoleBasedRedirect() {
     return <Navigate replace to="/" />;
   }
 
-  if (userLoggedIn) {
-    switch (userRole) {
-      case "ADMIN":
-        return <Navigate replace to="/admin" />;
-      case "Public Relations Officer":
-        return <Navigate replace to="/pro" />;
-      case "External Maintainer":
-        return <Navigate replace to="/maintainer" />;
-      default:
-        if (allowedOfficerRoles.includes(userRole)) {
-          return <Navigate replace to="/officer" />;
-        }
-        return <Navigate replace to="/" />;
+  if (userLoggedIn && userRole) {
+    if (userRole.includes("ADMIN")) {
+      return <Navigate replace to="/admin" />;
     }
+    if (userRole.includes("Public Relations Officer")) {
+      return <Navigate replace to="/pro" />;
+    }
+    if (userRole.includes("External Maintainer")) {
+      return <Navigate replace to="/maintainer" />;
+    }
+    if (allowedOfficerRoles.some((role) => userRole.includes(role))) {
+      return <Navigate replace to="/officer" />;
+    }
+    return <Navigate replace to="/" />;
   }
 
   return <Navigate replace to="/" />;

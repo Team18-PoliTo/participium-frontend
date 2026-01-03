@@ -13,7 +13,11 @@ function ProtectedRoute({ children, allowedRoles, requireCitizen = false }) {
   }
 
   // If specific role is required and user has that role
-  if (allowedRoles && userLoggedIn && allowedRoles.includes(userRole)) {
+  if (
+    allowedRoles &&
+    userLoggedIn &&
+    userRole?.some((role) => allowedRoles.includes(role))
+  ) {
     return children;
   }
 

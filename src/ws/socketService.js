@@ -29,7 +29,12 @@ class SocketService {
       import.meta.env.VITE_BACKEND_URL ??
       (typeof window !== "undefined" ? window.location.origin : "");
 
-    console.log("[WebSocket] Connecting to:", resolvedApiUrl, "with path:", WS_CONFIG.NAMESPACE);
+    console.log(
+      "[WebSocket] Connecting to:",
+      resolvedApiUrl,
+      "with path:",
+      WS_CONFIG.NAMESPACE
+    );
 
     this.socket = io(resolvedApiUrl, {
       path: WS_CONFIG.NAMESPACE,

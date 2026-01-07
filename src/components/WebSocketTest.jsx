@@ -23,6 +23,7 @@ function WebSocketTest() {
   const [isActive, setIsActive] = useState(false);
   const [events, setEvents] = useState([]);
   const [manualToken, setManualToken] = useState("");
+  const [backendUrl, setBackendUrl] = useState("");
 
   // Load token from localStorage on mount
   useEffect(() => {
@@ -32,6 +33,12 @@ function WebSocketTest() {
         setToken(storedToken);
         setManualToken(storedToken);
       }
+
+      // Prefer env, fallback to page origin so we avoid localhost hardcoding
+      const resolvedUrl =
+        import.meta.env.VITE_BACKEND_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "");
+      setBackendUrl(resolvedUrl);
     } catch (error) {
       console.error("Error loading token:", error);
     }
@@ -74,7 +81,8 @@ function WebSocketTest() {
       return;
     }
     // Connect directly via the service
-    socketService.connect(token);
+    socketService.connect(token, backendUrl || undefined);
+    addEvent("CONNECT_ATTEMPT", { url: `${backendUrl || window.location.origin}/ws/internal` });
   };
 
   const handleDisconnect = () => {
@@ -159,6 +167,19 @@ function WebSocketTest() {
               </button>
             )}
           </div>
+            <div className="form-group">
+              <label>Backend URL (WS base)</label>
+              <input
+                type="text"
+                value={backendUrl}
+                onChange={(e) => setBackendUrl(e.target.value)}
+                placeholder="https://api.example.com"
+                disabled={isActive}
+              />
+              <small className="help-text">
+                If empty, the page origin is used. Namespace: /ws/internal
+              </small>
+            </div>
           <div className="button-group">
             {!isConnected ? (
               <button

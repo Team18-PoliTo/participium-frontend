@@ -34,6 +34,159 @@ const getUpdatedTechnicalRoles = (prevIds, roleId, availableRoles) => {
   }
 };
 
+const RoleSelectionStep = ({
+  user,
+  availableRoles,
+  selectedRoleIds,
+  onRoleSelect,
+  onConfirm,
+  onRemoveAll,
+}) => {
+  const isUserUnsigned =
+    user.roles?.length === 1 &&
+    (user.roles[0].name?.toLowerCase() === "unsigned" ||
+      user.roles[0].name?.toLowerCase() === "unassigned");
+
+  const hasExternalSelected = selectedRoleIds.some((id) => {
+    const role = availableRoles?.find((r) => r.id === id);
+    return role && isExternalMaintainer(role);
+  });
+
+  return (
+    <>
+      <h2 className="role-modal-title">
+        {isUserUnsigned ? "Assign Role" : "Manage Roles"}
+      </h2>
+      <p className="role-modal-subtitle">
+        {isUserUnsigned
+          ? `Select role for ${user.firstName} ${user.lastName}`
+          : `Update or reset roles for ${user.firstName} ${user.lastName}`}
+      </p>
+      <div className="role-options">
+        {availableRoles
+          ?.filter((role) => role.id > 1)
+          ?.map((role) => {
+            const isSelected = selectedRoleIds.includes(role.id);
+            const isExternal = isExternalMaintainer(role);
+
+            return (
+              <button
+                key={role.id}
+                type="button"
+                className={`role-option ${
+                  isExternal ? "role-option-highlighted" : ""
+                } ${isSelected ? "selected-role" : ""}`}
+                onClick={() => onRoleSelect(role)}
+                style={
+                  isSelected
+                    ? {
+                        borderColor: "#0d6efd",
+                        backgroundColor: "rgba(13, 110, 253, 0.1)",
+                      }
+                    : {}
+                }
+              >
+                <div className="role-icon">{getRoleIcon(role.role, 28)}</div>
+                <span className="role-name">{role.role}</span>
+                {isSelected && (
+                  <i
+                    className="bi bi-check-circle-fill ms-auto text-primary"
+                    style={{ fontSize: "1.2rem" }}
+                  ></i>
+                )}
+              </button>
+            );
+          })}
+      </div>
+      <div className="mt-4 d-flex justify-content-end gap-2">
+        {isUserUnsigned ? (
+          <button
+            className="role-modal-btn role-modal-btn-primary"
+            onClick={onConfirm}
+          >
+            <i
+              className={`bi ${
+                hasExternalSelected ? "bi-building" : "bi-plus-circle"
+              }`}
+            ></i>
+            {hasExternalSelected ? "Choose Company" : "Add Role"}
+          </button>
+        ) : (
+          <>
+            <button
+              className="role-modal-btn role-modal-btn-secondary"
+              onClick={onRemoveAll}
+            >
+              <i className="bi bi-arrow-counterclockwise"> </i>Reset All
+            </button>
+            <button
+              className="role-modal-btn role-modal-btn-primary"
+              onClick={onConfirm}
+            >
+              <i
+                className={`bi ${
+                  hasExternalSelected ? "bi-building" : "bi-check-circle"
+                }`}
+              ></i>
+              {hasExternalSelected ? "Choose Company" : "Save"}
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+
+RoleSelectionStep.propTypes = {
+  user: PropTypes.object.isRequired,
+  availableRoles: PropTypes.array,
+  selectedRoleIds: PropTypes.array.isRequired,
+  onRoleSelect: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  onRemoveAll: PropTypes.func.isRequired,
+};
+
+const CompanySelectionStep = ({ companies, onCompanySelect, onBack }) => {
+  return (
+    <>
+      <div className="d-flex align-items-center mb-3">
+        <button
+          className="btn btn-link text-decoration-none p-0 me-3"
+          onClick={onBack}
+          style={{ fontSize: "1.2rem", color: "#333" }}
+        >
+          <i className="bi bi-arrow-left"></i>
+        </button>
+        <h2 className="role-modal-title mb-0">Select Company</h2>
+      </div>
+      <p className="role-modal-subtitle">
+        Assign a company for External Maintainer
+      </p>
+      <div className="role-options">
+        {companies?.map((company) => (
+          <button
+            key={company.id}
+            type="button"
+            className="role-option"
+            onClick={() => onCompanySelect(company.id)}
+          >
+            <div className="role-icon">
+              <i className="bi bi-building" style={{ fontSize: "28px" }}></i>
+            </div>
+            <span className="role-name">{company.name}</span>
+          </button>
+        ))}
+      </div>
+    </>
+  );
+};
+
+CompanySelectionStep.propTypes = {
+  companies: PropTypes.array,
+  onCompanySelect: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+};
+
 function RoleAssignmentModal({
   user,
   isOpen,
@@ -52,14 +205,6 @@ function RoleAssignmentModal({
       setSelectedRoleIds(currentRoleIds);
     }
   }, [isOpen, user]);
-
-  const isUserUnsigned = () => {
-    return (
-      user.roles?.length === 1 &&
-      (user.roles[0].name?.toLowerCase() === "unsigned" ||
-        user.roles[0].name?.toLowerCase() === "unassigned")
-    );
-  };
 
   const handleRoleSelect = (role) => {
     const isTech = isTechnicalRole(role.role);
@@ -153,115 +298,20 @@ function RoleAssignmentModal({
       </button>
 
       {step === "role" ? (
-        <>
-          <h2 className="role-modal-title">
-            {isUserUnsigned() ? "Assign Role" : "Manage Roles"}
-          </h2>
-          <p className="role-modal-subtitle">
-            {isUserUnsigned()
-              ? `Select role for ${user.firstName} ${user.lastName}`
-              : `Update or reset roles for ${user.firstName} ${user.lastName}`}
-          </p>
-          <div className="role-options">
-            {availableRoles
-              ?.filter((role) => role.id > 1)
-              ?.map((role) => {
-                const isSelected = selectedRoleIds.includes(role.id);
-                const isExternal = isExternalMaintainer(role);
-
-                return (
-                  <button
-                    key={role.id}
-                    type="button"
-                    className={`role-option ${
-                      isExternal ? "role-option-highlighted" : ""
-                    } ${isSelected ? "selected-role" : ""}`}
-                    onClick={() => handleRoleSelect(role)}
-                    style={
-                      isSelected
-                        ? {
-                            borderColor: "#0d6efd",
-                            backgroundColor: "rgba(13, 110, 253, 0.1)",
-                          }
-                        : {}
-                    }
-                  >
-                    <div className="role-icon">
-                      {getRoleIcon(role.role, 28)}
-                    </div>
-                    <span className="role-name">{role.role}</span>
-                    {isSelected && (
-                      <i
-                        className="bi bi-check-circle-fill ms-auto text-primary"
-                        style={{ fontSize: "1.2rem" }}
-                      ></i>
-                    )}
-                  </button>
-                );
-              })}
-          </div>
-          <div className="mt-4 d-flex justify-content-end gap-2">
-            {isUserUnsigned() ? (
-              // Se l'utente ha ruolo unsigned, mostra solo Add Role
-              <button
-                className="role-modal-btn role-modal-btn-primary"
-                onClick={handleConfirmRoles}
-              >
-                <i className="bi bi-plus-circle"></i>Add Role
-              </button>
-            ) : (
-              // Se l'utente ha ruoli assegnati (non unsigned), mostra Save e Reset All
-              <>
-                <button
-                  className="role-modal-btn role-modal-btn-secondary"
-                  onClick={handleRemoveAllRoles}
-                >
-                  <i className="bi bi-arrow-counterclockwise"> </i>Reset All
-                </button>
-                <button
-                  className="role-modal-btn role-modal-btn-primary"
-                  onClick={handleConfirmRoles}
-                >
-                  <i className="bi bi-check-circle"></i>Save
-                </button>
-              </>
-            )}
-          </div>
-        </>
+        <RoleSelectionStep
+          user={user}
+          availableRoles={availableRoles}
+          selectedRoleIds={selectedRoleIds}
+          onRoleSelect={handleRoleSelect}
+          onConfirm={handleConfirmRoles}
+          onRemoveAll={handleRemoveAllRoles}
+        />
       ) : (
-        <>
-          <div className="d-flex align-items-center mb-3">
-            <button
-              className="btn btn-link text-decoration-none p-0 me-3"
-              onClick={handleBack}
-              style={{ fontSize: "1.2rem", color: "#333" }}
-            >
-              <i className="bi bi-arrow-left"></i>
-            </button>
-            <h2 className="role-modal-title mb-0">Select Company</h2>
-          </div>
-          <p className="role-modal-subtitle">
-            Assign a company for External Maintainer
-          </p>
-          <div className="role-options">
-            {companies?.map((company) => (
-              <button
-                key={company.id}
-                type="button"
-                className="role-option"
-                onClick={() => handleCompanySelect(company.id)}
-              >
-                <div className="role-icon">
-                  <i
-                    className="bi bi-building"
-                    style={{ fontSize: "28px" }}
-                  ></i>
-                </div>
-                <span className="role-name">{company.name}</span>
-              </button>
-            ))}
-          </div>
-        </>
+        <CompanySelectionStep
+          companies={companies}
+          onCompanySelect={handleCompanySelect}
+          onBack={handleBack}
+        />
       )}
     </Modal>
   );

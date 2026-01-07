@@ -18,16 +18,18 @@ class SocketService {
    * @param {string} token - JWT token for authentication
    * @param {string} [apiUrl] - Base API URL (default: from env or localhost)
    */
-  connect(
-    token,
-    apiUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001"
-  ) {
+  connect(token, apiUrl) {
     if (this.socket?.connected) {
       console.warn("[WebSocket] Already connected");
       return;
     }
 
-    const socketUrl = `${apiUrl}${WS_CONFIG.NAMESPACE}`;
+    const resolvedApiUrl =
+      apiUrl ??
+      import.meta.env.VITE_BACKEND_URL ??
+      (typeof window !== "undefined" ? window.location.origin : "");
+
+    const socketUrl = `${resolvedApiUrl}${WS_CONFIG.NAMESPACE}`;
 
     console.log("[WebSocket] Connecting to:", socketUrl);
 

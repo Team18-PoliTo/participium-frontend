@@ -232,7 +232,7 @@ function NavHeader() {
                           }}
                         />
                       ) : (
-                        getRoleIcon(user.profile.role, 20)
+                        getRoleIcon(userRole, 20)
                       )}
                       <span
                         className="me-2"

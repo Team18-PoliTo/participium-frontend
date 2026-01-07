@@ -73,15 +73,16 @@ const RoleSelectionStep = ({
               <button
                 key={role.id}
                 type="button"
-                className={`role-option ${isExternal ? "role-option-highlighted" : ""
-                  } ${isSelected ? "selected-role" : ""}`}
+                className={`role-option ${
+                  isExternal ? "role-option-highlighted" : ""
+                } ${isSelected ? "selected-role" : ""}`}
                 onClick={() => onRoleSelect(role)}
                 style={
                   isSelected
                     ? {
-                      borderColor: "#0d6efd",
-                      backgroundColor: "rgba(13, 110, 253, 0.1)",
-                    }
+                        borderColor: "#0d6efd",
+                        backgroundColor: "rgba(13, 110, 253, 0.1)",
+                      }
                     : {}
                 }
               >
@@ -104,8 +105,9 @@ const RoleSelectionStep = ({
             onClick={onConfirm}
           >
             <i
-              className={`bi ${hasExternalSelected ? "bi-building" : "bi-plus-circle"
-                }`}
+              className={`bi ${
+                hasExternalSelected ? "bi-building" : "bi-plus-circle"
+              }`}
             ></i>
             {hasExternalSelected ? "Choose Company" : "Add Role"}
           </button>
@@ -122,8 +124,9 @@ const RoleSelectionStep = ({
               onClick={onConfirm}
             >
               <i
-                className={`bi ${hasExternalSelected ? "bi-building" : "bi-check-circle"
-                  }`}
+                className={`bi ${
+                  hasExternalSelected ? "bi-building" : "bi-check-circle"
+                }`}
               ></i>
               {hasExternalSelected ? "Choose Company" : "Save"}
             </button>

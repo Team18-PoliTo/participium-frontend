@@ -82,7 +82,9 @@ function WebSocketTest() {
     }
     // Connect directly via the service
     socketService.connect(token, backendUrl || undefined);
-    addEvent("CONNECT_ATTEMPT", { url: `${backendUrl || window.location.origin}/ws/internal` });
+    addEvent("CONNECT_ATTEMPT", {
+      url: `${backendUrl || window.location.origin}/ws/internal`,
+    });
   };
 
   const handleDisconnect = () => {
@@ -167,19 +169,19 @@ function WebSocketTest() {
               </button>
             )}
           </div>
-            <div className="form-group">
-              <label>Backend URL (WS base)</label>
-              <input
-                type="text"
-                value={backendUrl}
-                onChange={(e) => setBackendUrl(e.target.value)}
-                placeholder="https://api.example.com"
-                disabled={isActive}
-              />
-              <small className="help-text">
-                If empty, the page origin is used. Namespace: /ws/internal
-              </small>
-            </div>
+          <div className="form-group">
+            <label>Backend URL (WS base)</label>
+            <input
+              type="text"
+              value={backendUrl}
+              onChange={(e) => setBackendUrl(e.target.value)}
+              placeholder="https://api.example.com"
+              disabled={isActive}
+            />
+            <small className="help-text">
+              If empty, the page origin is used. Namespace: /ws/internal
+            </small>
+          </div>
           <div className="button-group">
             {!isConnected ? (
               <button

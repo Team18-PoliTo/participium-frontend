@@ -70,7 +70,10 @@ function WebSocketTest() {
         setIsActive(false);
       },
       onError: (error) => {
-        addEvent("ERROR", { message: error });
+        addEvent("ERROR", {
+          message: error,
+          hint: "Check CORS, token kind=internal, and ws URL",
+        });
       },
       autoConnect: false,
     });
@@ -84,6 +87,8 @@ function WebSocketTest() {
     socketService.connect(token, backendUrl || undefined);
     addEvent("CONNECT_ATTEMPT", {
       url: `${backendUrl || window.location.origin}/ws/internal`,
+      tokenPreview: `${String(token).slice(0, 8)}...`,
+      transports: ["websocket", "polling"],
     });
   };
 

@@ -8,7 +8,7 @@ import { useReportComments } from "../../ws";
 import "../styles/CommentsChat.css";
 
 function CommentsChat({ report }) {
-  const { user } = useContext(UserContext);
+  const { user, userRole } = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -248,7 +248,7 @@ function CommentsChat({ report }) {
                         opacity: 0.8,
                       }}
                     >
-                      {user.profile.role === "External Maintainer"
+                      {userRole?.includes("External Maintainer")
                         ? `Officer`
                         : `Maintainer`}
                     </div>

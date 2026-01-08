@@ -352,6 +352,29 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 300px;
+  padding-top: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+.officer-reports-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.officer-reports-list::-webkit-scrollbar-track {
+  background: rgba(61, 90, 128, 0.05);
+  border-radius: 10px;
+}
+
+.officer-reports-list::-webkit-scrollbar-thumb {
+  background: rgba(61, 90, 128, 0.2);
+  border-radius: 10px;
+}
+
+.officer-reports-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(61, 90, 128, 0.35);
 }
 
 /* ========================================
@@ -359,30 +382,26 @@
    ======================================== */
 
 .officer-empty-state {
+  border: 2px dashed rgba(61, 90, 128, 0.25);
+  border-radius: 16px;
+  padding: 48px 32px;
   text-align: center;
-  padding: 60px 20px;
   color: #5d6c82;
+  background: linear-gradient(135deg, #f8fbff, #f0f7fc);
 }
 
 .officer-empty-icon {
-  font-size: 64px;
+  font-size: 48px;
+  color: #98c1d9;
+  display: block;
   margin-bottom: 16px;
-  opacity: 0.3;
 }
 
 .officer-empty-message {
-  font-size: 18px;
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  color: #1a2332;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3d5a80;
   margin: 0 0 8px;
-}
-
-.officer-empty-hint {
-  font-size: 14px;
-  font-family: "Inter", sans-serif;
-  color: #5d6c82;
-  margin: 0;
 }
 
 /* ========================================
@@ -474,10 +493,6 @@
 
   .officer-empty-message {
     font-size: 16px;
-  }
-
-  .officer-empty-hint {
-    font-size: 13px;
   }
 }
 
@@ -585,4 +600,45 @@
   .officer-reports-list {
     gap: 8px;
   }
+}
+
+/* ========================================
+   Collapsible Section Styles
+   ======================================== */
+
+.officer-collapsible-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.officer-collapsible-toggle:focus {
+  outline: none;
+}
+
+.officer-collapsible-toggle:hover .officer-reports-title {
+  color: #3d5a80;
+}
+
+.officer-chevron-icon {
+  transition: transform 0.3s ease;
+}
+
+.officer-collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.officer-collapsible-content.closed {
+  max-height: 0;
+}
+
+.officer-collapsible-content.open {
+  max-height: 2000px;
 }

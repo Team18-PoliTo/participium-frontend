@@ -2,22 +2,26 @@ import "./index.css";
 import { useState, createContext, useEffect, useMemo } from "react";
 import { Route, Routes, Navigate } from "react-router";
 import API from "./API/API";
-import DefaultLayout from "./components/DefaultLayout";
-import Login from "./components/Login";
-import Registration from "./components/Registration";
-import AdminPage from "./components/AdminPage";
-import MapPage from "./components/MapPage";
-import NotAuthorized from "./components/NotAuthorized";
+import DefaultLayout from "./components/Layout/DefaultLayout";
+import Login from "./components/Auth/Login";
+import Registration from "./components/Auth/Registration";
+import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
+import TermsOfService from "./components/Legal/TermsOfService";
+import AdminPage from "./components/Admin/AdminPage";
+import MapPage from "./components/Map/MapPage";
+import NotAuthorized from "./components/Routes/NotAuthorized";
 import Homepage from "./components/Homepage";
 import HowItWorks from "./components/HowItWorks";
-import PublicRelationsOfficer from "./components/PublicRelationsOfficer";
+import PublicRelationsOfficer from "./components/InternalUsers/PublicRelationsOfficer";
 import LoadingSpinner from "./components/LoadingSpinner";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RoleBasedRedirect from "./components/RoleBasedRedirect";
-import OfficerPage from "./components/OfficerPage";
+import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import RoleBasedRedirect from "./components/Routes/RoleBasedRedirect";
+import OfficerPage from "./components/InternalUsers/OfficerPage";
 import { allowedOfficerRoles } from "./constants/allowedOfficerRoles";
-import UserPage from "./components/UserPage";
-import MaintainerPage from "./components/MaintainerPage";
+import UserPage from "./components/Citizen/UserPage";
+import MaintainerPage from "./components/InternalUsers/MaintainerPage";
+import WebSocketTest from "./components/WebSocketTest";
+import ReportManagementPage from "./components/Report/ReportManagementPage";
 
 export const NavbarTextContext = createContext();
 export const UserContext = createContext();
@@ -28,7 +32,7 @@ function App() {
   const [citizenLoggedIn, setCitizenLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState(null); //Array of roles
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -39,7 +43,7 @@ function App() {
       if (user.kind === "citizen") {
         setCitizenLoggedIn(true);
       } else {
-        setUserRole(user.profile.role);
+        setUserRole(user.profile.roles.map((r) => r.name));
         setUserLoggedIn(true);
       }
     } catch (err) {
@@ -61,10 +65,8 @@ function App() {
         /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       setIsMobile(mobileDevices.test(userAgent) || window.innerWidth <= 768);
     };
-
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
-
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
@@ -82,35 +84,59 @@ function App() {
     [user, citizenLoggedIn, userLoggedIn, userRole]
   );
 
-  const navbarContextValue = useMemo(
-    () => ({
-      navbarText,
-      setNavbarText,
-    }),
+  const memoizedUserContextValue = useMemo(
+    () => userContextValue,
+    [userContextValue]
+  );
+  const memoizedNavbarContext = useMemo(
+    () => ({ navbarText, setNavbarText }),
     [navbarText]
   );
-
-  const mobileContextValue = useMemo(
-    () => ({
-      isMobile,
-      setIsMobile,
-    }),
+  const memoizedMobileContext = useMemo(
+    () => ({ isMobile, setIsMobile }),
     [isMobile]
   );
 
+  // Se stiamo ancora controllando l'autenticazione, mostriamo uno spinner
+  // Evitiamo che ProtectedRoute faccia redirect a /login prima del tempo
   if (isCheckingAuth) {
-    return <LoadingSpinner message="Checking authentication..." />;
+    return <LoadingSpinner />;
   }
 
   return (
-    <UserContext.Provider value={userContextValue}>
-      <NavbarTextContext.Provider value={navbarContextValue}>
-        <MobileContext.Provider value={mobileContextValue}>
+    <UserContext.Provider value={memoizedUserContextValue}>
+      <NavbarTextContext.Provider value={memoizedNavbarContext}>
+        <MobileContext.Provider value={memoizedMobileContext}>
           <Routes>
             <Route element={<DefaultLayout />}>
               <Route path="/" element={<Homepage />} />
-              <Route path="/register" element={<Registration />} />
-              <Route path="/login" element={<Login />} />
+
+              {/* Se l'utente è loggato, non deve poter accedere a login/register */}
+              <Route
+                path="/register"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Registration />
+                  )
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  userLoggedIn || citizenLoggedIn ? (
+                    <Navigate replace to="/dashboard" />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+
+              {/* Legal Pages - accessible to everyone */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+
               <Route
                 path="/profile"
                 element={
@@ -119,10 +145,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              {/* Redirect basato sul ruolo */}
               <Route path="/dashboard" element={<RoleBasedRedirect />} />
-
-              {/* Route per Citizen */}
               <Route
                 path="/how-it-works"
                 element={
@@ -131,16 +154,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/map"
-                element={
-                  <ProtectedRoute requireCitizen>
-                    <MapPage />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/map" element={<MapPage />} />
 
-              {/* Route per Admin */}
               <Route
                 path="/admin"
                 element={
@@ -149,8 +164,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              {/* Route per Public Relations Officer */}
               <Route
                 path="/pro"
                 element={
@@ -159,7 +172,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/officer"
                 element={
@@ -168,7 +180,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/maintainer"
                 element={
@@ -178,6 +189,23 @@ function App() {
                 }
               />
 
+              {/* ROTTA GESTIONE REPORT */}
+              <Route
+                path="/reports/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "Public Relations Officer",
+                      "External Maintainer",
+                      ...allowedOfficerRoles,
+                    ]}
+                  >
+                    <ReportManagementPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="/ws-test" element={<WebSocketTest />} />
               <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Route>

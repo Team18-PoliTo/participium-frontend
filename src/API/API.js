@@ -1,4 +1,4 @@
-const SERVER_URL = ""; //empty string to use proxy configured in vite.config.js
+const SERVER_URL = ""; // empty string to use proxy configured in vite.config.js
 
 /**
  * Helper to get the auth token from local storage
@@ -55,7 +55,8 @@ const parseSuccessResponse = async (response) => {
   try {
     const text = await response.text();
     return text ? JSON.parse(text) : null;
-  } catch {
+  } catch (err) {
+    console.error("Failed to parse success response as JSON:", err);
     return null;
   }
 };
@@ -83,7 +84,8 @@ const request = async (endpoint, options = {}) => {
       contentType === "application/json" ? JSON.stringify(body) : body;
   }
 
-  const response = await fetch(`${SERVER_URL}${endpoint}`, config);
+  const safeEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const response = await fetch(`${SERVER_URL}${safeEndpoint}`, config);
 
   if (response.ok) {
     return await parseSuccessResponse(response);
@@ -128,6 +130,7 @@ const performLogin = async (endpoint, credentials) => {
     customErrorMap: {
       400: "Email and password are required",
       401: "Invalid email or password",
+      403: "EMAIL_NOT_VERIFIED",
     },
     defaultErrorMessage: "Login failed",
   });
@@ -226,19 +229,21 @@ const updateInternalUserRole = async (
   name,
   surname,
   email,
-  role,
+  roleIds,
   companyId = null
 ) => {
   try {
+    const rolesArray = Array.isArray(roleIds) ? roleIds : [roleIds];
+
     const body = {
       newEmail: email,
       newFirstName: name,
       newLastName: surname,
-      newRoleId: role,
+      roleIds: rolesArray,
     };
 
     if (companyId !== null && companyId !== undefined) {
-      body.newCompanyId = companyId;
+      body.companyId = companyId;
     }
 
     const data = await request(`api/admin/internal-users/${id}`, {
@@ -275,6 +280,7 @@ const getAllRoles = async () => {
 
 const addNewReport = async (reportData) => {
   const requestBody = {
+    isAnonymous: reportData.isAnonymous,
     title: reportData.title,
     description: reportData.description,
     categoryId: reportData.categoryId,
@@ -333,7 +339,6 @@ const getAllCategories = async () => {
 
 const uploadFile = async (formData, type = "report") => {
   try {
-    // Add type parameter to FormData if not already present
     if (!formData.has("type")) {
       formData.append("type", type);
     }
@@ -341,7 +346,7 @@ const uploadFile = async (formData, type = "report") => {
     const data = await request("api/files/upload", {
       method: "POST",
       body: formData,
-      contentType: null, // Let browser set multipart/form-data with boundary
+      contentType: null,
       customErrorMap: {
         400: "File validation failed",
         401: "Unauthorized",
@@ -405,38 +410,34 @@ const getCitizenReports = async () => {
   }
 };
 
-const getReportsByMapArea = async (bounds) => {
+const getPublicReports = async (bounds) => {
   try {
-    const data = await request("api/citizens/reports/map", {
+    const data = await request("api/reports/map", {
       method: "POST",
       body: {
         corners: bounds,
       },
       customErrorMap: {
-        400: "Validation error",
-        401: "Unauthorized",
-        403: "Forbidden",
+        400: "Error retrieving public reports",
       },
-      defaultErrorMessage: "Failed to fetch reports by map area",
+      defaultErrorMessage: "Failed to fetch public reports",
     });
     return data;
   } catch (error) {
-    console.error("Error fetching reports by map area:", error);
+    console.error("Error fetching public reports by map area:", error);
     throw error;
   }
 };
 
 const getReportMapDetails = async (reportId) => {
   try {
-    const data = await request(`api/citizens/reports/getById/${reportId}`, {
+    const data = await request(`api/reports/getById/${reportId}`, {
       method: "GET",
       customErrorMap: {
-        400: "Invalid report ID",
-        401: "Unauthorized",
-        403: "Forbidden",
+        400: "Error retrieving report map details, Invalid report ID",
         404: "Report not found",
       },
-      defaultErrorMessage: "Failed to fetch report details",
+      defaultErrorMessage: "Failed to fetch report map details",
     });
     return data;
   } catch (error) {
@@ -557,6 +558,121 @@ const updateReportStatus = async (reportId, status, note) => {
   }
 };
 
+const getReportsDelegatedByMe = async () => {
+  try {
+    const data = await request("api/internal/delegated-reports", {
+      method: "GET",
+      useAuth: true,
+      customErrorMap: {
+        401: "Unauthorized",
+        403: "Forbidden",
+      },
+      defaultErrorMessage: "Failed to fetch delegated reports",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching reports delegated by technical user:", error);
+    throw error;
+  }
+};
+
+const getReportComments = async (reportId) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/comments`, {
+      method: "GET",
+      useAuth: true,
+      customErrorMap: {
+        400: "Invalid report ID",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to fetch comments",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+const createComment = async (reportId, commentText) => {
+  try {
+    const data = await request(`api/internal/reports/${reportId}/comments`, {
+      method: "POST",
+      useAuth: true,
+      body: { comment: commentText },
+      customErrorMap: {
+        400: "Invalid comment data",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Report not found",
+      },
+      defaultErrorMessage: "Failed to create comment",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
+};
+
+const verifyEmail = async ({ email, code }) => {
+  try {
+    const data = await request("api/email-verification/verify", {
+      method: "POST",
+      useAuth: false,
+      body: { email, code },
+      customErrorMap: {
+        400: "Invalid or expired verification code",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Email verification failed",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    throw error;
+  }
+};
+
+const resendVerificationCode = async ({ email }) => {
+  try {
+    const data = await request("api/email-verification/resend", {
+      method: "POST",
+      useAuth: false,
+      body: { email },
+      customErrorMap: {
+        400: "Unable to resend verification code",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Failed to resend verification code",
+    });
+    return data;
+  } catch (error) {
+    console.error("Error resending verification code:", error);
+    throw error;
+  }
+};
+
+const disableInternalUser = async (userId) => {
+  try {
+    await request(`api/admin/internal-users/${userId}`, {
+      method: "DELETE",
+      customErrorMap: {
+        400: "Invalid user ID",
+        403: "Attempted to delete own account",
+        404: "User not found",
+      },
+      defaultErrorMessage: "Failed to delete internal user",
+    });
+    return true;
+  } catch (error) {
+    console.error("Error deleting internal user:", error);
+    throw error;
+  }
+};
+
 const API = {
   registerCitizen,
   loginCitizen,
@@ -574,14 +690,20 @@ const API = {
   deleteTempFile,
   getAllReportsIsPending,
   getCitizenReports,
-  getReportsByMapArea,
-  getReportMapDetails,
   getReportsAssignedToMe,
   updateCitizenProfile,
   getAllCompanies,
   getCompaniesByCategory,
   delegateReportToCompany,
   updateReportStatus,
+  getPublicReports,
+  getReportMapDetails,
+  getReportsDelegatedByMe,
+  getReportComments,
+  createComment,
+  verifyEmail,
+  resendVerificationCode,
+  disableInternalUser,
 };
 
 export default API;

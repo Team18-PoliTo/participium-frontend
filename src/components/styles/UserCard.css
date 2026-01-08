@@ -11,6 +11,23 @@
   box-shadow: 0 4px 16px rgba(32, 45, 64, 0.06);
   transition: all 0.3s ease;
   position: relative;
+  text-align: left;
+  width: 100%;
+}
+
+.user-card-main-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-grow: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  min-width: 0;
 }
 
 .user-card[data-modal-open="true"] {
@@ -20,6 +37,40 @@
 .user-card:hover {
   box-shadow: 0 8px 24px rgba(32, 45, 64, 0.1);
   border-color: rgba(37, 56, 84, 0.2);
+}
+
+/* Stili per utenti disabilitati */
+.user-card-disabled {
+  opacity: 0.6;
+  background: #f8f9fa;
+  border-color: rgba(37, 56, 84, 0.05);
+}
+
+.user-card-disabled:hover {
+  box-shadow: 0 4px 16px rgba(32, 45, 64, 0.03);
+  border-color: rgba(37, 56, 84, 0.08);
+}
+
+.user-card-disabled .user-icon {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  opacity: 0.7;
+}
+
+.user-card-disabled .user-full-name {
+  color: #6c757d;
+}
+
+.user-card-disabled .user-email {
+  color: #adb5bd;
+}
+
+.user-card-disabled .user-role-pill {
+  background: linear-gradient(
+    135deg,
+    rgba(108, 117, 125, 0.1),
+    rgba(108, 117, 125, 0.05)
+  );
+  color: #6c757d;
 }
 
 .user-icon {
@@ -146,6 +197,28 @@
 
 .plus-icon::after {
   transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.info-icon {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.edit-icon {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 /* Media Queries for Responsiveness */

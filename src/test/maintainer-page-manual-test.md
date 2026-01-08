@@ -47,48 +47,64 @@ Verify the dashboard for External Maintainers, ensuring they can view, filter, a
 ### Test 6: Open Task Details
 - Click on any report card in the list.
 - **Verify that**:
-  - The `MaintainerReportModal` opens.
-  - It shows specific details relevant to the maintainer (Description, Status update options).
+  - The application navigates to the Report Management page (`/reports/:id`).
+  - The URL includes the report ID.
+  - The page shows "Back to List" button.
+  - The "Internal Chat" section is visible.
 
-### Test 7: Status Update Workflows
+### Test 7: Internal Chat (CommentsChat)
+- Open a report.
+- **Verify that**:
+  - The "Internal Chat" card is visible below the Action Panel.
+  - You can send a message.
+  - "Live" status is indicated if connected.
+  - Messages from officers are visible.
+
+### Test 8: Status Update Workflows
 **Objective:** Verify all status transitions available to the maintainer.
 
 #### Flow A: Start Work
 - **Pre-condition**: Report status is "Assigned" or "Delegated".
-- Open the report modal.
+- Open the report page.
+- Locate the "Intervention Update" panel (right column).
 - Click the "Start Work" button (Hammer icon).
 - **Verify that**:
-  - The "Update Successful!" screen appears with a green checkmark.
-  - The message says "The report is now marked as **In Progress**".
-  - Closing the modal updates the list: status badge is now "In Progress".
+  - Success message appears ("Operation Completed Successfully").
+  - The status badge updates to "**In Progress**".
 
 #### Flow B: Suspend Work
 - **Pre-condition**: Report status is "In Progress".
-- Open the report modal.
+- Open the report page.
 - Click the "Suspend" button (Pause icon).
 - **Verify that**:
-  - Success screen confirms status is "**Suspended**".
-  - List badge updates to "Suspended".
+  - Success message appears.
+  - Status badge updates to "**Suspended**".
 
 #### Flow C: Resume Work
 - **Pre-condition**: Report status is "Suspended".
-- Open the report modal.
-- Click the "Resume Work" button.
+- Open the report page.
+- Click the "Start Work" button (or Resume).
 - **Verify that**:
-  - Success screen confirms status is "**In Progress**".
-  - List badge updates to "In Progress".
+  - Success message appears.
+  - Status badge updates to "**In Progress**".
 
 #### Flow D: Resolve Report
 - **Pre-condition**: Report status is "In Progress".
-- Open the report modal.
-- Enter a "Maintenance Note" (e.g., "Filled the pothole").
-- Click the "Mark as Resolved" button (Check icon).
+- Open the report page.
+- Enter a "Technical Note" (e.g., "Filled the pothole").
+- Click the "Resolved" button (Check icon).
 - **Verify that**:
-  - Success screen confirms status is "**Resolved**".
-  - List badge updates to "Resolved".
+  - Success message appears.
+  - Status badge updates to "**Resolved**".
+
+### Test 9: Back Navigation
+- From the Report Page, click "Back to List".
+- **Verify that**:
+  - You return to the Maintainer Dashboard.
+  - Filters are still applied.
 
 
-### Test 8: Zero Results State
+### Test 10: Zero Results State
 - Set filters to a date range in the far past (e.g., year 1990).
 - **Verify that**:
   - The list is empty.

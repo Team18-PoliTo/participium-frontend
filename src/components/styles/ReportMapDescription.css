@@ -86,11 +86,16 @@
 }
 
 .report-map-desc-status {
-  font-weight: 500;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #3d5a80;
   font-size: 1rem;
+}
+
+/* Force span to inherit color from the status container */
+.report-map-desc-status span {
+  color: inherit;
+  font-weight: inherit;
 }
 
 .report-map-desc-date {

@@ -99,11 +99,18 @@ Verify that the Public Relations Officer can view, filter, and sort pending repo
 ### Test 11: Click on a report card
 - Click on any report card.
 - Verify that:
-  - The ReportDescription modal opens.
-  - The modal displays the correct report details.
-  - The filters remain applied in the background.
+  - The application navigates to the Report Management page (`/reports/:id`).
+  - The URL changes to include the report ID.
+  - The page shows "Back to List" button at the top.
 
-### Test 12: Error handling
+### Test 12: Back Navigation
+- From the Report Page, click "Back to List".
+- Verify that:
+  - You return to the PRO Dashboard.
+  - Filters (Category, Date, etc.) are still applied.
+  - Scroll position is maintained (optional).
+
+### Test 13: Error handling
 - Simulate a network error (disconnect network).
 - Reload the page.
 - Verify that:
@@ -111,7 +118,7 @@ Verify that the Public Relations Officer can view, filter, and sort pending repo
   - An error alert appears: "Failed to load reports. Please try again later."
   - No reports are displayed.
 
-### Test 13: Category dropdown navigation
+### Test 14: Category dropdown navigation
 - Open the category dropdown.
 - Verify that:
   - "All Categories" is listed first.
@@ -119,7 +126,7 @@ Verify that the Public Relations Officer can view, filter, and sort pending repo
   - Active category is highlighted.
   - Clicking a category updates the filter immediately.
 
-### Test 14: Date picker functionality
+### Test 15: Date picker functionality
 - Click on the start date picker.
 - Verify that:
   - A calendar appears.
@@ -127,7 +134,7 @@ Verify that the Public Relations Officer can view, filter, and sort pending repo
   - The selected date appears in dd/MM/yyyy format.
   - The picker closes after selection.
 
-### Test 15: Responsive layout
+### Test 16: Responsive layout
 - Resize the browser window to mobile size.
 - Verify that:
   - Filters stack vertically on smaller screens.

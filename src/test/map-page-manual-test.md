@@ -162,3 +162,16 @@ Verify the core functionality of the application: viewing the map, interacting w
   - **Verify**: Map centers with left offset to accommodate the sidebar.
 - **Mobile**: Resize window to mobile width, click on a location.
   - **Verify**: Map centers with bottom offset to accommodate mobile form.
+
+### Test 17: Submit Anonymous Report
+- **Pre-condition**: Logged in as Citizen.
+- Click on a valid location on the map.
+- In the report form, find the "Submit Anonymously" toggle.
+- Switch it to **ON**.
+- Fill in the rest of the form (Title, Description, Category, Photo).
+- Click "Submit Report".
+- **Verify that**:
+  - Success message appears.
+  - The new report appears in the sidebar list.
+  - The author name in the sidebar card is displayed as **"Anonymous"**.
+  - The user icon in the card is an anonymous user icon (crossed out user).

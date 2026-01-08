@@ -274,52 +274,43 @@ Verify that Officers (technical/operational users) can view assigned reports, fi
 ---
 
 ## Test 17: Click on a report card
-**Objective:** Verify that clicking a report card opens the detail modal correctly.
+**Objective:** Verify that clicking a report card navigates to the Report Management page.
 
 **Steps:**
 1. Click on any report card in the list.
 
 **Verify:**
-- The `ReportDescriptionModal` opens.
-- The modal title is "Report Details".
-- The modal displays all report information (see Test 18 for details).
-- The filters remain applied in the background.
+- The application navigates to the Report Management page (`/reports/:id`).
+- The URL changes to include the report ID.
+- The page shows "Back to List" button at the top.
 
 ---
 
-## Test 18: Report description modal - Read-only view
-**Objective:** Verify that the report modal displays correctly for officers (read-only).
+## Test 18: Report Management Page - Read-only view
+**Objective:** Verify that the report details page displays correctly for officers.
 
 **Steps:**
-1. Click on a report card to open the modal.
+1. Click on a report card to open the details page.
 2. Review all displayed information.
 
-**Verify the modal displays:**
-- **Citizen Details:**
-  - First Name
-  - Last Name
-- **Report Information:**
-  - Title
-  - Description
-  - Address (with map pin icon)
-- **Location:**
-  - Interactive map showing the exact location with a marker
-  - Map is not draggable or zoomable (static view)
-- **Category:**
-  - Category icon and name (read-only, no dropdown)
-- **Status:**
-  - Current status of the report
-- **Creation Date:**
-  - Date and time in format: "Month Day, Year, HH:MM AM/PM"
-- **Photos:**
-  - Thumbnails of all included photos (if any)
-  - "No photos included" message if no photos
+**Verify the page displays:**
+- **Header:**
+  - "Back to List" button
+  - Report ID badge
+  - Status badge (colored correctly)
+- **Report Info (Left Column):**
+  - **Citizen Details:** Name
+  - **Report Information:** Title, Description, Address (with map pin)
+  - **Location:** Interactive map (read-only)
+  - **Category:** Category icon and name
+  - **Photos:** Grid of photos (click to enlarge)
+- **Action Panel (Right Column):**
+  - Displays appropriate actions based on role (e.g., Delegation or PRO Review)
+  - Or an info message if no actions available
 
 **Verify that:**
-- The category is displayed as text with icon (NOT as a dropdown).
-- There are NO action buttons (Approve/Reject).
-- There is NO explanation textarea.
-- The close button (X) is present in the header.
+- There is NO close button (X), but a "Back to List" button.
+- The layout is divided into Report Info and Action/Chat panel.
 
 ---
 
@@ -327,30 +318,28 @@ Verify that Officers (technical/operational users) can view assigned reports, fi
 **Objective:** Verify that report photos can be viewed in full size.
 
 **Steps:**
-1. Open a report that has photos.
+1. Open a report page that has photos.
 2. Click on one of the photo thumbnails.
 
 **Verify:**
 - A photo preview modal opens.
-- The modal title is "Photo Preview".
-- The photo is displayed in full size on a dark background.
-- The modal can be closed via the close button (X).
-- After closing, the report details modal is still open.
+- The photo is displayed in full size.
+- The modal allows navigation if multiple photos (optional).
+- Closing the photo modal leaves the Report Page open.
 
 ---
 
-## Test 20: Close report modal
-**Objective:** Verify that the report modal closes correctly.
+## Test 20: Navigate back to list
+**Objective:** Verify that the "Back to List" button works correctly.
 
 **Steps:**
-1. Open a report card.
-2. Click the close button (X) in the modal header.
+1. Open a report page.
+2. Click the "Back to List" button (top left).
 
 **Verify:**
-- The modal closes.
-- The Officer Page is visible again.
-- The filters remain as they were before opening the modal.
-- The report list has not changed.
+- The application returns to the Officer Page.
+- **Critical:** The previously applied filters (status, date, etc.) are PRESERVED.
+- The scroll position is maintained (if possible) or at least the filters are kept.
 
 ---
 
@@ -358,17 +347,31 @@ Verify that Officers (technical/operational users) can view assigned reports, fi
 **Objective:** Verify that report addresses are loaded correctly.
 
 **Steps:**
-1. Observe report cards as they load on the page.
+1. Observe report cards as they load on the list page.
 
 **Verify:**
-- Initially, coordinates may be shown (latitude, longitude with 4 decimal places).
-- As the page loads, addresses are progressively fetched and displayed.
-- If an address cannot be loaded, coordinates remain displayed.
-- The geocoding happens only for visible cards (lazy loading).
+- Initially, coordinates may be shown.
+- Addresses are resolved and displayed properly.
 
 ---
 
-## Test 22: Error handling - Failed to load reports
+## Test 22: Internal Chat (CommentsChat)
+**Objective:** Verify that the internal chat is available on the Report Page.
+
+**Steps:**
+1. Open a report that is NOT in "Assigned" status (unless logic allows).
+2. Look for the "Internal Chat" card in the right column (below actions).
+
+**Verify:**
+- The chat component is visible.
+- It shows "Internal Chat" header.
+- "Live" badge is present if connected.
+- You can type and send a message.
+- The message appears in the list.
+
+---
+
+## Test 23: Error handling - Failed to load reports
 **Objective:** Verify error handling when reports cannot be loaded.
 
 **Steps:**
@@ -377,13 +380,12 @@ Verify that Officers (technical/operational users) can view assigned reports, fi
 
 **Verify:**
 - A loading spinner appears initially.
-- After the error, a danger alert appears: "Failed to load your assigned reports. Please try again later."
+- After the error, a danger alert appears.
 - No reports are displayed.
-- The page layout remains intact.
 
 ---
 
-## Test 23: Empty state - No assigned reports
+## Test 24: Empty state - No assigned reports
 **Objective:** Verify the display when the officer has no assigned reports.
 
 **Steps:**
@@ -392,101 +394,61 @@ Verify that Officers (technical/operational users) can view assigned reports, fi
 
 **Verify:**
 - The page loads successfully.
-- An info alert appears: "No reports found matching the selected filters."
-- The counter shows "Showing 0 reports assigned to you".
-- The filters are still available and functional.
+- An info alert or empty state message appears.
+- The filters are still available.
 
 ---
 
-## Test 24: Counter accuracy
+## Test 25: Counter accuracy
 **Objective:** Verify that the report counter is accurate in all scenarios.
 
 **Steps:**
 1. Load the page and note the counter.
-2. Apply different filters and note the counter after each change.
+2. Apply different filters.
 
 **Verify:**
-- Counter format is "Showing X report(s) assigned to you".
-- Uses "report" (singular) when count is 1.
-- Uses "reports" (plural) when count is not 1.
-- Updates immediately when filters change.
-- Always matches the number of visible report cards.
+- Counter updates immediately when filters change.
+- Matches the visible count of cards.
 
 ---
 
-## Test 25: Date picker interaction
+## Test 26: Date picker interaction
 **Objective:** Verify that date pickers work correctly.
 
 **Steps:**
-1. Click on the "Start Date" picker.
-2. Navigate through months using the calendar arrows.
-3. Select a date.
+1. Click on "Start Date" or "End Date" picker.
 
 **Verify:**
-- Calendar opens correctly.
-- Month/year navigation works.
-- Date selection updates the filter immediately.
-- Selected date appears in dd/MM/yyyy format.
-- Calendar closes after date selection.
-- Same behavior for "End Date" picker.
+- Calendar opens.
+- Can select date.
+- Date format is correct (dd/MM/yyyy).
 
 ---
 
-## Test 26: Filter persistence during navigation
-**Objective:** Verify filter state when interacting with the page.
+## Test 27: Filter persistence during navigation
+**Objective:** Verify filter state when navigating to details and back.
 
 **Steps:**
-1. Apply multiple filters.
-2. Scroll down the page.
-3. Open and close a report modal.
+1. Apply filters on Officer Page.
+2. Click a report to go to Report Page.
+3. Click "Back to List".
 
 **Verify:**
-- Filters remain applied throughout all interactions.
-- Scroll position is maintained when modal closes.
-- Filter dropdowns maintain their selected values.
+- Filters are still applied.
+- The list shows the filtered results.
 
 ---
 
-## Test 27: Responsive layout - Desktop
-**Objective:** Verify the layout on desktop screens.
-
-**Steps:**
-1. View the Officer Page on a desktop browser (1920x1080 or similar).
-
-**Verify:**
-- Filters are displayed horizontally in a single row.
-- All filter controls are properly aligned.
-- Report cards are readable and well-spaced.
-- The map in report modals displays at a good size.
-
----
-
-## Test 28: Responsive layout - Tablet
-**Objective:** Verify the layout on tablet screens.
-
-**Steps:**
-1. Resize browser to tablet size (768px width) or use device emulation.
-
-**Verify:**
-- Filters may wrap to multiple rows if needed.
-- All controls remain accessible.
-- Report cards adjust to the available width.
-- Modals adapt to the screen size.
-
----
-
-## Test 29: Responsive layout - Mobile
+## Test 28: Responsive layout - Mobile
 **Objective:** Verify the layout on mobile screens.
 
 **Steps:**
-1. Resize browser to mobile size (375px width) or use device emulation.
+1. View Officer Page and Report Page on mobile size.
 
 **Verify:**
-- Filters stack vertically.
-- Date pickers and dropdowns remain usable.
-- Report cards are displayed full-width.
-- The modal becomes fullscreen (fullscreen="md-down").
-- Map in modal remains interactive and readable.
+- **Officer Page:** Filters stack, cards are full width.
+- **Report Page:** Columns stack (Actions/Chat move below Info).
+
 
 ---
 

@@ -1,4 +1,5 @@
-import { useState, useRef, useContext, useCallback } from "react";
+import { useState, useRef, useContext, useCallback, useEffect } from "react";
+import L from "leaflet";
 import PropTypes from "prop-types";
 import {
   MapContainer,
@@ -13,7 +14,7 @@ import {
 import MarkerClusterGroup from "react-leaflet-cluster";
 import API from "../../API/API";
 import { Offcanvas } from "react-bootstrap";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import pointInPolygon from "point-in-polygon";
 
 import ReportForm from "./ReportForm";
@@ -33,6 +34,7 @@ import {
   inverseMaskStyle,
   createPinIcon,
   createClusterCustomIcon,
+  createSearchIcon,
 } from "../../utils/mapUtils";
 import "leaflet-geosearch/dist/geosearch.css";
 import "../styles/MapPage.css";
@@ -100,6 +102,7 @@ function MapPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [clickedPosition, setClickedPosition] = useState(null);
+  const [searchResult, setSearchResult] = useState(null);
   const [showInvalidModal, setShowInvalidModal] = useState(false);
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
 
@@ -149,6 +152,7 @@ function MapPage() {
         animate: true,
         duration: 1.5,
       });
+      setSearchResult(latlng);
     }
   }, []);
 
@@ -300,7 +304,12 @@ function MapPage() {
         <ZoomControl position="bottomleft" />
 
         <MapResizer isSidebarOpen={showReportsSidebar} />
+        <MapResizer isSidebarOpen={showReportsSidebar} />
         <MapInteractionHandler closePopup={() => setSelectedPin(null)} />
+
+        {searchResult && (
+          <ClearSearchControl onClear={() => setSearchResult(null)} />
+        )}
 
         <SearchBar
           onLocationSelected={(latlng, map) =>
@@ -386,6 +395,13 @@ function MapPage() {
               </button>
             </div>
           </Popup>
+        )}
+
+        {searchResult && (
+          <Marker
+            position={[searchResult.lat, searchResult.lng]}
+            icon={createSearchIcon()}
+          />
         )}
 
         {clickedPosition && showForm && <Marker position={clickedPosition} />}
@@ -506,5 +522,34 @@ function MapPage() {
     </div>
   );
 }
+
+function ClearSearchControl({ onClear }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      L.DomEvent.disableClickPropagation(ref.current);
+    }
+  }, []);
+
+  return (
+    <div ref={ref} className="leaflet-top leaflet-right">
+      <div className="leaflet-control">
+        <button
+          className="clear-search-btn"
+          onClick={onClear}
+          title="Clear Search"
+        >
+          <X size={18} strokeWidth={3} />
+          <span>Clear Search</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+ClearSearchControl.propTypes = {
+  onClear: PropTypes.func.isRequired,
+};
 
 export default MapPage;

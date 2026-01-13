@@ -106,3 +106,24 @@ export const createClusterCustomIcon = function (cluster) {
     iconSize: L.point(36, 36, true),
   });
 };
+
+export const createSearchIcon = () => {
+  return L.divIcon({
+    html: `
+      <div class="custom-search-marker" style="
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+          <circle cx="12" cy="12" r="8" fill="#ee6c4d" stroke="#ffffff" stroke-width="3"/>
+        </svg>
+      </div>`,
+    className: "custom-search-icon-container",
+    iconSize: [44, 44],
+    iconAnchor: [22, 22], // Center anchor for a circle
+    popupAnchor: [0, -22],
+  });
+};

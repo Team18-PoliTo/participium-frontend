@@ -318,6 +318,34 @@
   background: none !important;
 }
 
+/* --- CLEAR SEARCH BUTTON --- */
+.clear-search-btn {
+  background: white;
+  border: 2px solid #3d5a80;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #3d5a80;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(61, 90, 128, 0.2);
+  transition: all 0.2s ease;
+  margin-top: 20px !important;
+  margin-right: 20px !important;
+  pointer-events: auto;
+}
+
+.clear-search-btn:hover {
+  background-color: #ee6c4d;
+  color: white;
+  border-color: #ee6c4d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(238, 108, 77, 0.3);
+}
+
 /* Risultati ricerca */
 .leaflet-control-geosearch .results {
   position: absolute !important;

@@ -24,7 +24,7 @@ import "../styles/ReportDescription.css";
 function ReportManagementPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { userRole } = useContext(UserContext);
+  const { userRole, user } = useContext(UserContext);
 
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -97,6 +97,15 @@ function ReportManagementPage() {
 
   if (!report) return null;
 
+  const isTechnicalOfficer = userRole?.some(
+    (role) =>
+      allowedOfficerRoles.includes(role) && role !== "External Maintainer"
+  );
+
+  const isExternalMaintainer = userRole.includes("External Maintainer");
+  const isAssignedToMe = report.assignedTo?.id === user?.profile?.id;
+  const isDelegator = report.delegatedById === user?.profile?.id;
+
   const renderActionPanel = () => {
     if (successData) {
       return (
@@ -120,13 +129,6 @@ function ReportManagementPage() {
         </Card>
       );
     }
-
-    // Check if the user has a technical role (Officer)
-    // Check if user has any officer role that is NOT External Maintainer
-    const isTechnicalOfficer = userRole?.some(
-      (role) =>
-        allowedOfficerRoles.includes(role) && role !== "External Maintainer"
-    );
 
     if (userRole.includes("Public Relations Officer")) {
       return (
@@ -225,17 +227,15 @@ function ReportManagementPage() {
             <div className="sticky-top" style={{ top: "20px" }}>
               {renderActionPanel()}
 
-              {/* Internal Chat for Officers and Maintainers */}
-              {report.status !== "Assigned" &&
-                (userRole.some((r) => allowedOfficerRoles.includes(r)) ||
-                  userRole.includes("External Maintainer")) && (
-                  <Card className="border-0 shadow-sm p-3 mt-3">
-                    <CommentsChat
-                      report={report}
-                      onSuccess={handleUpdateSuccess}
-                    />
-                  </Card>
-                )}
+              {/* Internal Chat: Visible to the assigned user or the person who delegated it */}
+              {(isAssignedToMe || isDelegator) && (
+                <Card className="border-0 shadow-sm p-3 mt-3">
+                  <CommentsChat
+                    report={report}
+                    onSuccess={handleUpdateSuccess}
+                  />
+                </Card>
+              )}
             </div>
           </Col>
         </Row>

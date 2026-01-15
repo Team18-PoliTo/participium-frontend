@@ -173,6 +173,36 @@ function ReportInfo({
         </div>
       </div>
 
+      {/* Assignment Details */}
+      {report.assignedTo && (
+        <div className="mb-4">
+          <div className="report-desc-label">Assigned To</div>
+          <div className="report-desc-text-display d-flex gap-3">
+            <div className="flex-fill">
+              <small className="text-muted d-block text-uppercase report-desc-sublabel">
+                Name
+              </small>
+              <span>
+                {report.assignedTo.firstName} {report.assignedTo.lastName}
+              </span>
+            </div>
+            {report.assignedTo.companyName && (
+              <>
+                <div className="border-start mx-2"></div>
+                <div className="flex-fill">
+                  <small className="text-muted d-block text-uppercase report-desc-sublabel">
+                    Company
+                  </small>
+                  <span className="text-primary fw-bold">
+                    {report.assignedTo.companyName}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Photos */}
       <div className="mb-4">
         <div className="report-desc-label">Photos</div>
@@ -253,6 +283,11 @@ ReportInfo.propTypes = {
     status: PropTypes.string,
     createdAt: PropTypes.string,
     photos: PropTypes.arrayOf(PropTypes.string),
+    assignedTo: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      companyName: PropTypes.string,
+    }),
   }),
   canEditCategory: PropTypes.bool,
   selectedCategory: PropTypes.shape({

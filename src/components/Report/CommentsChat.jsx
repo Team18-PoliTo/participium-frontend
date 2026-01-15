@@ -248,9 +248,18 @@ function CommentsChat({ report }) {
                         opacity: 0.8,
                       }}
                     >
-                      {userRole?.includes("External Maintainer")
-                        ? `Officer`
-                        : `Maintainer`}
+                      {comment.commentOwner_name}
+                      {comment.commentOwner_company && (
+                        <span
+                          style={{
+                            fontWeight: "400",
+                            marginLeft: "4px",
+                            color: "#666",
+                          }}
+                        >
+                          ({comment.commentOwner_company})
+                        </span>
+                      )}
                     </div>
                   )}
                   <div className="comment-text" style={{ fontSize: "0.95rem" }}>
